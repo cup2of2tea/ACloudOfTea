@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+declare var Prism: any;
 
 @Component({
   selector: 'app-where-is-guido',
@@ -33,7 +34,10 @@ export class WhereIsGuidoComponent implements OnInit {
       " \\text{Pour chaque librairie l:} ",
       " 0 <= \\sum_{b \\in [0,B-1]}{bookIsInLibrairie[b][l]} <= (maxDays-d) * shipping[l] ",
       " \\text{Maximize } \\sum_{b \\in [0,B-1], l \\in [0,L-1]}{bookIsInLibrairie[b][l]*value[b]} "
+
     ];
+    Prism.highlightAll();
+
   }
 
 

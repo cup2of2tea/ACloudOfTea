@@ -1,7 +1,16 @@
 <div>
-    <div *ngFor="let post of posts">
-        <a [routerLink]="post.route">
-            {{post.title}}
-        </a>
-    </div>
+    <section>
+        <div class="wrapperArticle">
+            <div class="article">
+                <h1 class="post-title ">
+                    Blog
+                </h1>
+                <div *ngFor="let post of posts">
+                    <a [routerLink]="post.route">
+                        {{post.title}}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
