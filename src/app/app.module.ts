@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,7 +24,6 @@ import { WhereIsGuidoComponent } from './Optimisation/where-is-guido/where-is-gu
     FormsModule,
     KatexModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [{ provide: APP_BASE_HREF, useValue: '/ACloudOfTea/' }], bootstrap: [AppComponent]
 })
 export class AppModule { }
