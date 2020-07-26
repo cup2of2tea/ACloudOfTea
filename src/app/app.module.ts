@@ -11,12 +11,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { WhereIsGuidoComponent } from './Optimisation/where-is-guido/where-is-guido.component';
 import { ProgCompComponent } from './Misc/prog-comp/prog-comp.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WhereIsGuidoComponent,
-    ProgCompComponent
+    ProgCompComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
