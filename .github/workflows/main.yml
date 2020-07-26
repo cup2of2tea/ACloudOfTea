@@ -24,7 +24,7 @@ jobs:
          ng build --prod --base-href="/ACloudOfTea/"
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@3.5.7
-      env:
+      with:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages
         FOLDER: dist/ACloudOfTea
