@@ -24,6 +24,6 @@ import { WhereIsGuidoComponent } from './Optimisation/where-is-guido/where-is-gu
     FormsModule,
     KatexModule
   ],
-  providers: [{ provide: APP_BASE_HREF, useValue: '' }], bootstrap: [AppComponent]
+  providers: [{ provide: APP_BASE_HREF, useValue: '/ACloudOfTea' }], bootstrap: [AppComponent]
 })
 export class AppModule { }
