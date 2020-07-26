@@ -10,11 +10,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { WhereIsGuidoComponent } from './Optimisation/where-is-guido/where-is-guido.component';
+import { ProgCompComponent } from './Misc/prog-comp/prog-comp.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WhereIsGuidoComponent
+    WhereIsGuidoComponent,
+    ProgCompComponent
   ],
   imports: [
     BrowserModule,
