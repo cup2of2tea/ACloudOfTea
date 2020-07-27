@@ -24,14 +24,18 @@ code.has-jax {
     margin-top: 5px;
     margin-bottom: 5px;
 }
+@media only screen and (min-width: 1200px) {
+    .wrapperArticle {
+        padding-left: 150px;
+        padding-right: 150px;
+    }
+}
 
 .wrapperArticle {
     max-width: 1200px;
     text-align: center;
-    padding-left: 150px;
     box-shadow: -1px -1px 11px 1px;
     padding-top:30px;
-    padding-right: 150px;
     margin: auto;
     background-color: white;
 }
