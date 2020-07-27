@@ -1161,4 +1161,9 @@ export class ProgCompComponent implements OnInit {
     });
   }
 
+  goto(selector) {
+    document.querySelector(selector).scrollIntoView({ behavior: 'smooth' })
+
+  }
+
 }

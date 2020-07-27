@@ -1,4 +1,62 @@
 <section>
+    <div class="sommaire">
+        <ul>
+            <li>
+                <a (click)="goto(' #principeAlgo')">Algorithmique</a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #principeAlgo')"> Principe </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #competitionAlgo')"> Compétition </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #entrainementAlgo')"> Entrainement </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a (click)="goto(' #principeOptimisation')"> Optimisation </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #principeOptimisation')"> Principe </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #competitionOptimisation')"> Compétition </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #entrainementOptimisation')"> Entrainement </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a (click)="goto(' #principeBotProgramming')"> Bot Programming </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #principeBotProgramming')"> Principe </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #competitionBotProgramming')"> Compétition </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a (click)="goto(' #principeCTF')"> CTF </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #principeCTF')"> Principe </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #entrainementCTF')"> Entrainement </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a (click)="goto(' #competitionPuzzle')"> Puzzle </a>
+            </li>
+        </ul>
+
+    </div>
     <div class="wrapperArticle">
         <div class="article">
             <h1 class="post-title ">
@@ -84,7 +142,7 @@
 
             <h2> Compétition algorithmiques:</h2>
 
-            <h3> Principe</h3>
+            <h3 id="principeAlgo"> Principe</h3>
             <div class="blockArticle">
                 Ces concours consistent en un set de problème de thématiques variés, pour lesquels doivent être
                 développés
@@ -141,7 +199,7 @@
             rating particulier,
             appréciez plutôt l'ébullition neuronale et la découverte de nouvelles choses.
 
-            <h3> Concours</h3>
+            <h3 id="competitionAlgo"> Concours</h3>
             <div class="compTableWrapper">
                 <table id="contestAlgo" class="display" style="width:100%">
                     <thead>
@@ -177,7 +235,7 @@
                     </tfoot>
                 </table>
             </div>
-            <h3> Entrainement</h3>
+            <h3 id="entrainementAlgo"> Entrainement</h3>
             <div class="compTableWrapper">
                 <table id="trainingAlgo" class="display" style="width:100%">
                     <thead>
@@ -207,7 +265,7 @@
             </div>
             <h2> Optimisation</h2>
 
-            <h3> Principe</h3>
+            <h3 id="principeOptimisation"> Principe</h3>
 
             Contrairement aux concours algorithmiques, il n'existe <em>pas de solution "parfaite"</em> au problème
             auquel
@@ -278,7 +336,7 @@
                 </li>
             </ul>
 
-            <h3> Compétitions</h3>
+            <h3 id="competitionOptimisation"> Compétitions</h3>
             <div class="compTableWrapper">
                 <table id="contestsOpti" class="display" style="width:100%">
                     <thead>
@@ -306,7 +364,7 @@
                     </tfoot>
                 </table>
             </div>
-            <h3> Entrainement</h3>
+            <h3 id="entrainementOptimisation"> Entrainement</h3>
             <div class="compTableWrapper">
                 <table id="trainingOpti" class="display" style="width:100%">
                     <thead>
@@ -334,7 +392,7 @@
             </div>
             <h2> Bot Programming</h2>
 
-            <h3> Principe</h3>
+            <h3 id="principeBotProgramming"> Principe</h3>
             <div class="blockArticle">
                 <em>Alpha-Go</em>, <em>Stockfish</em>, <em>AlphaStar</em> (Starcraft) ... <br />Ces noms émoustillent
                 votre
@@ -404,7 +462,7 @@
                     structure spécifique).
                 </li>
             </ul>
-            <h3> Contests</h3>
+            <h3 id="competitionBotProgramming"> Contests</h3>
             <div class="compTableWrapper">
                 <table id="contestsBot" class="display" style="width:100%">
                     <thead>
@@ -433,7 +491,7 @@
             </div>
             <h2> Ctf</h2>
 
-            <h3> Principe</h3>
+            <h3 id="principeCTF"> Principe</h3>
 
             Les Ctf sont des concours axés sur le terme de la cybersécurité.
             Il s'agit de trouver et exploiter des failles dans des codes, des systèmes, des sites ou autres, pour
@@ -491,7 +549,7 @@
                     Le reste c'est du bruit :p
                 </li>
             </ul>
-            <h3> Entrainement</h3>
+            <h3 id="entrainementCTF"> Entrainement</h3>
             <div class="compTableWrapper">
                 <table id="contestsCtf" class="display" style="width:100%">
                     <thead>
@@ -516,7 +574,7 @@
                 </table>
             </div>
             <h2> Puzzles (y'a pas que les bits dans la vie)</h2>
-            <h3> Contests</h3>
+            <h3 id="competitionPuzzle"> Contests</h3>
             <div class="compTableWrapper">
                 <table id="contestsPuzzle" class="display" style="width:100%">
                     <thead>
