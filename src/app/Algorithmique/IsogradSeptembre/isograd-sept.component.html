@@ -35,7 +35,7 @@
             <div>
 
                 Fin septembre s'est déroulé un concours algorithmique organisé par Isograd, sur le thème de la sécurité
-                informatique. J'ai pu terminé premier malgré un duel très serré, après avoir été devancé sur les quatre
+                informatique. J'ai pu terminer premier malgré un duel très serré, après avoir été devancé sur les quatre
                 premiers exercices par le redoutable Nagrarok.<br />
                 <br />
                 Vous pouvez retrouver les différents problèmes ainsi que le classement ici: <a
@@ -47,11 +47,11 @@
                 et à rejoindre leur discord.<br />
                 <br />
 
-                Dans cet article vais tout d'abord présenter rapidement comment fonctionne ce concours, puis je vais
+                Dans cet article, je vais tout d'abord présenter rapidement comment fonctionne ce concours, puis je vais
                 passer sur chaque exercice, pour donner mon approche (ce que je regarde au niveau de l'énoncé, les
                 réflexes à avoir), une
                 explication de ma solution durant le concours, ainsi que d'autres variantes et douces rêveries du même
-                goût.<br />
+                thème.<br />
                 <br />
 
                 <h2>Le concours</h2>
@@ -139,8 +139,9 @@ afficherSurSortieStandard(a+b)
                 permettant d'extraire le suffixe.<br />
                 <br />
                 Durant le concours, je n'avais pas vu que la taille des identifiants était constante (8 caractères).
-                J'ai donc géré un spécial cas (le cas où la chaîne faisait moins de 3 caractères) pour éviter que
-                l'extraction du suffixe pose problème (suivant la méthode utilisée, cela aurait pu à extraire un suffixe
+                J'ai donc géré un cas spécial (le cas où la chaîne faisait moins de 3 caractères) pour éviter que
+                l'extraction du suffixe ne pose problème (suivant la méthode utilisée, cela aurait pu extraire un
+                suffixe
                 depuis un indice négatif).<br />
                 <br />
                 <h3>Implémentation</h3>
@@ -221,7 +222,8 @@ void ContestExerciseImpl::main() {{'{'}}
                 Durant le concours, j'ai utilisé la structure map de la libraire standard C++.
                 Cette structure permet de faire une association entre des clés et des valeurs.<br />
                 <br />
-                Grâce à ça, je peux garder en mémoire l'information du nombre de fois où chaque identifiant a été
+                Grâce à ça, je peux garder en mémoire l'information du nombre de fois pour lequel chaque identifiant a
+                été
                 vu.<br />
                 En reprenant le premier exemple ci-dessus, ma structure va se mettre à jour de la façon suivante, au
                 cours des itérations:<br />
@@ -315,8 +317,8 @@ void ContestExerciseImpl::main() {{'{'}}
 
 
                 <h3> Une première solution, pour un graphe sans cycle</h3>
-                Dans un premier temps, on va partir de mon interprétation erronée durant le concours (qui était fausse).
-                Mais on verra que ma solution peut être adapté très facilement pour remplir les conditions de
+                Dans un premier temps, on va partir de mon interprétation erronée durant le concours.
+                Mais on verra que ma solution peut être adaptée très facilement pour remplir les conditions de
                 l'énoncé.<br />
                 <br />
                 Ma vision erronée était la suivante:
@@ -345,7 +347,8 @@ void ContestExerciseImpl::main() {{'{'}}
                         </li>
                     </ul>
                 </div><br />
-                Ici par contre, le problème étant plus ardu, certains réflexes permettent d'être plus efficaces dans la
+                Ici par contre, le problème étant plus ardu, certains réflexes plus avancés permettent d'être plus
+                efficaces dans la
                 résolution:
                 <div class="proTip">
                     <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
@@ -511,7 +514,7 @@ void ContestExerciseImpl::main() {{'{'}}
 
                 Le second point est qu'il peut y avoir des cycles. Or dans le cas d'un cycle parfait (<code>1 => 2 => 3 =>
                 4
-                => 1 </code> par exemple),il n'existe pas de noeud sans prédécesseur, même si on respecte la contraint
+                => 1 </code> par exemple),il n'existe pas de noeud sans prédécesseur, même si on respecte la contrainte
                 de
                 graphe
                 dirigé, avec des noeuds n'ayant pas plus d'un prédécesseur.<br />
@@ -579,7 +582,7 @@ void ContestExerciseImpl::main() {{'{'}}
                     <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
                     <ul>
                         <li>
-                            Si pleins de solutions semblent vous offrir à vous, toutes de complexités acceptables:
+                            Si pleins de solutions semblent s'offrir à vous, toutes de complexités acceptables:
                         </li>
                         <ul>
                             <li>
