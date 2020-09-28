@@ -552,7 +552,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 différentes couleurs (dénotées par un type de caractère différent (<code>'#'</code>,<code> '.'</code>,
                 <code>'!'</code> etc...)).<br />
                 <br />
-                A partir de cette grille, il fallait retrouver toutes les "formes contigües" qui formaient des
+                A partir de cette grille, il fallait retrouver toutes les "formes continues" qui formaient des
                 rectangles de dimension 2x4 ou 4x2, une forme étant constituée de tous les pixels de même couleur
                 connexes.
                 Si par exemple un rectangle 2x4 d'une couleur donnée avait un pixel voisin de la même couleur, ce
@@ -618,7 +618,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 </ul>
                 De la même manière que la première solution, je parcours la grille séquentiellement, et à chaque
                 case
-                "non vide", je réalise un parcours (floodfill) pour extraire la forme contiguë dans un vector.
+                "non vide", je réalise un parcours (floodfill) pour extraire la forme continue dans un vector.
                 Les coordonnées stockées sont translatées par rapport à la case de départ (exemple, si on part de
                 <code>(2,2)</code>
                 et qu'on a la forme <code>[(2,2),(2,3),(3,3)]</code> on aura donc
