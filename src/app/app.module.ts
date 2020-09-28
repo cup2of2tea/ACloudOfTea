@@ -8,9 +8,12 @@ import { KatexModule } from 'ng-katex';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { far } from '@fortawesome/free-regular-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { WhereIsGuidoComponent } from './Optimisation/where-is-guido/where-is-guido.component';
 import { ProgCompComponent } from './Misc/prog-comp/prog-comp.component';
+import { IsogradSeptComponent } from './Algorithmique/IsogradSeptembre/isograd-sept.component';
 import { HomeComponent } from './home/home.component';
 
 @NgModule({
@@ -18,7 +21,8 @@ import { HomeComponent } from './home/home.component';
     AppComponent,
     WhereIsGuidoComponent,
     ProgCompComponent,
-    HomeComponent
+    HomeComponent,
+    IsogradSeptComponent
   ],
   imports: [
     BrowserModule,
@@ -30,4 +34,8 @@ import { HomeComponent } from './home/home.component';
   ],
   providers: [], bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    library.add(far)
+  }
+}

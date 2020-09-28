@@ -24,7 +24,7 @@ code.has-jax {
     margin-top: 5px;
     margin-bottom: 5px;
 }
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1400px) {
     .wrapperArticle {
         padding-left: 150px;
         padding-right: 150px;
@@ -32,7 +32,7 @@ code.has-jax {
 }
 
 .wrapperArticle {
-    max-width: 1200px;
+    max-width: 1400px;
     text-align: center;
     box-shadow: -1px -1px 11px 1px;
     padding-top:30px;
@@ -46,7 +46,7 @@ a:hover {
 
 
 .article{
-    text-align: left;
+    text-align: justify;
     padding: 10px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
@@ -93,4 +93,8 @@ h3{
 
 #_oss_container{
     display: none;
+}
+
+code {
+    background-color:  #e4dcdc9e;
 }

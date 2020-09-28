@@ -1,0 +1,805 @@
+<section>
+    <div class="sommaire">
+        <ul>
+            <li>
+                <a (click)="goto(' #principeAlgo')">Introduction</a>
+            </li>
+            <li>
+                <a (click)="goto(' #principeOptimisation')"> Le concours </a>
+            </li>
+            <li>
+                <a (click)="goto(' #principeBotProgramming')"> Exercice 1 </a>
+            </li>
+            <li>
+                <a (click)="goto(' #principeBotProgramming')"> Exercice 2 </a>
+            </li>
+            <li>
+                <a (click)="goto(' #principeBotProgramming')"> Exercice 3 </a>
+            </li>
+            <li>
+                <a (click)="goto(' #principeBotProgramming')"> Exercice 4 </a>
+            </li>
+            <li>
+                <a (click)="goto(' #principeBotProgramming')"> Exercice 5 </a>
+            </li>
+        </ul>
+    </div>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Solutions et retour sur le concours Isograd (septembre 2020)
+            </h1>
+            <div class="blockArticle">
+                <h3>Hello tout le monde!</h3>
+            </div>
+            <div>
+
+                Fin septembre s'est déroulé un concours algorithmique organisé par Isograd, sur le thème de la sécurité
+                informatique. J'ai pu terminé premier malgré un duel très serré, après avoir été devancé sur les quatre
+                premiers exercices par le redoutable Nagrarok.<br />
+                <br />
+                Vous pouvez retrouver les différents problèmes ainsi que le classement ici: <a
+                    href="https://www.isograd.com/FR/solutionconcours.php?contest_id=65&que_str_id=&reg_typ_id=2">Resultats
+                    et problèmes</a>. <br />
+                Si ça vous intéresse de discuter des solutions, ou de l'algorithmique et de
+                la
+                sécurité informatique, n'hésitez pas à suivre <a href="https://twitter.com/h25io">@h25io</a> sur twitter
+                et à rejoindre leur discord.<br />
+                <br />
+
+                Dans cet article vais tout d'abord présenter rapidement comment fonctionne ce concours, puis je vais
+                passer sur chaque exercice, pour donner mon approche (ce que je regarde au niveau de l'énoncé, les
+                réflexes à avoir), une
+                explication de ma solution durant le concours, ainsi que d'autres variantes et douces rêveries du même
+                goût.<br />
+                <br />
+
+                <h2>Le concours</h2>
+                Le principe du concours était le suivant:
+                <ul>
+                    <li>
+                        5 problèmes de difficulté croissante à résoudre de manière séquentielle (pour passer au problème
+                        N+1, il fallait d'abord résoudre entièrement le problème N)
+                    </li>
+                    <li>Chaque problème est doté:
+                        <ul>
+                            <li>
+                                D'un énoncé donnant le contexte du problème, ainsi que le résultat attendu
+                            </li>
+                            <li>
+                                D'une description des entrées et sorties (contraintes (ordre de grandeur des différentes
+                                valeurs), type des données)
+                            </li>
+                            <li>
+                                D'un ou plusieurs exemples (entrée(s) et sortie(s) attendue(s))
+                            </li>
+                        </ul>
+                    </li>
+                </ul><br />
+                A partir de ces informations fournies, l'objectif est de coder un programme dans un langage
+                informatique
+                parmi la multitude proposée par la plateforme Isograd, qui va:
+                <ul>
+                    <li>Lire les entrées sur l'entrée standard (<code>cin</code> pour C++, <code>scanf</code> pour C,
+                        <code>input()</code> pour
+                        Python
+                        par exemple)
+                    </li>
+                    <li>Renvoyer sur la sortie standard (<code>cout</code> pour C++, <code>printf</code> pour C,
+                        <code>print</code> pour Python ...)
+                        la
+                        réponse au problème correspondante aux entrées
+                    </li>
+                </ul><br />
+                En exemple de problème, on pourrait avoir par exemple: "Lire 2 entiers et afficher la somme.<br />
+                <br />
+                Une solution en pseudocode donnerait<br />
+                <br />
+                <pre class="line-numbers language-python"><code >a = lireEntreeStandard()
+b = lireEntreeStandard()
+afficherSurSortieStandard(a+b)
+</code></pre>
+                <br />
+                Bien sûr, cet exemple est très simple, et les problèmes proposés durant le concours sont d'un tout
+                autre
+                niveau.<br /><br />
+                <h2>Problème 1:</h2>
+                <br />
+                <h3> Enoncé </h3>
+                Pour le problème 1, on recevait sur l'entrée standard une liste d'identifiants de badges de sécurité.
+                Ces identifiants étaient des chaînes de caractères de 8 chiffres ("00000000", "12345678" par
+                exemple...), et l'objectif était de trouver le seul identifiant qui ne se terminait pas par les
+                caractères
+                "555".<br />
+                <br />
+                Par exemple avec l'entrée:<br />
+                <pre class="line-numbers language-python"><code >4
+00000555
+12345678
+42840555
+55555555</code></pre>
+                la sortie attendue est la suivante:<br />
+                <pre class="line-numbers language-python"><code >12345678</code></pre><br />
+                Ce problème était essentiellement pour se familiariser avec l'IDE web d'Isograd, et était donc
+                relativement accessible même aux plus débutants.<br />
+                <br />
+
+                <h3> Solutions </h3>
+
+                Deux types de solutions principales étaient possibles:
+                <ul>
+                    <li>Soit on itère manuellement sur la chaîne pour vérifier qu'au moins un des 3 derniers caractères
+                        est bien
+                        différent de '5'
+                    </li>
+                    <li>Soit on utilisait une fonction du langage choisi pour extraire le suffixe constitué des 3
+                        derniers caractères, qu'on comparait avec la chaîne de caractères "555"</li>
+                </ul>
+                La seconde solution était plus rapide à implémenter, si vous connaissiez déjà la fonction vous
+                permettant d'extraire le suffixe.<br />
+                <br />
+                Durant le concours, je n'avais pas vu que la taille des identifiants était constante (8 caractères).
+                J'ai donc géré un spécial cas (le cas où la chaîne faisait moins de 3 caractères) pour éviter que
+                l'extraction du suffixe pose problème (suivant la méthode utilisée, cela aurait pu à extraire un suffixe
+                depuis un indice négatif).<br />
+                <br />
+                <h3>Implémentation</h3>
+
+                <ul ngbNav #nav="ngbNav" class="nav-tabs" (navChange)="onNavChange($event)">
+                    <li ngbNavItem>
+                        <a ngbNavLink>Python</a>
+                        <ng-template ngbNavContent>
+                            <pre class="line-numbers language-python"><code >nombreIdentifiants = int(input())
+for i in range(nombreIdentifiants):
+    identifiant = input()
+    if(identifiant[-3:] != "555"):
+        print(identifiant)
+</code></pre>
+                        </ng-template>
+                    </li>
+                    <li ngbNavItem>
+                        <a ngbNavLink>C++</a>
+                        <ng-template ngbNavContent>
+                            <pre class="line-numbers language-cpp"><code >#include &lt;iostream&gt;
+#include "exercise.hpp"<br/>
+<br/>
+ContestExerciseImpl::ContestExerciseImpl() : Exercise() {{'{'}}{{'}'}}<br/>
+<br/>
+void ContestExerciseImpl::main() {{'{'}}
+    int nombreIdentifiants;
+    cin&gt;&gt;nombreIdentifiants;
+    for(int idx=0;idx&lt;nombreIdentifiants;idx++) {{'{'}}
+        string identifiant;
+        cin&gt;&gt;identifiant;
+        if(identifiant.substr(identifiant.size()-3) != "555") {{'{'}}
+            cout&lt;&lt;identifiant&lt;&lt;endl;
+        {{'}'}}
+    {{'}'}}
+{{'}'}}
+</code></pre>
+                        </ng-template>
+                    </li>
+                </ul>
+                <div [ngbNavOutlet]="nav"></div>
+                <br />
+
+                <h2>Problème 2:</h2>
+                <br />
+                <h3>Enoncé:</h3>
+
+                Le second problème était légèrement plus complexe:<br />
+                On recevait encore une fois une liste d'identifiant, mais cette fois-ci, il fallait trouver
+                l'identifiant le plus présent dans la liste (si plusieurs identifiants étaient représentés de manière
+                maximale, n'importe lequel d'entre eux pouvait être renvoyé).<br />
+                Par exemple, pour :
+                <pre class="line-numbers language-python"><code >4
+222
+111
+222
+333</code></pre>
+                La sortie attendue est:
+                <pre class="line-numbers language-python"><code >222</code></pre>
+                Mais si l'entrée était :
+                <pre class="line-numbers language-python"><code >4
+222
+111
+222
+111</code></pre>
+                On pouvait aussi bien renvoyer
+                <pre class="line-numbers language-python"><code >222</code></pre>
+                que
+                <pre class="line-numbers language-python"><code >111</code></pre>
+                <br />
+
+                <h3>Solutions</h3>
+                L'énoncé ne contenait aucune contrainte sur la taille de la liste. Des immondices auraient donc
+                peut-être pu passer les tests avec une complexité de <code>O(N^2)</code>.<br />
+                <br />
+                Néanmoins, la solution en complexité <code>O(N)</code> (ou <code>O(NlogN)</code> suivant la structure
+                utilisée) était
+                accessible.<br />
+                Durant le concours, j'ai utilisé la structure map de la libraire standard C++.
+                Cette structure permet de faire une association entre des clés et des valeurs.<br />
+                <br />
+                Grâce à ça, je peux garder en mémoire l'information du nombre de fois où chaque identifiant a été
+                vu.<br />
+                En reprenant le premier exemple ci-dessus, ma structure va se mettre à jour de la façon suivante, au
+                cours des itérations:<br />
+                <code>{{'{'}}{{'}'}} => {{'{'}}"222": 1{{'}'}} => {{'{'}}"111": 1, "222": 1{{'}'}} => {{'{'}}"111": 1, "222":
+                2{{'}'}} => {{'{'}}"111": 1, "222": 2, "333": 3{{'}'}}</code><br />
+                <br />
+                Il suffit ensuite de parcourir cette structure pour trouver l'élément le plus représenté
+                (<code>"222"</code>).<br />
+                <br />
+                En Python, une structure permet de faire ça de manière encore plus simplifiée. Il s'agit de la structure
+                <code>Counter</code> qui est spécialisé dans ce rôle de compter le nombre d'occurences de différentes
+                valeurs.<br />
+                <h3>Implémentation</h3>
+
+                <ul ngbNav #nav2="ngbNav" class="nav-tabs" (navChange)="onNavChange($event)">
+                    <li ngbNavItem>
+                        <a ngbNavLink>Python</a>
+                        <ng-template ngbNavContent>
+                            <pre class="line-numbers language-python"><code >from collections import Counter<br/>
+                                <br/>
+nombreIdentifiants = int(input())
+listeIdentifiants = [input() for idx in range(nombreIdentifiants)]
+occurences = Counter(listeIdentifiants)
+print(occurences.most_common(1)[0][0]) 
+# most_common(N) retourne une liste de N tuples (clé,valeur) des éléments les plus présents
+# on prend donc le premier tuple ([0]) de ce tableau ainsi que la clé ([0]) de ce tuple
+</code></pre>
+                        </ng-template>
+                    </li>
+                    <li ngbNavItem>
+                        <a ngbNavLink>C++</a>
+                        <ng-template ngbNavContent>
+                            <pre class="line-numbers language-cpp"><code >#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include "exercise.hpp"<br/>
+<br/>
+ContestExerciseImpl::ContestExerciseImpl() : Exercise() {{'{'}}{{'}'}}<br/>
+<br/>
+void ContestExerciseImpl::main() {{'{'}}
+    int nbIdentifiants;
+    cin&gt;&gt;nbIdentifiants;
+    
+    map&lt;string,int&gt; occurences;
+    pair&lt;int,string&gt; res = make_pair(0,"");
+    for(int idx=0;idx&lt;nbIdentifiants;idx++) {{'{'}}
+        string identifiant;
+        cin&gt;&gt;identifiant;
+        occurences[identifiant]++;
+        res = max(res, make_pair(occurences[identifiant],identifiant));
+    {{'}'}}
+    cout&lt;&lt;res.second;
+{{'}'}}</code></pre>
+                        </ng-template>
+                    </li>
+                </ul>
+                <div [ngbNavOutlet]="nav2"></div>
+
+
+
+
+                <h2> Exercice 3</h2>
+                <br />
+                <h3> Enoncé</h3>
+                <br />
+                Le troisième problème présentait un <b>ENORME</b> pic de difficulté par rapport aux deux premiers.
+                Pour un grand nombre de compétiteurs (j'en fais partie), ce problème fut le plus compliqué des 5.<br />
+                <br />
+                Pour ce problème, on avait en entrée un <b>graphe dirigé</b> de serveurs reliés par des arcs.
+                La spécificité d'un graphe dirigé étant que si l'on a un arc qui part d'un noeud A pour arriver à un
+                autre noeud B, il n'existe pas forcément l'arc inverse permettant de partir de B pour arriver à A.<br />
+                <br />
+                Egalement, d'autres contraintes étaient appliquées sur ce graphe: un noeud ne peut avoir qu'un seul
+                prédecesseur (en d'autres termes, s'il existe un arc <code>A=>B</code>, alors il n'existe pas d'autre
+                noeud X tel
+                qu'il existe un arc <code>X=>B</code>, puisque <code>B</code> ne peut avoir qu'un prédecesseur).<br />
+                <br />
+
+                L'objectif est de trouver le serveur à partir duquel on peut accéder au plus grand nombre de serveurs de
+                manière directe ou indirecte en suivant les arcs dirigés. Si plusieurs serveurs sont valides, celui avec
+                l'identifiant le plus petit doit être donné.<br /><br />
+                Par exemple, si on a le graphe suivant:<br /><br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/graph.png" />
+                </div>
+
+                <br /><br />
+
+                Alors, les noeuds 1 et 5 ont tous les deux accès à 4 serveurs, donc on renvoie le serveur 1 qui a un
+                identifiant plus petit.
+                <br /><br />
+
+
+                <h3> Une première solution, pour un graphe sans cycle</h3>
+                Dans un premier temps, on va partir de mon interprétation erronée durant le concours (qui était fausse).
+                Mais on verra que ma solution peut être adapté très facilement pour remplir les conditions de
+                l'énoncé.<br />
+                <br />
+                Ma vision erronée était la suivante:
+                <ul>
+                    <li>
+                        Le graphe ne contient pas de cycle
+                    </li>
+                    <li>
+                        Un noeud PEUT avoir plusieurs prédécesseurs.
+                    </li>
+                </ul>
+                Jusqu'à maintenant, j'ai très peu parlé de méthodologie dans l'analyse de l'énoncé.
+                Les deux premiers problèmes étant relativement faciles, les seuls conseils pouvant être appliqués
+                seraient les suivants:
+                <div class="proTip">
+                    <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
+                    <ul>
+                        <li>
+                            Maîtriser la syntaxe de base de son langage (boucle, interaction avec l'entrée / sortie
+                            standard, conditions)
+                        </li>
+                        <li>
+                            Connaître un peu la librairie standard du langage (<code>max</code>, <code>min</code>,
+                            <code>sort</code> ...) et les structures de
+                            données basiques (tableaux, listes, sets, map...)
+                        </li>
+                    </ul>
+                </div><br />
+                Ici par contre, le problème étant plus ardu, certains réflexes permettent d'être plus efficaces dans la
+                résolution:
+                <div class="proTip">
+                    <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
+                    <ul>
+                        <li>
+                            En premier lieu, <b>bien regarder les contraintes</b>. Les contraintes nous donnent une idée
+                            de la
+                            complexité de la solution attendue, et/ou nous permet d'écarter d'autres solutions pour
+                            lesquelles la complexité sera trop grande.<br />
+                            Habituellement, on considère qu'à partir d'un ordre grandeur de <code>10^8</code> opérations
+                            (cela
+                            fluctue un
+                            peu), on commence à s'inquiéter du fait que notre programme soit assez efficace pour passer
+                            avec
+                            les limites de temps.
+                            <br /><br />
+                        </li>
+                        <li>
+                            Si on a un algorithme qui fait beaucoup d'opérations, se poser des questions en terme de
+                            <b>"nécessité"</b> et de <b>"redondance"</b>.
+                            <br />
+                            Calcule-t-on des informations inutiles, en partant par exemple de noeuds qui donneront
+                            toujours
+                            des résultats inutiles? Calcule-t-on plusieurs fois la même chose? Si oui, est-il possible
+                            de
+                            conserver les résultats pour les réutiliser?
+                        </li>
+                    </ul>
+                </div>
+                Je me limite à un nombre restreint de pistes de réflexions, qui on le verra ensemble, s'appliquent à ce
+                problème.<br />
+                <br />
+                Pour les contraintes, <code>N</code> et <code>M &lt;= 50 000</code>. On peut donc déjà (même si certains
+                compétiteurs ont eu une
+                solution avec cette complexité qui marchait) ignorer toute solution qui serait de complexité
+                <code>O(N^2)</code> ou
+                <code>O(M^2)</code> (puisque <code>50000 ^ 2 > 10^9</code>).<br />
+                <br />
+                Par contre, <code>O(N)</code>, <code>O(M)</code>, <code>O(NlogN)</code> et bien d'autres, sont des
+                complexités qui semblent
+                adaptées au
+                problème.<br />
+                <br />
+                Maintenant partons de l'idée naïve, pour exploiter le deuxième axe de réflexion:<br />
+                <ul>
+                    <li> On peut partir de chaque noeud</li>
+                    <li> Faire des appels récursifs sur les noeuds fils, petit-fils etc...</li>
+                    <li> Pour calculer le nombre de noeuds accessibles depuis le noeud initial</li>
+                    <li> Il suffira de garder le noeud pour lequel on aura le plus grand nombre de noeuds accessibles
+                    </li>
+                </ul>
+                Cette solution, parfaitement valide, nous pose néanmoins un souci en terme de complexité:<br />
+                On va itérer sur chaque noeud, et à partir de chaque noeud on va explorer tous ses descendants.<br />
+                On est donc en <code>O(N^2)</code>.<br />
+                <br />
+                Maintenant appliquons la méthode décrite plus haute:<br />
+                <br />
+                <ul>
+                    <li> Nécessité: A-t-on <b>besoin</b> de partir de chaque noeud pour vérifier si ce noeud est le
+                        noeud de la
+                        réponse?</li>
+                    <ul>
+                        <li><b>Réponse: Non.</b> On peut prendre uniquement les noeuds racines sans prédécesseur</li>
+                        <li>Si un noeud a un prédecesseur, son prédecesseur a forcément un nombre de noeuds accessibles
+                            strictement supérieur (vu qu'on compte également le noeud duquel on part comme accessible)
+                        </li>
+                    </ul>
+                    <li> Redondance: Doit-on <b>à chaque fois</b> parcourir tous les noeuds de manière récursive?</li>
+                    <ul>
+                        <li><b>Réponse: Non.</b></li>
+                        <li>
+                            Si l'on a déjà calculé le nombre de noeuds accessibles à partir d'un noeud, ce nombre ne
+                            changera pas au fur et à mesure des appels récursifs.
+                        </li>
+                        <li>
+                            Il suffit donc de stocker pour chaque noeud cette valeur après l'avoir calculée une première
+                            fois.
+                        </li>
+                    </ul>
+                </ul>
+                Ma solution finale correspond donc simplement à la <b>solution naïve</b>, mais en partant uniquement des
+                <b>noeuds
+                    "racines"</b> (sans prédecesseurs), et en enregistrant pour chaque noeud le nombre de noeuds
+                descendants
+                accessibles.<br />
+                <br />
+                L'implémentation était la suivante:<br />
+                <br />
+                <p>
+                    <button type="button" class="btn btn-outline-primary" (click)="isCollapsed2 = !isCollapsed2"
+                        [attr.aria-expanded]="!isCollapsed2" aria-controls="collapseExample">
+                        Afficher / Réduire le code
+                    </button>
+                </p>
+                <div id="collapseExample" [ngbCollapse]="isCollapsed2">
+                    <pre class="line-numbers language-cpp"><code >#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include "exercise.hpp"
+
+ContestExerciseImpl::ContestExerciseImpl() : Exercise() {{'{'}} {{'}'}}
+
+map&lt;int,int&gt; memo;
+int nombreDescendants(int serveur, vector&lt;vector&lt;int&gt; &gt; &listeAdjacence){{'{'}}
+    // Si on a déjà calculé le nombre de noeuds accessibles depuis le serveur
+    if(memo.find(serveur) != memo.end()) {{'{'}}
+        // On renvoie directement ce nombre
+        return memo[serveur];
+    {{'}'}}
+    // Sinon, on exécute les appels récursifs sur les noeuds enfants
+    int resultat = 1;
+    for(auto child: listeAdjacence[serveur]) {{'{'}}
+        resultat += nombreDescendants(child, listeAdjacence);
+    {{'}'}}
+    // On enregistre le résultat
+    memo[serveur] = resultat;
+    return resultat;
+{{'}'}}
+
+void ContestExerciseImpl::main() {{'{'}}
+    int nbNodes, nbArcs;
+    cin&gt;&gt;nbNodes&gt;&gt;nbArcs;
+    
+    vector&lt;vector&lt;int&gt; &gt; listeAdjacence(nbNodes);
+    set&lt;int&gt; racines;
+    
+    for(int c=0;c&lt;nbNodes;c++) racines.insert(c);
+    
+    for(int c=0;c&lt;nbArcs;c++) {{'{'}}
+        int from, to;
+        cin&gt;&gt;from&gt;&gt;to;
+        from--;to--;
+        racines.erase(to);
+        listeAdjacence[from].push_back(to);
+    {{'}'}}
+    
+    pair&lt;int,int&gt; resultat = make_pair(-1,-1);
+    for(auto serveur: racines) {{'{'}}
+        int taille = nombreDescendants(serveur, listeAdjacence);
+        resultat = max(resultat, make_pair(taille, -serveur));
+    {{'}'}}
+    
+    cout&lt;&lt;-resultat.second+1;
+{{'}'}}
+                </code></pre>
+                </div>
+
+                <br />
+                <h3> Vraie solution (gestion des cycles)</h3>
+                Maintenant si on revient à la vraie version de l'énoncé, le fait qu'un noeud ne pouvait avoir qu'un
+                seul
+                prédecesseur rend l'utilisation du stockage des valeurs inutile:<br />
+                <br />
+                Si on part uniquement des noeuds racines on ne passera JAMAIS plusieurs fois par un même
+                noeud.<br />
+                <br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/MemoUseless.png" />
+                </div>
+                <br />
+
+                Le second point est qu'il peut y avoir des cycles. Or dans le cas d'un cycle parfait (<code>1 => 2 => 3 =>
+                4
+                => 1 </code> par exemple),il n'existe pas de noeud sans prédécesseur, même si on respecte la contraint
+                de
+                graphe
+                dirigé, avec des noeuds n'ayant pas plus d'un prédécesseur.<br />
+                <br />
+                Dans ce cas on a donc aucun parcours réalisé avec l'algorithme plus haut.<br />
+                <br />
+                Pour corriger ça, il suffit de faire une première passe classique (en partant des noeuds racines
+                tant
+                qu'on en a), et pour les cycles de partir de l'identifiant le plus faible de chaque cycle.<br />
+                <br />
+                Vu qu'un noeud ne peut avoir qu'un prédécesseur, on ne peut pas avoir de parties du graphe contenant
+                à
+                la fois au moins un noeud racine et un cycle.<br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/CycleRoot.png" />
+                </div>
+                <br />
+                Pour la gestion du cycle, il suffit de faire un bête parcours pour en connaître la taille. Tous les
+                noeuds de ce cycle ont le même nombre de descendants directs/indirects.<br />
+                <br />
+                Comme on traite les identifiants de manière croissante, pour chaque cycle, le seul noeud qui peut
+                correspondre à la réponse sera le noeud à partir duquel on fait le parcours.<br />
+                <br />
+
+                <h2> Exercice 4 </h2>
+                <br />
+                <h3> Enoncé </h3>
+                <br />
+                J'ai trouvé le quatrième problème plutôt original par rapport à ce que propose habituellement
+                Isograd.
+                Celui-ci a été trouvé "pénible à implémenter" par plusieurs compétiteurs, mais il existait beaucoup
+                d'implémentations différentes, et celle que j'ai choisie n'était pas si laide que ça.<br />
+                <br />
+                En entrée on recevait une liste de chaîne de caractères, qui formaient une grille 2D de pixels avec
+                différentes couleurs (dénotées par un type de caractère différent (<code>'#'</code>,<code> '.'</code>,
+                <code>'!'</code> etc...)).<br />
+                <br />
+                A partir de cette grille, il fallait retrouver toutes les "formes contigües" qui formaient des
+                rectangles de dimension 2x4 ou 4x2, une forme étant constituée de tous les pixels de même couleur
+                connexes.
+                Si par exemple un rectangle 2x4 d'une couleur donnée avait un pixel voisin de la même couleur, ce
+                pixel
+                fait également partie de la forme et invalide la présence du rectangle 2x4.<br />
+                <br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/rectangles.png" />
+
+                </div>
+                <br />
+
+                <h3> Solutions </h3>
+                Si on utilise la méthode d'analyse de complexité comme pour l'exercice précédent, on se rend compte
+                que
+                l'on a bien plus de marge de manoeuvre, vu que <code>N</code> et <code>M &lt;= 100</code>.
+                <code>O(N^2*M^2)</code> par exemple resterait une complexité à priori envisageable, à partir du moment
+                où le code
+                est
+                bien optimisé.<br />
+                <br />
+                Néanmoins, il serait presque plus dur de trouver un algorithme avec une si grosse complexité qu'un
+                algorithme plus efficace.<br />
+                <br />
+                On va ajouter une réflexion à avoir à notre éventail de techniques:
+                <div class="proTip">
+                    <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
+                    <ul>
+                        <li>
+                            Si pleins de solutions semblent vous offrir à vous, toutes de complexités acceptables:
+                        </li>
+                        <ul>
+                            <li>
+                                Choisissez le meilleur compromis entre intuition, facilité et rapidité d'implémentation
+                            </li>
+                        </ul>
+                    </ul>
+                </div>
+                Je vais évoquer 3 types de solutions générales pour ce problème:<br />
+                <br />
+                La première consistait à partir de chaque case de la grille, et, en considérant que cette case est
+                en
+                haut à gauche du rectangle, de vérifier que les autres pixels voisins du rectangles ont une couleur
+                différente, et que les pixels du rectangle ont bien la même couleur que la case de départ.<br />
+                <br />
+                C'est une variante de cette solution que beaucoup ont implémenté. Personnellement, je trouve cette
+                solution assez pénible, et sûrement la raison pour laquelle beaucoup de codeurs ont trouvé
+                l'implémentation chronophage.<br />
+                <br />
+                La complexité est de l'ordre de <code>N*M*Constante</code>, avec la Constante liée au nombre de pixels
+                qui sont
+                vérifiés pour chaque case de départ (normalement de l'ordre de <code>2*(tailleRectangle+tailleContour) =
+                2*(8+12) = 40</code>).<br />
+                <br />
+                C'est la solution la plus naïve, simple intuitivement, qui passe les limites de temps, mais pas la
+                plus
+                simple à coder.<br />
+                <br />
+                Ma solution est, d'avis personnel, le meilleur compromis (mais c'est débattable):
+                <ul>
+                    <li>Relativement intuitive</li>
+                    <li>Relativement simple à coder</li>
+                </ul>
+                De la même manière que la première solution, je parcours la grille séquentiellement, et à chaque
+                case
+                "non vide", je réalise un parcours (floodfill) pour extraire la forme contiguë dans un vector.
+                Les coordonnées stockées sont translatées par rapport à la case de départ (exemple, si on part de
+                <code>(2,2)</code>
+                et qu'on a la forme <code>[(2,2),(2,3),(3,3)]</code> on aura donc
+                <code>[(0,0),(0,1),(1,1)]</code>).<br />
+                <br />
+                Ensuite, je compare cette forme avec le pattern des deux autres rectangles, que j'aurais initialisé
+                avec
+                deux boucles imbriquées.<br />
+                <br />
+                Si les deux formes ont des tailles différentes, on sait déjà qu'il n'y a pas correspondance.
+                Sinon je compare les deux formes pour lesquelles j'aurais au préalable trié les coordonnées. Je
+                n'aurai
+                donc qu'à comparer les coordonnées une par une.<br />
+                <br />
+                La complexité est <code>O(N*M*log(tailleRectangle))</code> (étant donné que je ne visite une case qu'une
+                fois, et
+                que
+                pour chaque forme récupérée de taille 8, je la trie pour la comparer aux patterns). <br />
+                <br />
+                <h3> Implémentation de ma solution </h3>>
+                <br />
+                <p>
+                    <button type="button" class="btn btn-outline-primary" (click)="isCollapsed = !isCollapsed"
+                        [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+                        Afficher / Réduire le code
+                    </button>
+                </p>
+                <div id="collapseExample" [ngbCollapse]="isCollapsed">
+                    <pre class="line-numbers language-cpp"><code >#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include "exercise.hpp"
+
+ContestExerciseImpl::ContestExerciseImpl() : Exercise() {{'{'}}{{'}'}}
+
+void ContestExerciseImpl::main() {{'{'}}
+    int hauteur, largeur;
+    cin&gt;&gt;hauteur&gt;&gt;largeur;
+    vector&lt;string&gt; grille(hauteur);
+    
+    const char VIDE = ' ';
+    
+    for(int c=0;c&lt;hauteur;c++) cin&gt;&gt;grille[c];
+    
+// Pour calculer les coordonnées voisines
+    int dx[4]={{'{'}}0,0,1,-1{{'}'}};
+    int dy[4]={{'{'}}1,-1,0,0{{'}'}};
+    
+    // Nos deux patterns de rectangles (4x2 et 2x4)
+    vector&lt;vector&lt;pair&lt;int,int&gt; &gt; &gt; patterns(2);
+    for(int x=0;x&lt;4;x++) for(int y=0;y&lt;2;y++) patterns[0].push_back(make_pair(x,y));
+    for(int x=0;x&lt;2;x++) for(int y=0;y&lt;4;y++) patterns[1].push_back(make_pair(x,y));
+    
+    sort(patterns[0].begin(),patterns[0].end());
+    sort(patterns[1].begin(),patterns[1].end());
+    
+    
+    vector&lt;pair&lt;int,int&gt; &gt; resultat;
+    
+    for(int x = 0; x &lt; hauteur; x++) {{'{'}}
+        for(int y = 0; y &lt; largeur; y++) {{'{'}}
+            // Si on est pas sur une case vide 
+            if(grille[x][y] != VIDE){{'{'}}
+                
+                vector&lt;pair&lt;int,int&gt; &gt; parcours(1,make_pair(x,y));
+                vector&lt;pair&lt;int,int&gt; &gt; forme(1,make_pair(0,0));
+                
+                // La couleur de notre forme
+                // x,y étant le sommet en haut à gauche de la forme
+                char couleurForme = grille[x][y];
+                grille[x][y] = VIDE;
+                
+                // Algorithme de parcours classique
+                while(parcours.size() != 0) {{'{'}}
+                    int currentX = parcours.back().first;
+                    int currentY = parcours.back().second;
+                    
+                    parcours.pop_back();
+                    
+                    for(int d=0;d&lt;4;d++) {{'{'}}
+                        int newX = dx[d] + currentX;
+                        int newY = dy[d] + currentY;
+                        
+                        // On vérifie qu'on reste dans la grille, et qu'on ne traite que les pixels ayant la bonne couleur
+                        if(newX &gt;= 0 && newY &gt;= 0 && newX &lt; hauteur && newY &lt; largeur && grille[newX][newY] == couleurForme) {{'{'}}
+                            forme.push_back(make_pair(newX - x, newY - y));
+                            parcours.push_back(make_pair(newX, newY));
+                            grille[newX][newY] = VIDE;
+                        {{'}'}}
+                    {{'}'}}
+                {{'}'}}
+                
+                // Si l'on a un nombre de pixels égal au nombre de pixels d'un rectangle 2x4 ou 4x2
+                if(forme.size() == 8){{'{'}}
+                    sort(forme.begin(),forme.end());
+                    
+                    // On compare les coordonnées
+                    for(int p = 0; p &lt; 2; p++) {{'{'}}
+                        bool correspond = true;
+                        for(int i = 0; i &lt; forme.size(); i++) {{'{'}}
+                            if(forme[i].first != patterns[p][i].first || forme[i].second != patterns[p][i].second) {{'{'}}
+                                correspond = false;
+                                break;
+                            {{'}'}}
+                        {{'}'}}
+                        // Si ça match, on ajoute à notre réponse
+                        if(correspond) {{'{'}}
+                            resultat.push_back(make_pair(x,y));
+                            // Si le premier pattern correspond, on peut gagner un peu d'instructions 
+                            // en évitant de comparer avec le second pattern
+                            break; 
+                        {{'}'}}
+                    {{'}'}}
+                {{'}'}}
+            {{'}'}}
+        {{'}'}}
+    {{'}'}}
+
+    // On affiche le nombre de rectangles trouvés
+    cout&lt;&lt;resultat.size()&lt;&lt;endl;
+    for(auto coordonnee: resultat) {{'{'}}
+        // On ajoute 1 vu qu'on faisait du 0-index, mais que la solution attendue est en 1-index
+        cout&lt;&lt;coordonnee.first+1&lt;&lt;" "&lt;&lt;coordonnee.second+1&lt;&lt;"\n";
+    {{'}'}}
+{{'}'}}
+                </code></pre>
+                </div>
+
+                <br />
+                <br />
+                <h3> Solution à base de programmation dynamique et somme de préfixes</h3>
+                Une dernière solution, inspirée de la solution de Tuzepoito (qui malheureusement était fausse durant
+                le
+                concours), était possible.<br />
+                Cette solution exploite une méthode un peu plus avancée, appellée "Programmation dynamique" (je ne
+                détaillerai pas le principe de la méthode dans cet article).<br />
+                <br />
+                Ici l'idée est d'utiliser ce qu'on appelle un tableau à somme de préfixes.<br />
+                Ce genre de tableau stocke tout simplement, pour chaque indice i, la somme des éléments d'un tableau
+                dont l'index est inférieur ou égal à i.<br />
+                <br />
+                Par exemple:<br />
+                <br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/PrefixSum.png" />
+                </div> <br />
+
+                avec <code>[1,2,3,3...]</code> le tableau d'entrée, et <code>[1,3,6,9...]</code> le tableau de somme de
+                préfixes construit.
+                <br /><br />
+                L'intérêt de ce tableau est qu'il se calcule très facilement (une simple passe linéaire), et qu'à
+                partir
+                de celui-ci, on peut calculer la somme de n'importe quel intervalle en temps constant.<br />
+                <br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/Intervalles.png" />
+                </div> <br />
+
+                On peut étendre cette idée à une grille 2D de la façon suivante:<br />
+                <br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/2DGrid.png" />
+                </div> <br />
+                La complexité sera ici <code>O(N*M)</code> pour initialiser le tableau 2D.<br />
+                <br />
+                Si on ajoute une troisième dimension <code>COULEUR</code> à ce tableau 2D, on peut calculer la somme du
+                nombre de
+                pixels d'une certaine couleur pour chaque rectangle de la grille.<br />
+                <br />
+                L'initialisation de la structure se fera en <code>O(N*M*|COULEUR|)</code> (vu qu'on réalisera simplement
+                la même
+                chose que pour la grille 2D, mais pour chaque couleur).<br />
+                Ensuite, il suffit de parcourir la grille, et pour chaque case d'une couleur donnée, vérifier les
+                sommes
+                de 5 rectangles en temps constant, et ce pour les deux types de rectangles possibles, pour
+                déterminer si
+                on est bien en présence d'une forme de type rectangle 2x4 / 4x2.<br />
+                <br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/SchemasPixels.png" />
+                </div>
+                <br />
+
+            </div>
+        </div>
+    </div>
+</section>

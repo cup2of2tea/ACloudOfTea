@@ -1,15 +1,11 @@
 :host ::ng-deep {
-    @media only screen and (min-width: 1400px){
-        .compTableWrapper{
-            display: flex;
-            justify-content: center;
-            margin-bottom:20px;
-            margin-top: 20px;
-        }
-    }
-
-    .compTableWrapper  table {
-        background-color: white;
+    fa-icon {
+        float: left;
+        top: -36px;
+        left: -16px;
+        position: relative;
+        color: #d4d40f;
+        font-size: 47px;
     }
 }
 @media only screen and (min-width: 1400px) {
@@ -29,4 +25,10 @@
     .sommaire {
         display:none;
     }
+}
+
+.proTip{
+    background-color: #f6fbab;
+    border: solid 1px #e6ce57;
+    margin: 30px;
 }

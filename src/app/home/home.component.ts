@@ -18,6 +18,10 @@ export class HomeComponent implements OnInit {
       {
         route: 'articles/ProgComp',
         title: 'Programmation compétitive'
+      },
+      {
+        route: 'articles/IsogradSept',
+        title: 'Concours Isograd Septembre 2020'
       }
     ]
   }
