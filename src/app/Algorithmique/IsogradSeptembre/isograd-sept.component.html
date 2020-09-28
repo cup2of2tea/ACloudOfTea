@@ -88,10 +88,10 @@
                     <li>Renvoyer sur la sortie standard (<code>cout</code> pour C++, <code>printf</code> pour C,
                         <code>print</code> pour Python ...)
                         la
-                        réponse au problème correspondante aux entrées
+                        réponse correspondante aux entrées
                     </li>
                 </ul><br />
-                En exemple de problème, on pourrait avoir par exemple: "Lire 2 entiers et afficher la somme.<br />
+                En exemple de problème, on pourrait avoir par exemple: "Lire 2 entiers et afficher la somme."<br />
                 <br />
                 Une solution en pseudocode donnerait<br />
                 <br />
@@ -189,7 +189,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 <h3>Enoncé:</h3>
 
                 Le second problème était légèrement plus complexe:<br />
-                On recevait encore une fois une liste d'identifiant, mais cette fois-ci, il fallait trouver
+                On recevait encore une fois une liste d'identifiants, mais cette fois-ci, il fallait trouver
                 l'identifiant le plus présent dans la liste (si plusieurs identifiants étaient représentés de manière
                 maximale, n'importe lequel d'entre eux pouvait être renvoyé).<br />
                 Par exemple, pour :
@@ -378,7 +378,7 @@ void ContestExerciseImpl::main() {{'{'}}
                         </li>
                     </ul>
                 </div>
-                Je me limite à un nombre restreint de pistes de réflexions, qui on le verra ensemble, s'appliquent à ce
+                Je me limite à un nombre restreint de pistes de réflexion, qui on le verra ensemble, s'appliquent à ce
                 problème.<br />
                 <br />
                 Pour les contraintes, <code>N</code> et <code>M &lt;= 50 000</code>. On peut donc déjà (même si certains
@@ -401,7 +401,7 @@ void ContestExerciseImpl::main() {{'{'}}
                     </li>
                 </ul>
                 Cette solution, parfaitement valide, nous pose néanmoins un souci en terme de complexité:<br />
-                On va itérer sur chaque noeud, et à partir de chaque noeud on va explorer tous ses descendants.<br />
+                on va itérer sur chaque noeud, et à partir de chaque noeud on va explorer tous ses descendants.<br />
                 On est donc en <code>O(N^2)</code>.<br />
                 <br />
                 Maintenant appliquons la méthode décrite plus haute:<br />
@@ -504,7 +504,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 seul
                 prédecesseur rend l'utilisation du stockage des valeurs inutile:<br />
                 <br />
-                Si on part uniquement des noeuds racines on ne passera JAMAIS plusieurs fois par un même
+                si on part uniquement des noeuds racines on ne passera JAMAIS plusieurs fois par un même
                 noeud.<br />
                 <br />
                 <div style="text-align:center;">
@@ -549,7 +549,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 d'implémentations différentes, et celle que j'ai choisie n'était pas si laide que ça.<br />
                 <br />
                 En entrée on recevait une liste de chaîne de caractères, qui formaient une grille 2D de pixels avec
-                différentes couleurs (dénotées par un type de caractère différent (<code>'#'</code>,<code> '.'</code>,
+                différentes couleurs (dénotés par un type de caractère différent (<code>'#'</code>,<code> '.'</code>,
                 <code>'!'</code> etc...)).<br />
                 <br />
                 A partir de cette grille, il fallait retrouver toutes les "formes continues" qui formaient des
