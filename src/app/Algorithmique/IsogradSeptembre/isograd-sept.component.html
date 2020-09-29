@@ -247,7 +247,7 @@ void ContestExerciseImpl::main() {{'{'}}
 nombreIdentifiants = int(input())
 listeIdentifiants = [input() for idx in range(nombreIdentifiants)]
 occurences = Counter(listeIdentifiants)
-print(occurences.most_common(1)[0][0]) 
+print(occurences.most_common(1)[0][0])
 # most_common(N) retourne une liste de N tuples (clé,valeur) des éléments les plus présents
 # on prend donc le premier tuple ([0]) de ce tableau ainsi que la clé ([0]) de ce tuple
 </code></pre>
@@ -265,7 +265,7 @@ ContestExerciseImpl::ContestExerciseImpl() : Exercise() {{'{'}}{{'}'}}<br/>
 void ContestExerciseImpl::main() {{'{'}}
     int nbIdentifiants;
     cin&gt;&gt;nbIdentifiants;
-    
+
     map&lt;string,int&gt; occurences;
     pair&lt;int,string&gt; res = make_pair(0,"");
     for(int idx=0;idx&lt;nbIdentifiants;idx++) {{'{'}}
@@ -473,12 +473,12 @@ int nombreDescendants(int serveur, vector&lt;vector&lt;int&gt; &gt; &listeAdjace
 void ContestExerciseImpl::main() {{'{'}}
     int nbNodes, nbArcs;
     cin&gt;&gt;nbNodes&gt;&gt;nbArcs;
-    
+
     vector&lt;vector&lt;int&gt; &gt; listeAdjacence(nbNodes);
     set&lt;int&gt; racines;
-    
+
     for(int c=0;c&lt;nbNodes;c++) racines.insert(c);
-    
+
     for(int c=0;c&lt;nbArcs;c++) {{'{'}}
         int from, to;
         cin&gt;&gt;from&gt;&gt;to;
@@ -486,13 +486,13 @@ void ContestExerciseImpl::main() {{'{'}}
         racines.erase(to);
         listeAdjacence[from].push_back(to);
     {{'}'}}
-    
+
     pair&lt;int,int&gt; resultat = make_pair(-1,-1);
     for(auto serveur: racines) {{'{'}}
         int taille = nombreDescendants(serveur, listeAdjacence);
         resultat = max(resultat, make_pair(taille, -serveur));
     {{'}'}}
-    
+
     cout&lt;&lt;-resultat.second+1;
 {{'}'}}
                 </code></pre>
@@ -658,50 +658,50 @@ void ContestExerciseImpl::main() {{'{'}}
     int hauteur, largeur;
     cin&gt;&gt;hauteur&gt;&gt;largeur;
     vector&lt;string&gt; grille(hauteur);
-    
+
     const char VIDE = ' ';
-    
+
     for(int c=0;c&lt;hauteur;c++) cin&gt;&gt;grille[c];
-    
+
 // Pour calculer les coordonnées voisines
     int dx[4]={{'{'}}0,0,1,-1{{'}'}};
     int dy[4]={{'{'}}1,-1,0,0{{'}'}};
-    
+
     // Nos deux patterns de rectangles (4x2 et 2x4)
     vector&lt;vector&lt;pair&lt;int,int&gt; &gt; &gt; patterns(2);
     for(int x=0;x&lt;4;x++) for(int y=0;y&lt;2;y++) patterns[0].push_back(make_pair(x,y));
     for(int x=0;x&lt;2;x++) for(int y=0;y&lt;4;y++) patterns[1].push_back(make_pair(x,y));
-    
+
     sort(patterns[0].begin(),patterns[0].end());
     sort(patterns[1].begin(),patterns[1].end());
-    
-    
+
+
     vector&lt;pair&lt;int,int&gt; &gt; resultat;
-    
+
     for(int x = 0; x &lt; hauteur; x++) {{'{'}}
         for(int y = 0; y &lt; largeur; y++) {{'{'}}
-            // Si on est pas sur une case vide 
+            // Si on est pas sur une case vide
             if(grille[x][y] != VIDE){{'{'}}
-                
+
                 vector&lt;pair&lt;int,int&gt; &gt; parcours(1,make_pair(x,y));
                 vector&lt;pair&lt;int,int&gt; &gt; forme(1,make_pair(0,0));
-                
+
                 // La couleur de notre forme
                 // x,y étant le sommet en haut à gauche de la forme
                 char couleurForme = grille[x][y];
                 grille[x][y] = VIDE;
-                
+
                 // Algorithme de parcours classique
                 while(parcours.size() != 0) {{'{'}}
                     int currentX = parcours.back().first;
                     int currentY = parcours.back().second;
-                    
+
                     parcours.pop_back();
-                    
+
                     for(int d=0;d&lt;4;d++) {{'{'}}
                         int newX = dx[d] + currentX;
                         int newY = dy[d] + currentY;
-                        
+
                         // On vérifie qu'on reste dans la grille, et qu'on ne traite que les pixels ayant la bonne couleur
                         if(newX &gt;= 0 && newY &gt;= 0 && newX &lt; hauteur && newY &lt; largeur && grille[newX][newY] == couleurForme) {{'{'}}
                             forme.push_back(make_pair(newX - x, newY - y));
@@ -710,11 +710,11 @@ void ContestExerciseImpl::main() {{'{'}}
                         {{'}'}}
                     {{'}'}}
                 {{'}'}}
-                
+
                 // Si l'on a un nombre de pixels égal au nombre de pixels d'un rectangle 2x4 ou 4x2
                 if(forme.size() == 8){{'{'}}
                     sort(forme.begin(),forme.end());
-                    
+
                     // On compare les coordonnées
                     for(int p = 0; p &lt; 2; p++) {{'{'}}
                         bool correspond = true;
@@ -727,9 +727,9 @@ void ContestExerciseImpl::main() {{'{'}}
                         // Si ça match, on ajoute à notre réponse
                         if(correspond) {{'{'}}
                             resultat.push_back(make_pair(x,y));
-                            // Si le premier pattern correspond, on peut gagner un peu d'instructions 
+                            // Si le premier pattern correspond, on peut gagner un peu d'instructions
                             // en évitant de comparer avec le second pattern
-                            break; 
+                            break;
                         {{'}'}}
                     {{'}'}}
                 {{'}'}}
@@ -801,6 +801,138 @@ void ContestExerciseImpl::main() {{'{'}}
                     <img style="width:500px" src="assets/img/SchemasPixels.png" />
                 </div>
                 <br />
+
+
+                <h2> Exercice 5 </h2>
+
+                <h3> Enoncé </h3>
+
+                Le dernier problème n'était pas trivial, mais était relativement classique pour les habitués de ce genre de concours.
+
+                Nous avions en entrées:
+
+                <ul>
+                  <li> Un tableau de 4 valeurs entières (correspondant aux valeurs initiales des 4 registres) </li>
+                  <li> Un tableau de 4 valeurs entières (correspondant aux valeurs cibles des 4 registres)</li>
+                  <li> Une liste d'instructions de 3 types différents:
+                    <ul>
+                      <li> ADD A B C, qui avait pour effet d'additionner les registres A et B, en mettant le résultat dans le registre C </li>
+                      <li> MOV A B, qui affectait la valeur du registre B au registre A, puis affectait 0 au registre A </li>
+                      <li> CPY A B, même principe que pour le MOV, mais la valeur du registre A n'est pas modifiée </li>
+                    </ul>
+
+                    A noter qu'un registre pouvait être présent plusieurs fois pour une instruction (par exemple ADD A A B => registres[A] = registres[A] + registres[B])
+                  </li>
+                </ul>
+
+                L'objectif était de trouver un ensemble d'instructions à supprimer, de telle sorte que si l'on exécute le nouveau programme créé de manière séquentielle en
+                respectant l'ordre donné par les entrées et en partant des registres initiaux, on obtienne en fin d'exécution les registres cibles.
+
+                Par exemple, si l'on a l'entrée
+
+                <pre class="line-numbers language-python"><code >1 2 3 4
+1 2 7 7
+4
+ADD A B C
+ADD C D C
+MOV C D
+CPY C D</code></pre>
+
+                si l'on supprime la première et troisième instruction, on obtient
+
+                <pre class="line-numbers language-python"><code >ADD C D C
+CPY C D</code></pre>
+
+                ce qui donne comme exécution
+
+                <pre class="line-numbers language-python"><code >1 2 3 4 # etat initial
+1 2 7 4 # ADD C D C
+1 2 7 7 # CPY C D</code></pre>
+
+                qui est donc une solution au problème.
+
+<br/><br/>
+                <h3> Solution </h3>
+<br/>
+                Quand je suis arrivé à ce problème, j'avais été devancé pendant tout le long du concours par au moins une personne. En arrivant à ce dernier problème, j'étais deuxième,
+                avec 90 secondes de retard (de souvenir).
+<br/>
+                A mes yeux, mon seul espoir de pouvoir dépasser le coquin premier, c'était d'avoir un dernier problème plutôt compliqué, et d'avoir très rapidement une bonne intuition que l'autre
+                n'aurait pas eu (ou pas immédiatement).
+
+                Malheureusement, en lisant l'énoncé, je compris que l'on n'était pas dans cette situation.<br/>
+
+                Nous allons comprendre ensemble pourquoi.
+<br/><br/>
+                Ici encore, nous allons appliquer à nouveau le premier réflexe à avoir dans la majorité des cas:
+                <ul>
+                  <li> Quelles sont les contraintes? </li>
+                  <li> Qu'est ce que cela nous permet de faire? </li>
+                </ul>
+
+                Ici, aucune contrainte sur les valeurs des registres, à part qu'elles sont entières. On va supposer que ces valeurs peuvent être stockées dans des int.
+<br/>
+                Par contre, on a une contrainte très restrictive : Il y <b>au maximum 20 instructions</b> dans le programme donné en entrée.
+<br/>
+                Voyons voir si on peut l'utiliser à notre avantage...
+<br/><br/>
+                Lorsque l'on teste toutes les possibilités de programme, on peut représenter cet espace d'exploration sous la forme d'un arbre:
+                Le noeud initial correspond à l'état dans lequel on est avant exécution du programme, et les feuilles après l'exécution d'une version de notre programme.
+<br/>
+                Si pour chaque noeud (feuilles exclues) à une profondeur d, on associe deux noeuds enfants Gauche et Droite (je ne vous conseille pas de choisir ces prénoms pour votre descendance,
+                cela pourrait créer des malentendus lors de débats politiques), on pourrait associer à l'arc qui va vers Gauche le fait de ne <b> PAS </b> exécuter l'instruction d'indice <code>d</code>,
+                et à l'arc qui va vers Droite le fait d'exécuter l'instruction d'indice <code>d</code>.
+
+
+                Etant donné que pour chaque noeud on a à chaque fois 2 possibilités, le nombre de noeuds à chaque profondeur est égal à <code> 2 ^ d </code>.
+                On a donc <code> 2 ^ N </code> états finaux possibles, et <code> 2 ^ N + 2 ^ (N - 1) .... + 2 ^ 0 </code> noeuds au total dans notre graphe, soit <code> 2 ^ (N+1) - 1 </code>.
+
+                Or, <code> 2^(21) - 1 ~=  2* 10 ^ 6 </code>. On a donc la possibilité de faire ce qu'on appelle un <b>bruteforce</b>, c'est à dire essayer toutes les possibilités en
+                parcourant cet arbre, méthode très simple à implémenter, et qui donc selon moi allait être codée très rapidement par la personne qui me devançait.
+
+                Personnellement j'ai utilisé une méthode assez proche:
+                Plutôt que d'avoir un arbre à parcourir, on peut modéliser les différentes possibilités avec des tableaux de booléens.
+                Par exemple, pour un programme avec 3 instructions,
+                <pre class="line-numbers language-python"><code >[true, true, true] </code></pre>
+                signifierait que l'on garde toutes les instructions, et
+                <pre class="line-numbers language-python"><code >[false, false, false] </code></pre>
+                serait le cas contraire, où l'on ne prendrait aucune instruction.
+
+                Si l'on remplace "true" par 1, et "false" par 0, on peut transformer ces tableaux en masques binaires:
+                <pre class="line-numbers language-python"><code >(000) en base 2 = (0) en base 10 </code></pre>
+                <pre class="line-numbers language-python"><code >(111) en base 2 = (7) en base 10 </code></pre>
+
+                Essayer toutes les possibilités revient donc à choisir tous les masques binaires entre (0....0) et (1....1) (soit entre 0 et 2^(N)-1).
+                Puis, pour chacune des possibilité, simuler l'exécution du programme, et vérifier à la fin de l'exécution si oui ou non, on obtient les registres cibles.
+
+                Les avantages:
+                <ul>
+                  <li> On évite les appels récursifs, ces derniers étant coûteux avec l'utilisation de la stack (et limités par défaut dans le cas de Python) </li>
+                  <li> C'est... plus rapide à coder? Débattez-en dans les commentaires </li>
+                </ul>
+
+                Les inconvénients:
+                <ul>
+                  <li> Moins intuitif (l'idée d'arbre est une représentation avec laquelle on a l'habitude de jongler, par exemple pour les jeux (si je sloubi de 1, il a 2 possibilités
+                    de croc sloubi ou sloubi kamoulox, mais si j'inverse le tour, et que je casse le debreak des 3, il est forcé à caqueter, et j'le baise au tour d'après))
+                  </li>
+                  <li>
+                      Quasi négligeable, et le récursif pénalise bien plus: La complexité est un peu moins bonne (on perd le backtracking): on passe de ~= 2^(N+1) opérations à (2^N)*(N),
+                      vu qu'on va itérer de 0 à N -1 pour vérifier si chaque instruction fait partie du masque binaire.
+                  </li>
+                </ul>
+
+                <h3> Implémentation </h3>
+
+
+                <h3> La solution du second (déso) </h3>
+
+                Alors avec tout ça, par quel miracle ais-je terminé premier?
+                Malheureusement, Nagrarok qui avait été plus rapide jusqu'à ce dernier exercice, a fait une petite erreur d'étourderie lors de l'évaluation de la complexité.
+
+                (2^N)*(N) passait largement, mais avec un peu de précipitations, le second avait pensé que ce n'était pas le cas.
+
+                Mais ça lui a permis de développer une solution intéressante, et d'étoffer cet article en évoquant sa méthode.
 
             </div>
         </div>
