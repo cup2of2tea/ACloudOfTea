@@ -2,26 +2,94 @@
     <div class="sommaire">
         <ul>
             <li>
-                <a (click)="goto(' #principeAlgo')">Introduction</a>
+                <a (click)="goto(' #introduction')">Introduction</a>
             </li>
             <li>
-                <a (click)="goto(' #principeOptimisation')"> Le concours </a>
+                <a (click)="goto(' #principe')">Principe du concours</a>
             </li>
             <li>
-                <a (click)="goto(' #principeBotProgramming')"> Exercice 1 </a>
+                <a (click)="goto(' #exo1')"> Problème 1 </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #exo1Statement')"> Enoncé </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo1Solution')"> Solution </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo1Impl')"> Implémentation </a>
+                    </li>
+                </ul>
             </li>
             <li>
-                <a (click)="goto(' #principeBotProgramming')"> Exercice 2 </a>
+                <a (click)="goto(' #exo2')"> Problème 2 </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #exo2Statement')"> Enoncé </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo2Solution')"> Solution </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo2Impl')"> Implémentation </a>
+                    </li>
+                </ul>
             </li>
             <li>
-                <a (click)="goto(' #principeBotProgramming')"> Exercice 3 </a>
+                <a (click)="goto(' #exo3')"> Problème 3 </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #exo3Statement')"> Enoncé </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo3SolutionNaive')"> Solution concours </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo3Impl')"> Implémentation </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo3VraieSolution')"> Solution complète </a>
+                    </li>
+                </ul>
             </li>
             <li>
-                <a (click)="goto(' #principeBotProgramming')"> Exercice 4 </a>
+                <a (click)="goto(' #exo4')"> Problème 4 </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #exo4Statement')"> Enoncé </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo4Solution')"> Solution </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo4Impl')"> Implémentation </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo4Dyn')"> Solution dynamique </a>
+                    </li>
+                </ul>
             </li>
             <li>
-                <a (click)="goto(' #principeBotProgramming')"> Exercice 5 </a>
+                <a (click)="goto(' #exo5')"> Problème 5 </a>
+                <ul>
+                    <li>
+                        <a (click)="goto(' #exo5Statement')"> Enoncé </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo5Solution')"> Solution </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo5Impl')"> Implémentation </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo5SolutionMemo')"> Solution avec mémo </a>
+                    </li>
+                    <li>
+                        <a (click)="goto(' #exo5ImplMemo')"> Implémentation avec mémo </a>
+                    </li>
+                </ul>
             </li>
+
         </ul>
     </div>
     <div class="wrapperArticle">
@@ -30,7 +98,7 @@
                 Solutions et retour sur le concours Isograd (septembre 2020)
             </h1>
             <div class="blockArticle">
-                <h3>Hello tout le monde!</h3>
+                <h3 id="introduction">Hello tout le monde!</h3>
             </div>
             <div>
 
@@ -54,7 +122,7 @@
                 thème.<br />
                 <br />
 
-                <h2>Le concours</h2>
+                <h2 id="principe">Le concours</h2>
                 Le principe du concours était le suivant:
                 <ul>
                     <li>
@@ -103,9 +171,9 @@ afficherSurSortieStandard(a+b)
                 Bien sûr, cet exemple est très simple, et les problèmes proposés durant le concours sont d'un tout
                 autre
                 niveau.<br /><br />
-                <h2>Problème 1:</h2>
+                <h2 id="exo1">Problème 1:</h2>
                 <br />
-                <h3> Enoncé </h3>
+                <h3 id="exo1Statement"> Enoncé </h3>
                 Pour le problème 1, on recevait sur l'entrée standard une liste d'identifiants de badges de sécurité.
                 Ces identifiants étaient des chaînes de caractères de 8 chiffres ("00000000", "12345678" par
                 exemple...), et l'objectif était de trouver le seul identifiant qui ne se terminait pas par les
@@ -124,7 +192,7 @@ afficherSurSortieStandard(a+b)
                 relativement accessible même aux plus débutants.<br />
                 <br />
 
-                <h3> Solutions </h3>
+                <h3 id="exo1Solution"> Solutions </h3>
 
                 Deux types de solutions principales étaient possibles:
                 <ul>
@@ -144,7 +212,7 @@ afficherSurSortieStandard(a+b)
                 suffixe
                 depuis un indice négatif).<br />
                 <br />
-                <h3>Implémentation</h3>
+                <h3 id="exo1Impl">Implémentation</h3>
 
                 <ul ngbNav #nav="ngbNav" class="nav-tabs" (navChange)="onNavChange($event)">
                     <li ngbNavItem>
@@ -180,13 +248,18 @@ void ContestExerciseImpl::main() {{'{'}}
 </code></pre>
                         </ng-template>
                     </li>
+                    <li ngbNavItem>
+                        <a ngbNavLink>Cacher</a>
+                        <ng-template ngbNavContent>
+                        </ng-template>
+                    </li>
                 </ul>
                 <div [ngbNavOutlet]="nav"></div>
                 <br />
 
-                <h2>Problème 2:</h2>
+                <h2 id="exo2">Problème 2:</h2>
                 <br />
-                <h3>Enoncé:</h3>
+                <h3 id="exo2Statement">Enoncé:</h3>
 
                 Le second problème était légèrement plus complexe:<br />
                 On recevait encore une fois une liste d'identifiants, mais cette fois-ci, il fallait trouver
@@ -212,7 +285,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 <pre class="line-numbers language-python"><code >111</code></pre>
                 <br />
 
-                <h3>Solutions</h3>
+                <h3 id="exo2Solution">Solutions</h3>
                 L'énoncé ne contenait aucune contrainte sur la taille de la liste. Des immondices auraient donc
                 peut-être pu passer les tests avec une complexité de <code>O(N^2)</code>.<br />
                 <br />
@@ -236,7 +309,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 En Python, une structure permet de faire ça de manière encore plus simplifiée. Il s'agit de la structure
                 <code>Counter</code> qui est spécialisé dans ce rôle de compter le nombre d'occurences de différentes
                 valeurs.<br />
-                <h3>Implémentation</h3>
+                <h3 id="exo2Impl">Implémentation</h3>
 
                 <ul ngbNav #nav2="ngbNav" class="nav-tabs" (navChange)="onNavChange($event)">
                     <li ngbNavItem>
@@ -278,15 +351,20 @@ void ContestExerciseImpl::main() {{'{'}}
 {{'}'}}</code></pre>
                         </ng-template>
                     </li>
+                    <li ngbNavItem>
+                        <a ngbNavLink>Cacher</a>
+                        <ng-template ngbNavContent>
+                        </ng-template>
+                    </li>
                 </ul>
                 <div [ngbNavOutlet]="nav2"></div>
 
 
 
 
-                <h2> Exercice 3</h2>
+                <h2 id="exo3"> Exercice 3</h2>
                 <br />
-                <h3> Enoncé</h3>
+                <h3 id="exo3Statement"> Enoncé</h3>
                 <br />
                 Le troisième problème présentait un <b>ENORME</b> pic de difficulté par rapport aux deux premiers.
                 Pour un grand nombre de compétiteurs (j'en fais partie), ce problème fut le plus compliqué des 5.<br />
@@ -316,7 +394,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 <br /><br />
 
 
-                <h3> Une première solution, pour un graphe sans cycle</h3>
+                <h3 id="exo3SolutionNaive"> Une première solution, pour un graphe sans cycle</h3>
                 Dans un premier temps, on va partir de mon interprétation erronée durant le concours.
                 Mais on verra que ma solution peut être adaptée très facilement pour remplir les conditions de
                 l'énoncé.<br />
@@ -435,7 +513,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 descendants
                 accessibles.<br />
                 <br />
-                L'implémentation était la suivante:<br />
+                <h3 id="exo3Impl">Implémentation</h3>
                 <br />
                 <p>
                     <button type="button" class="btn btn-outline-primary" (click)="isCollapsed2 = !isCollapsed2"
@@ -495,11 +573,11 @@ void ContestExerciseImpl::main() {{'{'}}
 
     cout&lt;&lt;-resultat.second+1;
 {{'}'}}
-                </code></pre>
+               </code></pre>
                 </div>
 
                 <br />
-                <h3> Vraie solution (gestion des cycles)</h3>
+                <h3 id="exo3VraieSolution"> Vraie solution (gestion des cycles)</h3>
                 Maintenant si on revient à la vraie version de l'énoncé, le fait qu'un noeud ne pouvait avoir qu'un
                 seul
                 prédecesseur rend l'utilisation du stockage des valeurs inutile:<br />
@@ -514,7 +592,7 @@ void ContestExerciseImpl::main() {{'{'}}
 
                 Le second point est qu'il peut y avoir des cycles. Or dans le cas d'un cycle parfait (<code>1 => 2 => 3 =>
                 4
-                => 1 </code> par exemple),il n'existe pas de noeud sans prédécesseur, même si on respecte la contrainte
+                => 1</code> par exemple),il n'existe pas de noeud sans prédécesseur, même si on respecte la contrainte
                 de
                 graphe
                 dirigé, avec des noeuds n'ayant pas plus d'un prédécesseur.<br />
@@ -539,9 +617,9 @@ void ContestExerciseImpl::main() {{'{'}}
                 correspondre à la réponse sera le noeud à partir duquel on fait le parcours.<br />
                 <br />
 
-                <h2> Exercice 4 </h2>
+                <h2 id="exo4"> Exercice 4 </h2>
                 <br />
-                <h3> Enoncé </h3>
+                <h3 id="exo4Statement"> Enoncé </h3>
                 <br />
                 J'ai trouvé le quatrième problème plutôt original par rapport à ce que propose habituellement
                 Isograd.
@@ -565,7 +643,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 </div>
                 <br />
 
-                <h3> Solutions </h3>
+                <h3 id="exo4Solution"> Solutions </h3>
                 Si on utilise la méthode d'analyse de complexité comme pour l'exercice précédent, on se rend compte
                 que
                 l'on a bien plus de marge de manoeuvre, vu que <code>N</code> et <code>M &lt;= 100</code>.
@@ -638,7 +716,7 @@ void ContestExerciseImpl::main() {{'{'}}
                 que
                 pour chaque forme récupérée de taille 8, je la trie pour la comparer aux patterns). <br />
                 <br />
-                <h3> Implémentation de ma solution </h3>>
+                <h3 id="exo4Impl"> Implémentation</h3>
                 <br />
                 <p>
                     <button type="button" class="btn btn-outline-primary" (click)="isCollapsed = !isCollapsed"
@@ -744,12 +822,12 @@ void ContestExerciseImpl::main() {{'{'}}
         cout&lt;&lt;coordonnee.first+1&lt;&lt;" "&lt;&lt;coordonnee.second+1&lt;&lt;"\n";
     {{'}'}}
 {{'}'}}
-                </code></pre>
+               </code></pre>
                 </div>
 
                 <br />
                 <br />
-                <h3> Solution à base de programmation dynamique et somme de préfixes</h3>
+                <h3 id="exo4Dyn"> Solution à base de programmation dynamique et somme de préfixes</h3>
                 Une dernière solution, inspirée de la solution de Tuzepoito (qui malheureusement était fausse durant
                 le
                 concours), était possible.<br />
@@ -803,31 +881,44 @@ void ContestExerciseImpl::main() {{'{'}}
                 <br />
 
 
-                <h2> Exercice 5 </h2>
+                <h2 id="exo5"> Exercice 5 </h2>
 
-                <h3> Enoncé </h3>
+                <h3 id="exo5Statement"> Enoncé </h3>
 
-                Le dernier problème n'était pas trivial, mais était relativement classique pour les habitués de ce genre de concours.
+                Le dernier problème n'était pas trivial, mais était relativement classique pour les habitués de ce genre
+                de concours.<br />
 
                 Nous avions en entrées:
 
                 <ul>
-                  <li> Un tableau de 4 valeurs entières (correspondant aux valeurs initiales des 4 registres) </li>
-                  <li> Un tableau de 4 valeurs entières (correspondant aux valeurs cibles des 4 registres)</li>
-                  <li> Une liste d'instructions de 3 types différents:
-                    <ul>
-                      <li> ADD A B C, qui avait pour effet d'additionner les registres A et B, en mettant le résultat dans le registre C </li>
-                      <li> MOV A B, qui affectait la valeur du registre B au registre A, puis affectait 0 au registre A </li>
-                      <li> CPY A B, même principe que pour le MOV, mais la valeur du registre A n'est pas modifiée </li>
-                    </ul>
+                    <li> Un tableau de 4 valeurs entières (correspondant aux <b>valeurs initiales des 4 registres</b>)
+                    </li>
+                    <li> Un tableau de 4 valeurs entières (correspondant aux <b>valeurs cibles des 4 registres</b>)</li>
+                    <li> Une <b>liste d'instructions</b> de 3 types différents:
+                        <ul>
+                            <li> <code>ADD A B C</code>, qui avait pour effet d'additionner les registres <code>A</code>
+                                et <code>B</code>, en mettant le
+                                résultat dans le registre <code>C</code> </li>
+                            <li> <code>MOV A B</code>, qui affectait la valeur du registre <code>B</code> au registre
+                                <code>A</code>, puis affectait 0 au
+                                registre <code>A</code> </li>
+                            <li> <code>CPY A B</code>, même principe que pour le <code>MOV</code>, mais la valeur du
+                                registre <code>A</code> n'est pas modifiée
+                            </li>
+                        </ul>
 
-                    A noter qu'un registre pouvait être présent plusieurs fois pour une instruction (par exemple ADD A A B => registres[A] = registres[A] + registres[B])
-                  </li>
+                        A noter qu'un registre pouvait être présent plusieurs fois pour une instruction (par exemple
+                        <code>ADD
+                        A A B => registres[A] = registres[A] + registres[B]</code>)
+                    </li>
                 </ul>
 
-                L'objectif était de trouver un ensemble d'instructions à supprimer, de telle sorte que si l'on exécute le nouveau programme créé de manière séquentielle en
-                respectant l'ordre donné par les entrées et en partant des registres initiaux, on obtienne en fin d'exécution les registres cibles.
-
+                L'objectif était de <b>trouver un ensemble d'instructions à supprimer</b>, de telle sorte que si l'on
+                exécute
+                le nouveau programme créé de manière séquentielle en
+                respectant l'ordre donné par les entrées et en partant des registres initiaux, <b>on obtienne en fin
+                    d'exécution les registres cibles</b>.
+                <br /><br />
                 Par exemple, si l'on a l'entrée
 
                 <pre class="line-numbers language-python"><code >1 2 3 4
@@ -851,89 +942,420 @@ CPY C D</code></pre>
 
                 qui est donc une solution au problème.
 
-<br/><br/>
-                <h3> Solution </h3>
-<br/>
-                Quand je suis arrivé à ce problème, j'avais été devancé pendant tout le long du concours par au moins une personne. En arrivant à ce dernier problème, j'étais deuxième,
+                <br /><br />
+                <h3 id="exo5Solution"> Solution </h3>
+                <br />
+                Quand je suis arrivé à ce problème, j'avais été devancé pendant tout le long du concours par au moins
+                une personne. En arrivant à ce dernier problème, j'étais deuxième,
                 avec 90 secondes de retard (de souvenir).
-<br/>
-                A mes yeux, mon seul espoir de pouvoir dépasser le coquin premier, c'était d'avoir un dernier problème plutôt compliqué, et d'avoir très rapidement une bonne intuition que l'autre
+                <br />
+                A mes yeux, mon seul espoir de pouvoir dépasser le coquin premier, c'était d'avoir un dernier problème
+                plutôt compliqué, et d'avoir très rapidement une bonne intuition que l'autre
                 n'aurait pas eu (ou pas immédiatement).
 
-                Malheureusement, en lisant l'énoncé, je compris que l'on n'était pas dans cette situation.<br/>
+                Malheureusement, en lisant l'énoncé, je compris que l'on n'était pas dans cette situation.<br />
 
                 Nous allons comprendre ensemble pourquoi.
-<br/><br/>
+                <br /><br />
                 Ici encore, nous allons appliquer à nouveau le premier réflexe à avoir dans la majorité des cas:
                 <ul>
-                  <li> Quelles sont les contraintes? </li>
-                  <li> Qu'est ce que cela nous permet de faire? </li>
+                    <li> Quelles sont les contraintes? </li>
+                    <li> Qu'est ce que cela nous permet de faire? </li>
                 </ul>
 
-                Ici, aucune contrainte sur les valeurs des registres, à part qu'elles sont entières. On va supposer que ces valeurs peuvent être stockées dans des int.
-<br/>
-                Par contre, on a une contrainte très restrictive : Il y <b>au maximum 20 instructions</b> dans le programme donné en entrée.
-<br/>
+                Ici, aucune contrainte sur les valeurs des registres, à part qu'elles sont entières. On va supposer que
+                ces valeurs peuvent être stockées dans des int.
+                <br />
+                Par contre, on a une contrainte très restrictive : Il y <b>au maximum 20 instructions</b> dans le
+                programme donné en entrée.
+                <br />
                 Voyons voir si on peut l'utiliser à notre avantage...
-<br/><br/>
-                Lorsque l'on teste toutes les possibilités de programme, on peut représenter cet espace d'exploration sous la forme d'un arbre:
-                Le noeud initial correspond à l'état dans lequel on est avant exécution du programme, et les feuilles après l'exécution d'une version de notre programme.
-<br/>
-                Si pour chaque noeud (feuilles exclues) à une profondeur d, on associe deux noeuds enfants Gauche et Droite (je ne vous conseille pas de choisir ces prénoms pour votre descendance,
-                cela pourrait créer des malentendus lors de débats politiques), on pourrait associer à l'arc qui va vers Gauche le fait de ne <b> PAS </b> exécuter l'instruction d'indice <code>d</code>,
-                et à l'arc qui va vers Droite le fait d'exécuter l'instruction d'indice <code>d</code>.
+                <br /><br />
+                Lorsque l'on teste toutes les possibilités de programme, on peut représenter cet espace d'exploration
+                sous la forme d'un arbre:<br />
+                Le noeud initial correspond à l'état des registres avant exécution du programme, et les feuilles l'état
+                des registres
+                après l'exécution d'une version de notre programme.
+                <br /><br />
+                Si pour chaque noeud (sauf feuilles) à une <b>profondeur d</b>, on associe <b>deux enfants
+                    Gauche et
+                    Droite</b> (je ne vous conseille pas de choisir ces prénoms pour votre propre descendance,
+                cela pourrait créer des malentendus lors de débats politiques), on pourrait associer à l'arc qui va vers
+                <b>Gauche</b> le fait de ne <b> PAS </b> exécuter l'instruction d'indice <code>d</code>,
+                et à l'arc qui va vers <b>Droite</b> le fait d'exécuter l'instruction d'indice <code>d</code>.
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/Dfs.png" />
+                </div> <br />
+                Etant donné que pour chaque noeud on a à chaque fois 2 possibilités, le nombre de noeuds à chaque
+                profondeur est égal à <code> 2 ^ d</code>.
+                On a donc <code> 2 ^ N</code> états finaux possibles, et
+                <code>2 ^ N + 2 ^ (N - 1) .... + 2 ^ 0</code> noeuds au total dans notre graphe, soit
+                <code> 2 ^ (N+1) - 1</code>.<br />
 
-
-                Etant donné que pour chaque noeud on a à chaque fois 2 possibilités, le nombre de noeuds à chaque profondeur est égal à <code> 2 ^ d </code>.
-                On a donc <code> 2 ^ N </code> états finaux possibles, et <code> 2 ^ N + 2 ^ (N - 1) .... + 2 ^ 0 </code> noeuds au total dans notre graphe, soit <code> 2 ^ (N+1) - 1 </code>.
-
-                Or, <code> 2^(21) - 1 ~=  2* 10 ^ 6 </code>. On a donc la possibilité de faire ce qu'on appelle un <b>bruteforce</b>, c'est à dire essayer toutes les possibilités en
-                parcourant cet arbre, méthode très simple à implémenter, et qui donc selon moi allait être codée très rapidement par la personne qui me devançait.
-
-                Personnellement j'ai utilisé une méthode assez proche:
-                Plutôt que d'avoir un arbre à parcourir, on peut modéliser les différentes possibilités avec des tableaux de booléens.
+                Or, <code> 2^(21) - 1 ~=  2* 10 ^ 6</code>.<br /> On a donc la possibilité de faire ce qu'on appelle un
+                <b>bruteforce</b>, c'est à dire essayer toutes les possibilités en
+                parcourant cet arbre, méthode très simple à implémenter, et qui donc selon moi allait être codée
+                très
+                rapidement par la personne qui me devançait.
+                <br /><br />
+                Personnellement j'ai utilisé une méthode assez proche:<br />
+                Plutôt que d'avoir un arbre à parcourir, on peut modéliser les différentes possibilités avec des
+                tableaux de booléens.<br /><br />
                 Par exemple, pour un programme avec 3 instructions,
-                <pre class="line-numbers language-python"><code >[true, true, true] </code></pre>
+                <pre class="line-numbers language-python"><code >[true, true, true]</code></pre>
                 signifierait que l'on garde toutes les instructions, et
-                <pre class="line-numbers language-python"><code >[false, false, false] </code></pre>
+                <pre class="line-numbers language-python"><code >[false, false, false]</code></pre>
                 serait le cas contraire, où l'on ne prendrait aucune instruction.
-
-                Si l'on remplace "true" par 1, et "false" par 0, on peut transformer ces tableaux en masques binaires:
-                <pre class="line-numbers language-python"><code >(000) en base 2 = (0) en base 10 </code></pre>
-                <pre class="line-numbers language-python"><code >(111) en base 2 = (7) en base 10 </code></pre>
-
-                Essayer toutes les possibilités revient donc à choisir tous les masques binaires entre (0....0) et (1....1) (soit entre 0 et 2^(N)-1).
-                Puis, pour chacune des possibilité, simuler l'exécution du programme, et vérifier à la fin de l'exécution si oui ou non, on obtient les registres cibles.
-
+                <br /><br />
+                Si l'on remplace "true" par 1, et "false" par 0, on peut transformer ces tableaux en masques
+                binaires:
+                <pre class="line-numbers language-python"><code >(000) en base 2 = (0) en base 10</code></pre>
+                <pre class="line-numbers language-python"><code >(111) en base 2 = (7) en base 10</code></pre>
+                <br />
+                Essayer toutes les possibilités revient donc à choisir <b>tous les masques binaires</b> entre
+                <code>(0....0)</code> et
+                <code>(1....1)</code> (soit entre <code>0</code> et <code>2^(N)-1</code>).
+                <br />
+                Puis, pour chacune des possibilité, simuler l'exécution du programme, et vérifier à la fin de
+                l'exécution si oui ou non, on obtient les registres cibles.
+                <br /><br />
                 Les avantages:
                 <ul>
-                  <li> On évite les appels récursifs, ces derniers étant coûteux avec l'utilisation de la stack (et limités par défaut dans le cas de Python) </li>
-                  <li> C'est... plus rapide à coder? Débattez-en dans les commentaires </li>
+                    <li> On <b>évite les appels récursifs</b>, ces derniers étant coûteux avec l'utilisation de la
+                        stack (et
+                        limités par défaut dans le cas de Python) </li>
+                    <li> C'est... plus rapide à coder? Débattez-en dans les commentaires </li>
                 </ul>
-
+                <br />
                 Les inconvénients:
                 <ul>
-                  <li> Moins intuitif (l'idée d'arbre est une représentation avec laquelle on a l'habitude de jongler, par exemple pour les jeux (si je sloubi de 1, il a 2 possibilités
-                    de croc sloubi ou sloubi kamoulox, mais si j'inverse le tour, et que je casse le debreak des 3, il est forcé à caqueter, et j'le baise au tour d'après))
-                  </li>
-                  <li>
-                      Quasi négligeable, et le récursif pénalise bien plus: La complexité est un peu moins bonne (on perd le backtracking): on passe de ~= 2^(N+1) opérations à (2^N)*(N),
-                      vu qu'on va itérer de 0 à N -1 pour vérifier si chaque instruction fait partie du masque binaire.
-                  </li>
+                    <li> <b>Moins intuitif</b> (l'idée d'arbre est une représentation avec laquelle on a l'habitude
+                        de jongler,
+                        par exemple pour les jeux (si je sloubi de 1, il a 2 possibilités
+                        de croc sloubi ou sloubi kamoulox, mais si j'inverse le tour, et que je casse le debreak des
+                        3,
+                        il est forcé à caqueter, et j'le baise au tour d'après))
+                    </li>
+                    <li>
+                        Quasi négligeable, et le récursif pénalise bien plus: La complexité est un peu moins bonne
+                        (on
+                        perd le backtracking): on passe de ~= 2^(N+1) opérations à (2^N)*(N),
+                        vu qu'on va itérer de 0 à N -1 pour vérifier si chaque instruction fait partie du masque
+                        binaire.
+                    </li>
                 </ul>
 
-                <h3> Implémentation </h3>
+                <h3 id="exo5Impl"> Implémentation </h3>
+                <p>
+                    <button type="button" class="btn btn-outline-primary" (click)="isCollapsed3 = !isCollapsed3"
+                        [attr.aria-expanded]="!isCollapsed3" aria-controls="collapseExample">
+                        Afficher / Réduire le code
+                    </button>
+                </p>
+                <div id="collapseExample" [ngbCollapse]="isCollapsed3">
+                    <pre class="line-numbers language-cpp"><code >#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include "exercise.hpp"
+
+ContestExerciseImpl::ContestExerciseImpl() : Exercise() {{'{'}}{{'}'}}
+
+// Fonction utilitaire qui nous transforme par exemple "ADD A B C" en {{'{'}}"ADD","A","B","C"
+vector&lt;string&gt; split(string s) {{'{'}}
+    s += " ";
+    string current = "";
+    vector&lt;string&gt; res;
+    for(int c=0;c&lt;s.size();c++){{'{'}}
+        if(s[c] == ' ') {{'{'}}
+            if(current.size()) res.push_back(current);
+            current = "";
+        {{'}'}} else {{'{'}}
+            current += s[c];
+        {{'}'}}
+    {{'}'}}
+    return res;
+{{'}'}}
 
 
-                <h3> La solution du second (déso) </h3>
+void ContestExerciseImpl::main() {{'{'}}
+    int nombreInstructions;
+    cin&gt;&gt;nombreInstructions;
+    
+    vector&lt;int&gt; registresInitiaux(4);
+    vector&lt;int&gt; registresCibles(4);
+    
+    vector&lt;vector&lt;string&gt; &gt; instructions(nombreInstructions);
+    
+    for(int c=0;c&lt;4;c++) cin&gt;&gt;registresInitiaux[c];
+    cin.ignore();
+    for(int c=0;c&lt;nombreInstructions;c++) {{'{'}}
+        string line;
+        getline(cin,line);
+        instructions[c] = split(line);
+    {{'}'}}
+    
+    for(int c=0;c&lt;4;c++) cin&gt;&gt;registresCibles[c];
+    
+    // On itère sur tous les masks entre 0 et 2^N-1
+    for(int mask = 0; mask &lt; (1&lt;&lt;nombreInstructions); mask++) {{'{'}}
+        vector&lt;int&gt; registresExecution(4);
+        copy(registresInitiaux.begin(),registresInitiaux.end(),registresExecution.begin());
+        for(int i = 0; i &lt; nombreInstructions; i++) {{'{'}}
+            // Si le ième bit est à 1, on prend l'instruction
+            if((1&lt;&lt;i) & mask) {{'{'}}
+                vector&lt;string&gt; words = instructions[i];
+                
+                if(words[0] == "ADD") {{'{'}}
+                    int r1 = words[1][0] - 'A';
+                    int r2 = words[2][0] - 'A';
+                    int r3 = words[3][0] - 'A';
+                    registresExecution[r3] = registresExecution[r1]+registresExecution[r2];
+                {{'}'}} else if (words[0] == "MOV") {{'{'}}
+                    int r1 = words[1][0] - 'A';
+                    int r2 = words[2][0] - 'A';
+                    registresExecution[r2] = registresExecution[r1];
+                    registresExecution[r1] = 0;
+                {{'}'}} else if (words[0] == "CPY") {{'{'}}
+                    int r1 = words[1][0] - 'A';
+                    int r2 = words[2][0] - 'A';
+                    registresExecution[r2] = registresExecution[r1];
+                {{'}'}}
+            {{'}'}}
+        {{'}'}}
+        bool valide = true;
+        // On compare les registres obtenus avec les registres cibles
+        for(int rIdx = 0; rIdx &lt; 4; rIdx ++) {{'{'}}
+            if(registresExecution[rIdx] != registresCibles[rIdx]) {{'{'}}
+                valide = false;
+                break;
+            {{'}'}}
+        {{'}'}}
+        if(valide) {{'{'}}
+            for(int i = 0; i &lt; nombreInstructions; i++) {{'{'}}
+                // On affiche uniquement les identifiants des instructions supprimées (bit à 0)
+                if((1&lt;&lt;i) & mask) continue;
+                cout&lt;&lt;(i+1)&lt;&lt;" ";
+            {{'}'}}
+            return;
+        {{'}'}}
+    {{'}'}}
+{{'}'}}
+               </code></pre>
+                </div>
 
-                Alors avec tout ça, par quel miracle ais-je terminé premier?
-                Malheureusement, Nagrarok qui avait été plus rapide jusqu'à ce dernier exercice, a fait une petite erreur d'étourderie lors de l'évaluation de la complexité.
+                <h3 id="exo5SolutionMemo"> La solution du second (déso) </h3>
 
-                (2^N)*(N) passait largement, mais avec un peu de précipitations, le second avait pensé que ce n'était pas le cas.
+                Alors avec tout ça, par quel miracle ais-je terminé premier?<br />
+                Malheureusement, Nagrarok qui avait été plus rapide jusqu'à ce dernier exercice, a fait une petite
+                erreur d'étourderie lors de l'évaluation de la complexité.<br />
+                <code>(2^N)*(N)</code> passait largement, mais avec un peu de précipitation, le second avait pensé
+                que
+                ce n'était
+                pas le cas.<br />
 
-                Mais ça lui a permis de développer une solution intéressante, et d'étoffer cet article en évoquant sa méthode.
+                Mais ça lui a permis de développer une solution intéressante, et d'étoffer cet article en évoquant
+                sa
+                méthode.
+                <br /> <br />
 
+                Sa solution se base sur une méthode que l'on a déjà vu précédemment, qui consistait à vérifier si
+                l'on
+                pouvait <b>éviter de calculer plusieurs fois la même chose</b>.<br />
+                En effet, comme pour beaucoup de jeux (échecs, dames ...), on peut obtenir <b>exactement le même
+                    état</b>,
+                le
+                même plateau, mais <b>avec un enchaînement d'opérations différents</b>.<br /><br />
+
+                Ici, si l'on reprend l'arbre d'exploration de tout à l'heure, un état correspond à
+                <ul>
+                    <li> Une profondeur (quelle instruction sommes-nous en train de traiter)</li>
+                    <li> Des valeurs de registres </li>
+                </ul>
+
+                Si deux noeuds on est les mêmes valeurs de registres, et que l'on est en train d'essayer les deux
+                possibilités (utiliser ou non l'instruction <code>i</code>), on va avoir un sous-arbre d'exploration
+                identique.<br />
+                Nous
+                n'avons donc pas raison d'explorer à nouveau.<br /><br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/DFSMemo.png" />
+                </div> <br />
+                L'idée est donc toute bête à partir du moment où l'on se rend compte de ça:<br />
+                Il suffit d'associer cet état à une <b>clé</b> (par exemple un tuple de 5 entiers, qui contiendra
+                les 4 valeurs
+                de registres et la profondeur), et d'enregistrer pour ces clés formées le fait d'avoir déjà exploré
+                le
+                sous-arbre constitué des descendants de ce noeud.<br /><br />
+
+                That's it. De la même façon que pour l'exercice 3, on peut utiliser la structure C++ map qui aura la
+                forme suivante :<br />
+                <code>map&lt;tuple&lt;int,int,int,int,int&gt;,bool&gt; dejaExplore</code>.
+                <br /><br />
+                Maintenant, penchons-nous sur l'analyse du gain de cet algorithme.<br />
+                Nous savons que cela nous permet d'élaguer l'arbre d'exploration, en évitant d'explorer deux
+                "branches
+                identiques". Mais qu'en est-il du pire cas?<br /><br />
+
+                Une <b>méthode d'analyse pour les algorithmes à base de mémoïsation</b>, qui donne dans beaucoup de cas
+                une bonne estimation de complexité, est de se baser sur le <b>nombre d'états uniques possibles</b> que
+                l'on
+                peut avoir
+                au niveau de l'arbre.<br />
+                En l'occurence, n'ayant aucune contraintes sur les valeurs de registres, on ne peut pas analyser de
+                manière fine l'étendue de l'espace généré par les combinaisons d'instructions. Par contre le nombre
+                d'instructions est limité à <code>20</code>.
+                <br /><br />
+                Donc une limite haute du nombre d'état serait de l'ordre de <code>|r1|*|r2|*|r3|*|r4|*20</code>,
+                avec
+                <code>|r1|</code> la taille
+                du domaine dans lequel le registre r1 prend des valeurs (taille immense pour le cas du type "int").
+                <br /><br />
+                Pour chaque état, on fait une simple copie des registres (4 valeurs, opération que l'on pourrait
+                d'ailleurs encore plus optimiser), on peut donc considérer que la complexité de cette fonction
+                recursive
+                se résume simplement à prendre:<br />
+                <code>min(nombreEtatsUniques,(2^(N+1)-1))</code>
+                vu que notre arbre binaire ne peut pas avoir plus de <code>(2^(N+1)-1)</code> noeuds explorés au
+                total.<br /><br />
+
+
+                Ce gain peut sembler très faible, mais il faut bien saisir que c'est d'une part une <b>limite haute</b>,
+                et
+                d'autre part qu'elle est utilisée pour qualifier le <b>pire cas possible</b>.<br />
+                En pratique, on intuite que l'espace est bien plus restreint: les opérations qui nous sont donnés ne
+                permettant pas de partir d'un état avec des valeurs très faibles (<code>(1,1,1,1)</code> par
+                exemple)
+                pour arriver à
+                un état diamétralement
+                opposé (<code>(1e8,1e8,1e8,1e8)</code>) en quelques opérations. <br />Une <b>progression
+                    décroissante</b> est
+                également
+                <b>impossible</b>, à part pour atteindre des valeurs nulles (nous n'avons que <code>ADD</code>, pas
+                de
+                <code>SUB</code>. Seul <code>MOVE</code>
+                permet
+                de diminuer un registre vers 0).<br />
+                Avec quelques exemples, on se rend compte qu'il peut
+                y avoir beaucoup d'intersections au niveau
+                des états calculés (notamment dans le cas d'un grand nombre d'instructions <code>"MOV"</code> ou
+                <code>"CPY"</code>).
+
+                <h3 id="exo5ImplMemo"> Seconde implémentation (avec mémoïsation) </h3>
+                <p>
+                    <button type="button" class="btn btn-outline-primary" (click)="isCollapsed4 = !isCollapsed4"
+                        [attr.aria-expanded]="!isCollapsed4" aria-controls="collapseExample">
+                        Afficher / Réduire le code
+                    </button>
+                </p>
+                <div id="collapseExample" [ngbCollapse]="isCollapsed4">
+                    <pre class="line-numbers language-cpp"><code >#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include "exercise.hpp"
+
+ContestExerciseImpl::ContestExerciseImpl() : Exercise() {{'{'}}{{'}'}}
+
+// Fonction utilitaire qui nous transforme par exemple "ADD A B C" en {{'{'}}"ADD","A","B","C"{{'}'}}
+vector&lt;string&gt; split(string s) {{'{'}}
+    s += " ";
+    string current = "";
+    vector&lt;string&gt; res;
+    for(int c=0;c&lt;s.size();c++){{'{'}}
+        if(s[c] == ' ') {{'{'}}
+            if(current.size()) res.push_back(current);
+            current = "";
+        {{'}'}} else {{'{'}}
+            current += s[c];
+        {{'}'}}
+    {{'}'}}
+    return res;
+{{'}'}}
+
+vector&lt;int&gt; registresCibles(4);
+vector&lt;vector&lt;string&gt; &gt; instructions;
+
+map&lt;tuple&lt;int,int,int,int,int&gt;,bool&gt; alreadyExplore;
+bool recursion(int indice, vector&lt;int&gt; &registres, int currentMask) {{'{'}}
+    
+    tuple&lt;int,int,int,int,int&gt; signature = make_tuple(indice,registres[0],registres[1],registres[2],registres[3]);
+    if(alreadyExplore.find(signature) != alreadyExplore.end()) {{'{'}}
+        return false;
+    {{'}'}}
+    
+    // Si on a dépassé la dernière instruction, on vérifie si on a le bon état
+    if(indice &gt;= instructions.size()) {{'{'}}
+        for(int i=0;i&lt;4;i++) {{'{'}}
+            if(registres[i] != registresCibles[i]) return false;
+        {{'}'}}
+        // On est content, on affiche les instructions supprimées
+        for(int i = 0; i &lt; instructions.size(); i++) {{'{'}}
+            if((1&lt;&lt;i) & currentMask) continue;
+            cout&lt;&lt;(i+1)&lt;&lt;" ";
+        {{'}'}}
+        return true;
+    {{'}'}}
+    
+    
+    // Cas où l'on ignore l'instruction
+    if(recursion(indice+1,registres,currentMask)){{'{'}}
+        return true;
+    {{'}'}}
+    // Cas où l'on exécute l'instruction
+    vector&lt;string&gt; words = instructions[indice];
+    vector&lt;int&gt; registresCopy(4);
+    copy(registres.begin(),registres.end(),registresCopy.begin());
+    if(words[0] == "ADD") {{'{'}}
+        int r1 = words[1][0] - 'A';
+        int r2 = words[2][0] - 'A';
+        int r3 = words[3][0] - 'A';
+        registres[r3] = registres[r1]+registres[r2];
+    {{'}'}} else if (words[0] == "MOV") {{'{'}}
+        int r1 = words[1][0] - 'A';
+        int r2 = words[2][0] - 'A';
+        registres[r2] = registres[r1];
+        registres[r1] = 0;
+    {{'}'}} else if (words[0] == "CPY") {{'{'}}
+        int r1 = words[1][0] - 'A';
+        int r2 = words[2][0] - 'A';
+        registres[r2] = registres[r1];
+    {{'}'}}
+    if(recursion(indice+1,registres,currentMask | (1&lt;&lt;indice))){{'{'}}
+        return true;
+    {{'}'}}
+    
+    // On remet nos registres dans le même état qu'avant application de l'instruction pour "ne pas polluer notre arbre récursif"
+    // (cf backtracking)
+    copy(registresCopy.begin(),registresCopy.end(),registres.begin());
+    
+    // On peut ignorer la mise à jour du mémo dans le cas d'un retour "true"
+    // étant donné qu'un retour nous fera sortir de tous les appels récursifs directement
+    // dû aux conditions des lignes 49 et 71
+    alreadyExplore[signature] = true;
+    return false;
+{{'}'}}
+
+
+void ContestExerciseImpl::main() {{'{'}}
+    int nombreInstructions;
+    cin&gt;&gt;nombreInstructions;
+    registresCibles.resize(4);
+    vector&lt;int&gt; registresInitiaux(4);
+    instructions.resize(nombreInstructions);
+    
+    for(int c=0;c&lt;4;c++) cin&gt;&gt;registresInitiaux[c];
+    cin.ignore();
+    for(int c=0;c&lt;nombreInstructions;c++) {{'{'}}
+            string line;
+            getline(cin,line);
+            instructions[c] = split(line);
+    {{'}'}}
+    
+    for(int c=0;c&lt;4;c++) cin&gt;&gt;registresCibles[c];
+    
+    recursion(0,registresInitiaux,0);
+{{'}'}}
+               </code></pre>
+
+                </div>
             </div>
         </div>
     </div>

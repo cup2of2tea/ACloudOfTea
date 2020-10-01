@@ -13,7 +13,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 import { FormsModule } from '@angular/forms';
 import { WhereIsGuidoComponent } from './Optimisation/where-is-guido/where-is-guido.component';
 import { ProgCompComponent } from './Misc/prog-comp/prog-comp.component';
-import { IsogradSeptComponent } from './Algorithmique/IsogradSeptembre/isograd-sept.component';
+import { IsogradSeptembreComponent } from './Algorithmique/IsogradSeptembre/isograd-sept.component';
 import { HomeComponent } from './home/home.component';
 
 @NgModule({
@@ -22,7 +22,7 @@ import { HomeComponent } from './home/home.component';
     WhereIsGuidoComponent,
     ProgCompComponent,
     HomeComponent,
-    IsogradSeptComponent
+    IsogradSeptembreComponent
   ],
   imports: [
     BrowserModule,

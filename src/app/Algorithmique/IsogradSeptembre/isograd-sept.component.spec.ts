@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IsogradSeptComponent } from './isograd-sept.component';
+import { IsogradSeptembreComponent } from './isograd-sept.component';
 
-describe('IsogradSeptComponent', () => {
-  let component: IsogradSeptComponent;
-  let fixture: ComponentFixture<IsogradSeptComponent>;
+describe('IsogradSeptembreComponent', () => {
+  let component: IsogradSeptembreComponent;
+  let fixture: ComponentFixture<IsogradSeptembreComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [IsogradSeptComponent]
+      declarations: [IsogradSeptembreComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IsogradSeptComponent);
+    fixture = TestBed.createComponent(IsogradSeptembreComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

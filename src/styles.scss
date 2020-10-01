@@ -24,21 +24,31 @@ code.has-jax {
     margin-top: 5px;
     margin-bottom: 5px;
 }
-@media only screen and (min-width: 1400px) {
-    .wrapperArticle {
-        padding-left: 150px;
-        padding-right: 150px;
-    }
-}
 
 .wrapperArticle {
     max-width: 1400px;
     text-align: center;
     box-shadow: -1px -1px 11px 1px;
     padding-top:30px;
-    margin: auto;
+    padding-left: 30px;
+    padding-right: 30px;    
     background-color: white;
 }
+
+@media only screen and (min-width: 1400px) {
+    .wrapperArticle {
+        padding-left: 150px;
+        padding-right: 150px;
+        margin-left: 300px;
+        margin-right: 300px;
+    }
+}
+
+.sommaire {
+    max-width: 250px;
+    padding-right: 20px;
+}
+
 
 a:hover {
     text-shadow: 0px 0px 1px;

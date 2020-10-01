@@ -8,7 +8,7 @@ declare var Prism: any;
   templateUrl: './isograd-sept.component.html',
   styleUrls: ['./isograd-sept.component.scss']
 })
-export class IsogradSeptComponent implements OnInit {
+export class IsogradSeptembreComponent implements OnInit {
 
   constructor() { }
 
@@ -21,11 +21,11 @@ export class IsogradSeptComponent implements OnInit {
     this.isCollapsed = false;
     this.isCollapsed2 = false;
 
-    setTimeout(() => { Prism.highlightAll(); }, 50);
+    setTimeout(() => { Prism.highlightAll(); }, 10);
   }
 
   onNavChange(changeEvent: NgbNavChangeEvent) {
-    setTimeout(() => { Prism.highlightAll(); }, 50);
+    setTimeout(() => { Prism.highlightAll(); }, 10);
   }
   goto(selector) {
     document.querySelector(selector).scrollIntoView({ behavior: 'smooth' })

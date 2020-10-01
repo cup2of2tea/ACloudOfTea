@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
         title: 'Programmation compétitive'
       },
       {
-        route: 'articles/IsogradSept',
+        route: 'articles/IsogradSeptembre',
         title: 'Concours Isograd Septembre 2020'
       }
     ]
