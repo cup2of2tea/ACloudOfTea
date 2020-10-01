@@ -14,12 +14,16 @@ export class IsogradSeptembreComponent implements OnInit {
 
   isCollapsed: any;
   isCollapsed2: any;
+  isCollapsed3: any;
+  isCollapsed4: any;
   nav: any;
   nav2: any;
 
   ngOnInit() {
     this.isCollapsed = false;
     this.isCollapsed2 = false;
+    this.isCollapsed3 = false;
+    this.isCollapsed4 = false;
 
     setTimeout(() => { Prism.highlightAll(); }, 10);
   }
