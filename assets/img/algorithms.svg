@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="150"
+   height="150"
+   viewBox="0 0 39.6875 39.6875"
+   version="1.1"
+   id="svg6974"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="algorithms.svg">
+  <defs
+     id="defs6968" >
+      <style
+       id="style5586">
+   g {
+
+    
+   }
+
+   g *{
+      transform-box: fill-box;
+    transform-origin: 50% 50%;
+   }
+
+svg {
+   cursor: pointer;
+}
+
+svg * {
+  -webkit-animation-duration: 2s;
+   -webkit-animation-iteration-count: 1;
+    -moz-animation-duration: 2s;
+   -moz-animation-iteration-count: 1;
+   -ms-animation-duration: 2s;
+   -ms-animation-iteration-count: 1;
+   -webkit-animation-timing-function: step-end;
+   -ms-animation-timing-function: step-end;
+   -moz-animation-timing-function: step-end;
+   -webkit-animation-fill-mode: forwards;
+   -moz-animation-fill-mode: forwards;
+   -ms-animation-fill-mode: forwards;
+
+}
+
+svg:hover #circle1_1 {
+   -webkit-animation-name: colorCircle_1_1;
+   -moz-animation-name: colorCircle_1_1;
+   -ms-animation-name: colorCircle_1_1;
+}
+
+@-webkit-keyframes colorCircle_1_1 {
+    0% {
+       fill: white;
+    }
+    8% {
+        fill: orange;
+    }
+    56% {
+       fill: green;
+    }
+    75% {
+       fill:white;
+    }
+    80% {
+       fill:green;
+    }
+    85% {
+       fill: white;
+    }
+    90% {
+       fill: green;
+    }
+    100% {
+       fill: green;
+    }
+}
+svg:hover #circle2_1 {
+   -webkit-animation-name: colorCircle_2_1;
+   -moz-animation-name: colorCircle_2_1;
+   -ms-animation-name: colorCircle_2_1;
+}
+
+@-webkit-keyframes colorCircle_2_1 {
+    0% {
+       fill: white;
+    }
+    16% {
+        fill: orange;
+    }
+    48% {
+       fill: green;
+    }
+    75% {
+       fill:white;
+    }
+    80% {
+       fill:green;
+    }
+    85% {
+       fill: white;
+    }
+    90% {
+       fill: green;
+    }
+    100% {
+       fill: green;
+    }
+}
+svg:hover #circle3_1 {
+   -webkit-animation-name: colorCircle_3_1;
+   -moz-animation-name: colorCircle_3_1;
+   -ms-animation-name: colorCircle_3_1;
+}
+
+@-webkit-keyframes colorCircle_3_1 {
+    0% {
+       fill: white;
+    }
+    24% {
+        fill: orange;
+    }
+    32% {
+       fill: red;
+    }
+    
+    100% {
+       fill: red;
+    }
+}
+svg:hover #circle3_2 {
+   -webkit-animation-name: colorCircle_3_2;
+   -moz-animation-name: colorCircle_3_2;
+   -ms-animation-name: colorCircle_3_2;
+}
+
+@-webkit-keyframes colorCircle_3_2 {
+    0% {
+       fill: white;
+    }
+    32% {
+        fill: orange;
+    }
+    40% {
+       fill: green;
+    }
+    75% {
+       fill:white;
+    }
+    80% {
+       fill:green;
+    }
+    85% {
+       fill: white;
+    }
+    90% {
+       fill: green;
+    }
+    100% {
+       fill: green;
+    }
+}
+
+    </style>
+   </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="111.1129"
+     inkscape:cy="70.820749"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata6971">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-257.3125)">
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="circle1_1"
+       cx="19.84375"
+       cy="264.12527"
+       r="2.9399648"
+       inkscape:label="circle1_1" />
+    <circle
+       r="2.9399648"
+       cy="275.9183"
+       cx="9.3250494"
+       id="circle2_1"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:label="circle2_1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 11.024868,273.48038 6.999871,-7.03776"
+       id="L"
+       inkscape:connector-curvature="0"
+       inkscape:label="L" />
+    <circle
+       r="2.9399648"
+       cy="287.74915"
+       cx="3.301055"
+       id="circle3_1"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:label="circle3_1" />
+    <path
+       inkscape:connector-curvature="0"
+       id="LL"
+       d="m 4.3939732,285.08157 3.7911561,-6.50636"
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:label="LL" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="circle3_2"
+       cx="15.338614"
+       cy="287.74911"
+       r="2.9399648"
+       transform="scale(1,1)"
+       inkscape:label="circle3_2" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 14.245696,285.08158 -3.791157,-6.50636"
+       id="LR"
+       inkscape:connector-curvature="0"
+       inkscape:label="LR" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="circle2_2"
+       cx="30.390465"
+       cy="275.91833"
+       r="2.9399648"
+       transform="scale(1,1)"
+       inkscape:label="circle2_2" />
+    <path
+       inkscape:connector-curvature="0"
+       id="R"
+       d="m 28.690648,273.48037 -6.999871,-7.03776"
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:label="R" />
+    <circle
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="circle3_4"
+       cx="36.414459"
+       cy="287.74918"
+       r="2.9399648"
+       transform="scale(1,1)"
+       inkscape:label="circle3_4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 35.321543,285.08156 31.530387,278.5752"
+       id="RR"
+       inkscape:connector-curvature="0"
+       inkscape:label="RR" />
+    <circle
+       r="2.9399648"
+       cy="287.74915"
+       cx="24.3769"
+       id="circle3_3"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:label="circle3_3" />
+    <path
+       inkscape:connector-curvature="0"
+       id="RL"
+       d="m 25.46982,285.08157 3.791157,-6.50636"
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:label="RL" />
+  </g>
+</svg>
