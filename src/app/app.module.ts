@@ -15,6 +15,8 @@ import { WhereIsGuidoComponent } from './Optimisation/where-is-guido/where-is-gu
 import { ProgCompComponent } from './Misc/prog-comp/prog-comp.component';
 import { IsogradSeptembreComponent } from './Algorithmique/IsogradSeptembre/isograd-sept.component';
 import { HomeComponent } from './home/home.component';
+import { HomeAlgorithmComponent } from './homeAlgorithm/homeAlgorithm.component';
+import { HomeOptimizationComponent } from './homeOptimization/homeOptimization.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { HomeComponent } from './home/home.component';
     WhereIsGuidoComponent,
     ProgCompComponent,
     HomeComponent,
+    HomeAlgorithmComponent,
+    HomeOptimizationComponent,
     IsogradSeptembreComponent
   ],
   imports: [

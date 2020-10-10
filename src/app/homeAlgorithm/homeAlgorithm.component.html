@@ -1,0 +1,18 @@
+<div>
+    <section>
+        <div class="wrapperArticle">
+            <div class="article">
+                <h1 class="post-title ">
+                    Algorithmique
+                </h1>
+                <div style="padding: 20px">
+                    <div *ngFor="let post of posts">
+                        <a [routerLink]="post.route">
+                            {{post.title}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

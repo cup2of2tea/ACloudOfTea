@@ -3,12 +3,34 @@
         <div class="wrapperArticle">
             <div class="article">
                 <h1 class="post-title ">
-                    Blog
+
                 </h1>
-                <div *ngFor="let post of posts">
-                    <a [routerLink]="post.route">
-                        {{post.title}}
-                    </a>
+
+                <div class="rowMenu">
+                    <div class="blockMenu" routerLink="optimization">
+                        <object type="image/svg+xml" data="assets/img/optimization.svg" id="optimization"
+                            style="width:150px">
+                            <!-- Your fall back here -->
+                            <img src="assets/img/optimization.svg" />
+                        </object>
+                        Optimisation
+                    </div>
+                    <div class="blockMenu" routerLink="algorithm">
+                        <object type="image/svg+xml" data="assets/img/algorithms.svg" id="algorithms"
+                            style="width:150px">
+                            <!-- Your fall back here -->
+                            <img src="assets/img/algorithms.svg" />
+                        </object>
+                        Algorithmes
+                    </div>
+                </div>
+                <div style="padding: 20px">
+                    <h1 style="font-size:25px">Derniers articles</h1>
+                    <div *ngFor="let post of posts">
+                        <a [routerLink]="post.route">
+                            {{post.title}}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

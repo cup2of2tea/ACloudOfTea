@@ -7,7 +7,6 @@
          url('assets/fonts/existence-stencillight-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
 
 code.has-jax {
@@ -45,12 +44,21 @@ code.has-jax {
     background-color: white;
 }
 
+@media only screen and (max-width: 1399px) {
+    .banniere {
+        font-size:60px;
+    }
+}
+
 @media only screen and (min-width: 1400px) {
     .wrapperArticle {
         padding-left: 100px;
         padding-right: 100px;
         margin-left: 300px;
         margin-right: 300px;
+    }
+    .banniere {
+        font-size:80px;
     }
 }
 
@@ -61,7 +69,6 @@ code.has-jax {
     background-position: center;
     text-align: center;
     font-family: existencestencil_light;
-    font-size: 80px;
     font-weight: 800;
     a{
         color: #2f4a2f;
@@ -71,7 +78,7 @@ code.has-jax {
         text-shadow: 0px 0px 0px;
         text-decoration: none;
     }
-        height:130px;
+    height:130px;
 
 }
 
