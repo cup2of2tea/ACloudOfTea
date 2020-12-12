@@ -19,17 +19,22 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.posts = [
+
       {
-        route: 'articles/WhereIsGuido',
-        title: 'Where is Guido'
+        route: '/articles/Aoc1_3',
+        title: 'Jours 1 et 2 de l\'Advent of Code'
+      },
+      {
+        route: 'articles/IsogradSeptembre',
+        title: 'Concours Isograd Septembre 2020'
       },
       {
         route: 'articles/ProgComp',
         title: 'Programmation compétitive'
       },
       {
-        route: 'articles/IsogradSeptembre',
-        title: 'Concours Isograd Septembre 2020'
+        route: 'articles/WhereIsGuido',
+        title: 'Where is Guido'
       }
     ]
     var algorithmDocument = document.getElementById("algorithms");
