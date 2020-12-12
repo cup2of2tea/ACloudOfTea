@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'articles/WhereIsGuido', component: WhereIsGuidoComponent },
   { path: 'articles/ProgComp', component: ProgCompComponent },
   { path: 'articles/IsogradSeptembre', component: IsogradSeptembreComponent },
-  { path: 'articles/Aoc1_3', component: Day1_3Component },
+  { path: 'articles/Aoc1_2', component: Day1_3Component },
   {
     path: 'optimization', component: HomeOptimizationComponent
   },
