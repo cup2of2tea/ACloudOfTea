@@ -1,0 +1,174 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jours 3)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/3">Jour 3, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Nous avons en entrée une liste de chaînes de caractères (aussi appellées string en anglais) qui
+                représentent une carte 2d, avec le caractère '.' correspondant à une coordonnée "vide", et le caractère
+                '#' une coordonnée avec un arbre.
+                <br />
+                A noter également que la carte n'est représentée que partiellement: celle-ci se repète à l'infini
+                horizontalement
+                <br /><br />
+
+                On utilisera le formalisme suivant pour le reste de l'article pour décrire les coordonnées:<br />
+                <code>(x,y)</code> :
+                <ul>
+                    <li>x représentera la coordonnée verticale, avec 0 correspondant à la première ligne</li>
+                    <li>y représentera la coordonnée horizontale, avec 0 correspondant à la première colonne</li>
+                </ul>
+                <br />
+
+                En se déplaçant depuis (0,0) avec une direction constante, combien d'arbres sont rencontrés avant de
+                sortir de la carte verticalement?
+                <br /><br />
+
+                Petite précision concernant l'énoncé: les collisions ne doivent être calculées qu'après application d'un
+                nombre entier du vecteur direction.
+                Par exemple si on a :
+                <br />
+
+                <pre class="line-numbers language-python"><code>.###
+###.</code></pre>
+                <br />
+
+                et que notre vecteur direction est <code>(1,3)</code> (on descend de 1, on avance de 3), alors aucun
+                arbre n'est
+                touché.
+                <br /><br />
+                <h3>Solutions</h3>
+
+                Deux aspects principaux sont à gérer pour résoudre ce problème:
+
+                <ul>
+                    <li> <b>Comment dupliquer le graphe de manière infinie horizontalement?</b></li>
+                    <li> <b>Comment simuler le déplacement et compter les arbres?</b></li>
+                </ul>
+
+                Pour la première problématique, il existe deux solutions:
+                <br /><br />
+                Etant donné que l'on connaît les dimensions de la grille et le vecteur direction de notre déplacement,
+                on peut calculer la coordonnée maximale atteinte à la fin de notre parcours.
+                <br />
+                Il suffit ensuite de concaténer plusieurs fois nos chaînes de caractères pour éviter de dépasser les
+                limites horizontales. Egalement, sans calcul, on pouvait réaliser cette concaténation avec un nombre au
+                hasard mais assez grand pour être sûr d'avoir un graphe assez long.
+                <br />
+                Cette solution a comme défaut de prendre un espace en mémoire important, voire immense si les entrées
+                données étaient plus exigeantes.<br />
+                De manière générale en informatique, la duplication des données, aussi appellée <b>"redondance"</b>, est
+                une
+                pratique que l'on cherche à éviter au maximum, pour des problématiques d'espace et de propagation des
+                traitements.
+                <br /><br />
+                Alors comment s'abstenir de toute répétition?
+                <br />
+                Il existe deux possibilités, qui reviennent plus ou moins au même:
+                <ul>
+                    <li>
+                        On met en place des conditions pour que lorsqu'on dépasse les limites de la grille, on soustrait
+                        la taille de la grille jusqu'à ce qu'on soit de nouveau dans les limites
+                    </li>
+                    <li>
+                        On utilise <b>l'opération "modulo" (%)</b> qui nous donne le reste d'une division entière.
+                    </li>
+                </ul>
+
+                <br /><br />
+
+                Un peu à la manière de Pacman, cela nous permet de nous téléporter du côté gauche de la grille lorsque
+                l'on sort du côté droit.
+
+                <br /><br />
+                <div style="text-align:center;">
+                    <img style="width:800px" src="assets/img/modulo.png" />
+                </div>
+
+                <br /><br />
+
+                Maintenant qu'on gère la répétition horizontale du graphe, il nous faut maintenant trouver comment le
+                parcourir.<br /><br />
+
+                En l'occurence, ici comme nous ne suivons qu'une unique direction pendant tout notre parcours, il nous
+                suffit d'avoir deux variables <code>currentX</code> et <code>currentY</code> qui enregistreront la
+                coordonnée actuelle à laquelle on se trouve, et l'on ajoute le vecteur directeur jusqu'à ce que l'on
+                sorte des dimensions verticales de la grille, tout en mettant à jour un compteur en fonction de la
+                présence ou non d'un arbre sur la coordonée <code>(currentX, currentY)</code>.
+
+                <br /> <br />
+
+                <pre class="line-numbers language-python"><code>lines = open('input3.txt').readlines()
+currentX, currentY = 0, 0
+
+res = 0
+# Attention à la fin de ligne '\n'
+width = len(lines[0])-1
+while(currentX < len(lines)):
+    if(lines[currentX][currentY % width] == '#'):
+        res += 1
+    currentX += 1
+    currentY += 3
+print(res)</code></pre>
+
+                <br /><br />
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/3">Jour 3, partie 2:</a></h2>
+
+                <h3>Enoncé</h3>
+
+                La seconde partie était plutôt décevante:
+
+                Il nous était demandé de faire la même chose que pour la partie 1, mais avec d'autres vecteurs
+                directeurs, et d'afficher le produit des résultats obtenus pour chaque vecteur.
+                <br /><br />
+                <h3>Solution</h3>
+
+                Le principe est le même qu'en partie 1. <br /><br />
+
+                Pour itérer facilement sur les différents vecteurs directeurs, on peut faire une liste de ces vecteurs,
+                et boucler sur ceux-ci (avec une fonction pour le parcours ou sans).
+
+                <pre class="line-numbers language-python"><code>lines = open('input3.txt').readlines()
+dx = [1, 1, 1, 1, 2]
+dy = [3, 1, 5, 7, 1]
+res = 1
+for d in range(len(dx)):
+    currentX, currentY = 0, 0
+
+    compteur = 0
+    # Attention à la fin de ligne '\n'
+    width = len(lines[0])-1
+    while(currentX < len(lines)):
+        if(lines[currentX][currentY % width] == '#'):
+            compteur += 1
+        currentX += dx[d]
+        currentY += dy[d]
+    res *= compteur
+print(res)</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>

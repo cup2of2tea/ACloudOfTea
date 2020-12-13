@@ -17,7 +17,8 @@ import { IsogradSeptembreComponent } from './Algorithmique/IsogradSeptembre/isog
 import { HomeComponent } from './home/home.component';
 import { HomeAlgorithmComponent } from './homeAlgorithm/homeAlgorithm.component';
 import { HomeOptimizationComponent } from './homeOptimization/homeOptimization.component';
-import { Day1_3Component } from './Algorithmique/AoC/day1_3/day1_3.component';
+import { Day1_2Component } from './Algorithmique/AoC/day1_2/day1_2.component';
+import { Day3Component } from './Algorithmique/AoC/day3/day3.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { Day1_3Component } from './Algorithmique/AoC/day1_3/day1_3.component';
     HomeAlgorithmComponent,
     HomeOptimizationComponent,
     IsogradSeptembreComponent,
-    Day1_3Component
+    Day1_2Component,
+    Day3Component
   ],
   imports: [
     BrowserModule,

@@ -4,11 +4,11 @@ declare var $: any;
 declare var Prism: any;
 
 @Component({
-  selector: 'app-day1_3',
-  templateUrl: './day1_3.component.html',
-  styleUrls: ['./day1_3.component.scss']
+  selector: 'app-day3',
+  templateUrl: './day3.component.html',
+  styleUrls: ['./day3.component.scss']
 })
-export class Day1_3Component implements OnInit {
+export class Day3Component implements OnInit {
 
   constructor() { }
 
