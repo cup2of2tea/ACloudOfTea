@@ -19,6 +19,7 @@ import { HomeAlgorithmComponent } from './homeAlgorithm/homeAlgorithm.component'
 import { HomeOptimizationComponent } from './homeOptimization/homeOptimization.component';
 import { Day1_2Component } from './Algorithmique/AoC/day1_2/day1_2.component';
 import { Day3Component } from './Algorithmique/AoC/day3/day3.component';
+import { Day4Component } from './Algorithmique/AoC/day4/day4.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { Day3Component } from './Algorithmique/AoC/day3/day3.component';
     HomeOptimizationComponent,
     IsogradSeptembreComponent,
     Day1_2Component,
+    Day4Component,
     Day3Component
   ],
   imports: [

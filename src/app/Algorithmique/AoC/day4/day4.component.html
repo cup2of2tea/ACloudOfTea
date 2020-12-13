@@ -1,0 +1,187 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 4)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/4">Jour 4, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                <b>C'est de la merde.</b>
+                <br /><br />
+                Mais bon, je vais pas le skip pour autant, et c'est l'occasion de vous montrer comment résoudre ce genre
+                de problèmes de façon vaguement élégante.
+                <br /><br />
+                On a en entrées des passeports modélisés sous la forme d'une liste de clé / valeurs.
+                <br /><br />
+                Pour la première partie, on doit compter le nombre de passeports ayant les clés requises.<br />
+                Egalement, il peut y avoir certaines clés facultatives, qui, si elles sont absentes ou présentes, n'ont
+                pas d'impact sur la vérification de validité de la partie 1.
+                <br /><br />
+
+                <h3>Solution</h3>
+
+                La première étape importante est de réaliser le parsing des données d'entrées.
+                <br /><br />
+                Le format est le suivant
+                <pre class="line-numbers language-python"><code>[cle1]:valeur1 [cle2]:valeur2 etc...</code></pre>
+
+                <br /><br />
+                Ces champs peuvent également être séparés par des retours à la ligne, et une ligne vide indique le fait
+                de passer à un autre passeport.
+                <br /><br />
+                Pour l'extraction des valeurs, on peut split nos lignes en première priorité par espace (pour séparer
+                les différents champs), puis par ':' pour séparer les clés des valeurs.
+                <br />
+                On pouvait ensuite traiter à la volée les clés récupérées avec un <b>bitmask</b>, une liste ou stocker
+                les clés
+                / values dans un <b>dictionnaire</b>.<br />
+                La seconde option permettait d'avoir un code plus simple à étendre pour d'éventuels traitements complexe
+                lors de la partie 2.
+                <br /><br />
+
+                On prendra l'option du <b>dictionnaire</b> pour la suite.<br />
+                La vérification des différents champs se fait ensuite très facilement: il suffit d'itérer sur une liste
+                décrivant les différentes clés obligatoires, et vérifier leurs présences dans le
+                <b>dictionnaire</b>.<br /><br />
+
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda line: line.strip(), open('input4.txt').readlines()))
+# Garde-fou
+lines.append('')
+currentPasseport = dict()
+mandatory = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
+res = 0
+for line in lines:
+    if(len(line) <= 0):
+        res += all(map(lambda c: c in currentPasseport, mandatory))
+        currentPasseport = dict()
+    else:
+        for champ in line.split(' '):
+            key, value = champ.split(':')
+            currentPasseport[key] = value
+print(res)</code></pre>
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/4">Jour 4, partie 2:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                On s'ennuyait déjà en partie 1, et pourtant la torture commençait seulement.
+                <br /><br />
+                Maintenant il s'agit de vérifier que les valeurs associées aux différents clés respectent certaines
+                conditions, spécifiques au type de champ.
+                <br />
+                Par exemple, l'année de naissance (byr) doit être comprise entre 1920 et 2002.
+                <br /><br />
+                De la même manière que le jour 2 partie 1, rien d'intéressant algorithmiquement parlant, mais maîtriser
+                son langage de programmation peut aider à faire des solutions plus élégantes que simplement itérer sur
+                la chaîne de caractère.
+                <br />
+                On peut par exemple utiliser la pwouissance des <b>regex</b> pour vérifier et extraire les données des
+                différentes valeurs.<br /><br />
+
+                Mais trève de blabla, le mieux est de vous donner une solution en exemple.
+                Si vous n'êtes pas familiers avec les <b>regex</b>, vous pouvez copier/coller celles-ci sur le site <a
+                    href="https://<b>regex</b>101.com/"><b>regex</b>101</a> pour que celles-ci soient analysées et
+                expliquées.
+
+                <br /><br />
+                <pre class="line-numbers language-python"><code>import re
+lines = list(map(lambda line: line.strip(), open('input4.txt').readlines()))
+# Garde-fou
+lines.append('')
+currentPasseport = dict()
+mandatory = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
+res = 0
+
+def checkByr(passeport):
+    value = passeport['byr']
+    if(not re.match(r'^[0-9]{{ '{' }}4{{ '}' }}$', value)):
+        return False
+    v = int(value)
+    return v >= 1920 and v <= 2002
+
+
+def checkIyr(passeport):
+    value = passeport['iyr']
+    if(not re.match(r'^[0-9]{{ '{' }}4{{ '}' }}$', value)):
+        return False
+    v = int(value)
+    return v >= 2010 and v <= 2020
+
+
+def checkEyr(passeport):
+    value = passeport['eyr']
+    if(not re.match(r'^[0-9]{{ '{' }}4{{ '}' }}$', value)):
+        return False
+    v = int(value)
+    return v >= 2020 and v <= 2030
+
+
+def checkHgt(passeport):
+    value = passeport['hgt']
+    m = re.match(r'^([0-9]+)(in|cm)$', value)
+    if(not m):
+        return False
+    (t, unit) = m.groups()
+    t = int(t)
+    if(unit == 'cm'):
+        return t >= 150 and t <= 193
+    else:
+        return t >= 59 and t <= 76
+
+
+def checkHcl(passeport):
+    value = passeport['hcl']
+    return not (not re.match(r'^#[0-9a-f]{{ '{' }}6{{ '}' }}$', value))
+
+
+def checkEcl(passeport):
+    value = passeport['ecl']
+    return value in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
+
+
+def checkPid(passeport):
+    value = passeport['pid']
+    return not(not re.match(r'^[0-9]{{ '{' }}9{{ '}' }}$', value))
+
+
+def checkCid(passeport):
+    return True
+
+allChecks = [checkByr, checkIyr, checkEyr, checkHgt,
+             checkHcl, checkEcl, checkPid, checkCid]
+
+for line in lines:
+    if(len(line) <= 0):
+        res += all(map(lambda c: c in currentPasseport, mandatory)
+                   ) and all(map(lambda c: c(currentPasseport), allChecks))
+        currentPasseport = dict()
+    else:
+        for champ in line.split(' '):
+            key, value = champ.split(':')
+            currentPasseport[key] = value
+print(res)</code></pre>
+
+
+            </div>
+        </div>
+    </div>
+</section>
