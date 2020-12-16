@@ -8,6 +8,7 @@ import { Day3Component } from './Algorithmique/AoC/day3/day3.component';
 import { Day4Component } from './Algorithmique/AoC/day4/day4.component';
 import { Day5Component } from './Algorithmique/AoC/day5/day5.component';
 import { Day6Component } from './Algorithmique/AoC/day6/day6.component';
+import { Day7Component } from './Algorithmique/AoC/day7/day7.component';
 import { HomeAlgorithmComponent } from './homeAlgorithm/homeAlgorithm.component';
 import { HomeOptimizationComponent } from './homeOptimization/homeOptimization.component';
 import { HomeComponent } from './home/home.component';
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'articles/Aoc4', component: Day4Component },
   { path: 'articles/Aoc5', component: Day5Component },
   { path: 'articles/Aoc6', component: Day6Component },
+  { path: 'articles/Aoc7', component: Day7Component },
   {
     path: 'optimization', component: HomeOptimizationComponent
   },

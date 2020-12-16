@@ -1,0 +1,212 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 7)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/7">Jour 7, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                On a en entrées un ensemble de lignes décrivant le contenu de différents types de sacs:<br />
+                Chaque sac peut contenir un/des/zéros sac(s) et ce de manière récursive.<br /><br />
+                Par exemple, si l'on a:<br />
+                <pre class="line-numbers language-python"><code>red bags contains 1 white bag
+white bags contains 1 golden bag
+golden bags contains no bag
+                </code></pre>
+                <br />
+                alors, un <code>sac rouge</code> contient un <code>sac blanc</code> qui contient un
+                <code>sac violet</code>.<br /><br />
+
+                Pour la partie 1, on souhaite compter le nombre de sacs pouvant contenir un
+                <code>sac brillant doré</code>
+                (<code>shiny
+                    golden</code>).<br />
+                Ce sac peut être contenu de manière directe (dans l'exemple précédent, les <b>sacs blancs</b>
+                contiennent de
+                manière <b>directe</b> un <code>sac doré</code>) ou de manière <b>indirecte</b> (toujours avec l'exemple
+                précédent, les
+                <code>sacs rouges</code>
+                contiennnent des <code>sacs blancs</code> qui contiennent des <code>sacs dorés</code>. <br />
+                On aurait donc pour l'exemple précédent la réponse <b>2</b> (<code>'red bag'</code> et
+                <code>'white bag'</code>).
+                <br /><br />
+                <h3>Solutions</h3>
+
+                Une première difficulté dans cet exercice réside dans l'<b>extraction des informations</b> des
+                lignes.<br />
+                Pour voir une possibilité d'extraction, je vous laisse regarder le code de la solution plus bas, mais ne
+                donnerai pas d'autres explications (d'un point de vue algorithmique, ça n'introduit aucune
+                nouveauté).<br /><br />
+
+                Par contre, les informations récupérées doivent être stockées dans une <b>structure de données</b> de
+                manière
+                intelligente pour pouvoir les exploiter.<br /><br />
+                Dans un premier temps, réfléchissons à comment calculer le nombre de sacs pouvant contenir un sac
+                doré.<br />
+                Si l'on représente chaque sac sous la forme d'un <b>noeud</b> dans un <b>graphe dirigé</b>, et que
+                chaque <b>arc</b> entre
+                les noeuds correspond au fait que le noeud parent contient N fois le sac du noeud fils (avec N une
+                étiquette de l'arc), alors on pourrait par exemple partir de chaque noeud pour voir si en parcourant le
+                graphe, on arrive au noeud du <code>sac doré</code>.<br /><br />
+                On remarque que si un <code>sac S</code> peut contenir au moins un <code>sac doré</code>, alors un
+                <code>sac S2</code> contenant un <code>sac S</code>
+                contiendra également au moins un <code>sac doré</code>. On peut donc éviter de refaire les parcours en
+                entiers en
+                stockant l'information sur chaque noeud.<br />
+                Cela nous fait passer d'une complexité en <code>O(N!)</code> (en faisant des parcours complets pour
+                chaque noeud) à
+                une complexité en <code>O(N)</code> (on ne parcourt qu'une seule fois chaque noeud).<br />
+                Les <b>noeuds rouge</b> correspondent aux sacs depuis lesquels on ne peut pas atteindre le
+                <code>sac doré</code>.<br />
+                Les <b>noeuds verts</b> correspondent aux sacs depuis lesquels on peut pas atteindre le
+                <code>sac doré</code>.<br />
+
+                <br />
+
+                <div style="text-align:center;">
+                    <img style="width:800px" src="assets/img/graphDay7.png" />
+                </div>
+                <br />
+
+                Seconde optimisation, plus légère cette fois:<br />
+                Plutôt que de partir de chaque noeud, on peut <b>inverser le sens des arcs</b> (les fils pointent du
+                doigt les
+                parents) et partir du <code>sac doré</code> pour trouver tous ses ancêtres.<br />
+                L'avantage de cette approche est que l'on ne parcourra que les sacs qui pourront contenir le sac
+                doré.<br /> L'inconvénient est que, si l'on doit conserver la structure initiale du graphe, on doit
+                dupliquer ce graphe pour générer une version inverse.
+                <br /><br />
+                Le choix entre ces deux versions dépendra du contexte (préfère-t-on optimiser le <b>temps</b> ou
+                <b>l'espace</b>?) et
+                de la distribution de données.<br />
+                Ici on privilégiera le temps en implémentant la seconde option.<br /><br />
+
+                <div style="text-align:center;">
+                    <img style="width:800px" src="assets/img/revGraphDay7.png" />
+                </div>
+                <br /><br />
+                En terme de structures de données pour représenter un graphe, on prendra la représentation par <b>liste
+                    d'adjacence</b>, qui consiste à associer à un noeud une liste d'arcs partants de ce noeud vers ses
+                noeuds
+                voisins.<br /><br />
+
+
+                <pre class="line-numbers language-python"><code>import re
+
+lines = open('input7.txt').read().split('\n')
+graphe = dict()
+grapheInverse = dict()
+for line in lines:
+    (parent, childs) = map(str.strip, line.split('bags contain'))
+    parent = parent.replace('bag', '')
+    if(re.match(r'.*[0-9].*', childs)):
+        allChilds = list(map(lambda child: child.replace(
+            'bags', '').replace('bag', '').replace('.', '').strip(), childs.split(',')))
+        for child in allChilds:
+            (compte, key) = int(child.split(' ')
+                                [0]), ' '.join(child.split(' ')[1:])
+            graphe[parent] = graphe.get(parent, [])+[(compte, key)]
+            grapheInverse[key] = grapheInverse.get(
+                key, [])+[(compte, parent)]
+visited = set()
+
+
+def parcours(node):
+    if(node in visited):
+        return 0
+    visited.add(node)
+    res = 1
+    for (_, parent) in grapheInverse.get(node, []):
+        res += parcours(parent)
+    return res
+
+
+print(parcours('shiny gold')-1)</code></pre>
+                <br /><br />
+
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/7">Jour 7, partie 2:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la partie 2, on souhaite calculer le nombre total de sacs que contient un sac doré.<br /><br />
+
+                Par exemple, avec l'entrée suivante:
+
+                <pre class="line-numbers language-python"><code>shiny golden bags contain 2 dark red bags.
+dark red bags contain 2 glowing purple bags.
+glowing purple bags contain no other bag.</code></pre>
+
+                Un sac doré contient 2 sacs, qui contiennent chacun deux autres sacs. On aura donc au total 2+2*2 = 6
+                sacs à l'intérieur du sac doré.<br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Une solution naïve serait de partir de notre graphe de tout à l'heure (celui qui n'était pas inversé),
+                et en partant du <code>sac doré</code>, faire des appels récursifs sur ses noeuds enfants pour parcourir
+                tout le graphe et calculer combien de sacs sont contenus au total.<br /><br />
+                Cette approche a le même défaut que la solution naïve de la partie 1: elle peut être très lente suivant
+                les entrées.<br />
+                Mais l'optimisation à mettre en place est très similaire!<br /><br />
+                Il suffit d'enregistrer pour chaque noeud, combien de sacs sont contenus à l'intérieur.<br />
+                Lorsque l'on fait notre parcours, si l'on repasse sur un noeud pour lequel cette information a déjà été
+                calculée, pas besoin de continuer nos appels récursifs depuis ce noeud, on remonte directement
+                l'information.<br />
+                Cette méthode est aussi appellée <b>"mémoïsation"</b> et est un exemple spécifique d'application de
+                <b>programmation dynamique</b>.<br />
+                Cela nous fait encore une fois passer d'une complexité en <code>O(N!)</code> vers du
+                <code>O(N)</code>.<br /><br />
+                Si on utilise un dictionnaire pour enregistrer cette information,
+                l'implémentation se déduit naturellement:
+
+                <pre class="line-numbers language-python"><code>import re
+lines = open('input7.txt').read().split('\n')
+graphe = dict()
+for line in lines:
+    (parent, childs) = map(str.strip, line.split('bags contain'))
+    parent = parent.replace('bag', '')
+    if(re.match(r'.*[0-9].*', childs)):
+        allChilds = list(map(lambda child: child.replace(
+            'bags', '').replace('bag', '').replace('.', '').strip(), childs.split(',')))
+        for child in allChilds:
+            (compte, key) = int(child.split(' ')
+                                [0]), ' '.join(child.split(' ')[1:])
+            graphe[parent] = graphe.get(parent, [])+[(compte, key)]
+
+compte = dict()
+
+def parcours(node):
+    if(node in compte):
+        return compte[node]
+    res = 1
+    for (nombre, parent) in graphe.get(node, []):
+        res += nombre*parcours(parent)
+    compte[node] = res
+    return res
+
+print(parcours('shiny gold')-1)</code></pre>
+
+
+            </div>
+        </div>
+    </div>
+</section>
