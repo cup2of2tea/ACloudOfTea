@@ -1,0 +1,291 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 5)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/5">Jour 5, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                On a <b>128</b> rangées de sièges, chacune de ces rangées contenant <b>8</b> sièges.<br />
+                En entrée, on recupère une chaîne de caractère contenant:
+                <ul>
+                    <li>8 caractères compris dans le set <code>{{ '{' }}'F','B'{{ '}' }}</code></li>
+                    <li> 3 caractères compris dans le set <code>{{ '{' }}'L','R'{{ '}' }}</code> </li>
+                </ul>
+                Les 8 premiers caractères de la chaîne permettent d'identifier de manière unique une rangée en
+                effectuant les opérations suivantes:
+                <ul>
+                    <li>On part de l'intervalle <code>[0,127]</code></li>
+                    <li>On itére sur l'intégralité des caractères et si:
+                        <ul>
+                            <li>
+                                On a le caractère <b>F</b> (<b>Front</b> / <b>Avant</b>), on réduit l'intervalle de
+                                moitié en
+                                prenant
+                                la
+                                première moitié de l'intervalle actuel
+                            </li>
+                            <li>
+                                On a le caractère <b>B</b> (<b>Back</b> / <b>Arrière</b>), on réduit l'intervalle de
+                                moitié en
+                                prenant
+                                la
+                                seconde moitié de l'intervalle actuel
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        Quand on a fini d'itérer sur la chaîne de caractères, on a un intervalle réduit à un unique
+                        élément, qui correspond au numéro de rangée.
+                    </li>
+                </ul>
+
+                Exemple:
+                <br />
+                <pre class="line-numbers language-python"><code>chaine = 'FFFFBBBBLLL'
+depart = [0,127]
+F => [0,63]
+F => [0,31]
+F => [0,15]
+B => [8,15]
+B => [12,15]
+B => [14,15]
+B => [15,15]</code></pre>
+
+                <br />
+                Pour déterminer la colonne, le principe est le même, mais appliqué aux 3 derniers caractères, en partant
+                de l'intervalle <code>[0,7]</code>, et en
+                appliquant le traitement <b>"F"</b> aux caractères L (<b>Left</b>/<b>Gauche</b>), et le traitement
+                <b>"B"</b> aux
+                caractères
+                R
+                (<b>Right</b>/<b>Droite</b>).<br />
+
+                L'identifiant d'un siège est ensuite calculé avec la formule suivante:
+                <br />
+                <pre class="line-numbers language-python"><code>id = rangee*8 + colonne</code></pre>
+
+                A partir d'une liste de chaînes de caractères décrivant un siège, il faut trouver le plus grand
+                identifiant du siège présent dans cette liste.<br /><br />
+
+                <h3 id="day3_part1_statement"> Solutions </h3>
+
+                La première étape est de calculer un identifiant de siège à partir d'une chaîne de caractère.
+
+                Deux solutions sont possibles ici:
+                <ul>
+                    <li> Une solution naïve, qui consistera à réaliser le traitement comme décrit dans l'énoncé </li>
+                    <li> Une solution un peu plus futée, qui utilise le concept de représentation binaire</li>
+                </ul>
+
+                Pour la première solution, l'implémentation découle naturellement de l'énoncé, je ne donnerai donc pas
+                plus de précision.<br />
+                Je vous donne tout de même un exemple d'implémentation:
+
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda l: l.strip(), open('input5.txt').readlines()))
+res = 0
+for line in lines:
+    rangee = [0, 127]
+    colonne = [0, 7]
+    for car in line:
+        if(car == 'F'):
+            rangee[1] = (rangee[0]+rangee[1])//2
+        elif(car == 'B'):
+            rangee[0] = (rangee[0]+rangee[1]+1)//2
+        elif(car == 'L'):
+            colonne[1] = (colonne[0]+colonne[1])//2
+        elif(car == 'R'):
+            colonne[0] = (colonne[0]+colonne[1]+1)//2
+    res = max(res, rangee[0]*8+colonne[0])
+print(res)</code></pre>
+
+                <br /><br />
+
+                Pour la seconde solution, on peut avoir une première intuition en remarquant que certaines valeurs de
+                l'énoncé semblent familières.<br />
+                En effet, <b>127</b> et <b>63</b> sont des puissances de 2 auxquelles on a retiré <b>1</b>, et <b>32</b>
+                est une puissance de
+                <b>2</b>.<br /><br />
+
+                Une seconde intuition peut émerger de la composition de la chaîne de caractère décrivant les rangées et
+                colonnes:<br />
+                On a à chaque fois une dualité, soit entre <b>front</b> et <b>back</b> pour les rangées, soit entre
+                <b>left</b> et <b>right</b> pour
+                les colonnes.
+                <br /><br />
+
+                Tout ça peut donc nous amener à penser qu'une représentation binaire, dans laquelle on manipule des
+                puissances de <b>2</b>, pourrait être impliquées.<br /><br />
+
+
+                Pour rappel, la représentation binaire d'un nombre est une suite de chiffres <b>'0'</b> et <b>'1'</b>
+                décrivant ce
+                nombre.<br />
+                La représentation "base 10" fonctionne de la manière suivante:<br />
+                Si on a un nombre <code>abc</code> (a,b et c des chiffres entre 0 et 9), alors sa valeur est de <code>a*(10^2) + b*(10^1) +
+                c*(10^0)</code>.<br />
+                Dans le cas d'une représentation binaire, le principe est identique, mais on multiplie chaque chiffre
+                par une puissance de 2.<br /><br />
+                Par exemple, 13 en base 2 donnerait <code>"1101"</code> car :<br />
+                <code>13 = 1*(2^3) + 1*(2^2) + 0*(2^1) + 1*(2^0)</code>
+                <br /><br />
+
+                Une première observation intéressante est que le nombre de valeurs de la forme "0 suivi de N chiffres"
+                est égal au nombre de valeurs de la forme "1 suivi de N chiffres", et que ces deux sets produisent 2
+                intervalles continus sans intersection.<br />
+                Par exemple pour N = 2, on a:
+                <pre class="line-numbers language-python"><code>000 = 0, 001 = 1, 010 = 2, 011 = 3
+100 = 4, 101 = 5, 110 = 6, 111 = 7</code></pre>
+
+                Egalement, si on a un intervalle de la forme <code>[abc0000,abc1111]</code>, on peut diviser
+                l'intervalle en 2
+                parties égales, avec:
+                <ul>
+                    <li>
+                        l'intervalle inférieur = <code>[abc0000,abc0111]</code>
+                    </li>
+                    <li>
+                        l'intervalle supérieur = <code>[abc1000,abc1111]</code>
+                    </li>
+                </ul>
+
+                D'une part, les intervalles obtenus sont également de la forme <code>[abcd000,abcd111]</code> tous les
+                deux (ce qui
+                laisse entendre qu'on peut réitérer et de nouveau diviser en <b>2</b> l'intervalle), et on
+                commence à reconnaître un peu le processus de la solution naïve, d'autant plus que l'intervalle
+                <code>[0,127]</code>
+                peut s'exprimer en binaire de la façon suivante: <code>[0000000,1111111]</code>.<br /><br />
+
+                Pour ne pas surcharger trop l'article, je laisserai au lecteur le soin de raccorder ces informations
+                avec la solution que je vais vous décrire maintenant:<br /><br />
+                Lorsque l'on choisit le <b>front</b> / <b>left</b> d'une rangée / colonne, on prend la moitié inférieur
+                de
+                l'intervalle, et inversement pour le <b>back</b>/<b>right</b>.<br />
+                Si on considère que F et L sont des bits valorisés à 0, et B et R sont des bits valorisés à 1, alors on
+                a:
+                <ul>
+                    <li>
+                        la rangée qui est égale à la valeur binaire de la sous-chaîne des <b>'F'</b> et <b>'B'</b>
+                        mappés vers <b>0</b> et <b>1</b>
+                    </li>
+                    <li>
+                        la colonne qui est égale à la valeur binaire de la sous-chaîne des <b>'L'</b> et <b>'R'</b>
+                        mappés vers <b>0</b> et <b>1</b>
+                    </li>
+                </ul>
+
+                Par exemple, si on a <code>FBFBBFFLRL</code>:
+
+                <pre class="line-numbers language-python"><code>rangee: FBFBBFF => 0101100 => 44
+colonne: LRL => 010 => 2</code></pre>
+                <br /><br />
+                Dernier point pour calculer l'id: on nous demande de multiplier par 8 la rangée et de l'aditionner à la
+                colonne.
+                Or:
+                <pre class="line-numbers language-python"><code>rangee = s[0]*(2^6)+s[1]*(2^5) ... +s[6]*(2^0)
+colonne = s[7]*(2^2)+s[8]*(2^1)+s[9]*(2^0)
+id = rangee * 8 + colonne = rangee * 2^3 + colonne</code></pre>
+                Si l'on distribue le produit <code>2^3</code>, on a:
+                <pre class="line-numbers language-python"><code>id=s[0]*(2^(6+3))+s[1]*(2^(5+3)) ... +s[6]*(2^(0+3))+s[7]*(2^2)+s[8]*(2^1)+s[9]*(2^0)
+id=s[0]*(2^9)+s[1]*(2^8) ... +s[6]*(2^3)+s[7]*(2^2)+s[8]*(2^1)+s[9]*(2^0)
+id=base2(s)</code></pre>
+
+                Ce qui fait que l'on peut directement calculer l'id via le masque binaire sans avoir à passer par le
+                calcul des rangées ou colonnes.
+
+                Un code utilisant cette technique pourrait donc être le suivant:
+
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda l: l.strip(), open('input5.txt').readlines()))
+res = 0
+for line in lines:
+    # int(a,b) convertit une chaîne A représentée en base B en entier
+    id = int(line.replace('F', '0').replace('B', '1').replace('L', '0').replace('R', '1'), 2)
+    res = max(res, id)
+print(res)</code></pre>
+                <br /><br />
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/5">Jour 5, partie 2:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                La seconde partie consiste à réutiliser le même système de calcul des identifiants de sièges, pour
+                trouver le "siège manquant" qui dans l'histoire de l'énoncé correspond à notre siège.<br />
+
+                L'id à trouver n'est donc pas dans la liste, mais on sait également que le siège d'id directement
+                supérieur existe dans la liste, et de même pour le siège d'id directement inférieur.<br /><br />
+
+                Par exemple, si on obtient la liste des identifiants suivante:
+                <pre class="line-numbers language-python"><code>[13,10,9,11]</code></pre>
+                le siège manquant est le siège <code>12</code>.
+                <br /><br />
+                <h3>Solutions</h3>
+
+                Rien de bien sexy dans cette seconde partie. On a déjà notre calcul d'identifiant designé pendant la
+                première partie, il nous reste juste à trouver ce siège manquant.<br /><br />
+
+                Comme bien souvent, on peut procéder de plusieurs manières:
+                <ul>
+                    <li>Version "meh":
+                        <ul>
+                            <li>
+                                On parcourt une première fois la liste en stockant les identifiants dans une
+                                <b>hashmap</b> par
+                                exemple
+                            </li>
+                            <li>
+                                On reparcourt une seconde fois, et pour chaque élément <code>e</code>, on regarde si
+                                <code>e+1</code> n'existe pas et <code>e+2</code> existe. Si on est dans cette
+                                situation, <code>e+1</code> est notre réponse.
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        Version plus sympa:
+                        <ul>
+                            <li>
+                                On <b>trie</b> la liste
+                            </li>
+                            <li>
+                                On la parcourt, et si on a <code>arr[i] == arr[i+1]-2</code>, alors
+                                <code>arr[i]+1</code> est notre réponse.
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <br />
+                L'implémentation de la seconde version donne le code suivant:<br /><br />
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda l: l.strip(), open('input5.txt').readlines()))
+l = []
+for line in lines:
+    # int(a,b) convertit une chaîne A représentée en base B en entier
+    id = int(line.replace('F', '0').replace(
+        'B', '1').replace('L', '0').replace('R', '1'), 2)
+    l.append(id)
+l.sort()
+for i in range(len(l)-1):
+    if(l[i] == l[i+1]-2):
+        print(l[i]+1)
+        break</code></pre>
+            </div>
+        </div>
+    </div>
+</section>

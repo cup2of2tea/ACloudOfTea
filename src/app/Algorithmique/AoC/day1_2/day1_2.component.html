@@ -49,9 +49,7 @@ for i in range(len(values)):
         a, b = values[i], values[j]
         if(a+b == 2020):
             print(a*b)
-            sys.exit(0)
-                    
-                </code></pre>
+            sys.exit(0)</code></pre>
 
                 <h3 id="day1_part_1_other_solutions">Solution avec tri</h3>
                 Une autre solution pouvait consister à trier la liste des valeurs.
@@ -137,8 +135,7 @@ for i in range(len(values)):
         V2 = values[limiteGauche]
         if(V1+V2 == 2020):
             print(V1*V2)
-            sys.exit(0)
-                </code></pre>
+            sys.exit(0)</code></pre>
 
                 <br /><br />
                 <h4 id="day1_part_1_other_solutions_dichotomie">Solution avec deux pointeurs</h4>
@@ -178,8 +175,7 @@ for gauche in range(len(values)):
         droite -= 1
     if(values[droite]+values[gauche] == 2020):
         print(values[droite]*values[gauche])
-        sys.exit(0)
-                                    </code></pre>
+        sys.exit(0)</code></pre>
 
 
                 <h3 id="day1_part_1_hash">Solution avec hash</h3>
@@ -290,8 +286,7 @@ for line in lines:
             compte += 1
     if(compte >= minimum and compte <= maximum):
         res += 1
-print(res)
-                    </code></pre>
+print(res)</code></pre>
 
                 <br /><br />
 
@@ -359,8 +354,7 @@ for line in lines:
     idx1, idx2 = int(idx1), int(idx2)
     if((password[idx1-1] == car) ^ (password[idx2-1] == car)):
         res += 1
-print(res)                    
-</code></pre>
+print(res)</code></pre>
             </div>
         </div>
     </div>
