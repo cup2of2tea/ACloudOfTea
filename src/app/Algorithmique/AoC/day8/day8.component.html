@@ -1,0 +1,247 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 7)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/7">Jour 8, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour ce problème, il fallait lire un programme écrit dans un langage proche de l'<b>assembleur</b> et
+                qui
+                comportait 3 types d'instructions:
+                <ul>
+                    <li>
+                        <code>JMP</code> valeur: Instruction incrémentant le pointeur d'instruction de la valeur
+                        indiquée
+                    </li>
+                    <li>
+                        <code>ACC</code> valeur: Instruction incrémentant un registre <code>accumulateur</code> de la
+                        valeur indiquée
+                    </li>
+                    <li>
+                        <code>NOP</code> valeur: Instruction ne faisant rien
+                    </li>
+                </ul>
+                <br />
+                Après l'exécution de chacune de ces instructions (sauf pour le <code>JMP</code>), le pointeur
+                d'instruction est
+                ensuite incrementé de <b>1</b> pour passer à l'instruction suivante.<br /><br />
+
+                Dans la première partie, il est demandé de simuler le programme jusqu'à ce que celui-ci boucle sur une
+                instruction déjà exécutée précédemment.<br />
+                A ce moment de l'exécution du programme, l'accumulateur contiendra la valeur qu'il faudra soumettre pour
+                valider le problème.
+
+
+                <h3>Solution</h3>
+
+                Cette première partie ne laissait pas tellement de place à la créativité. Sauf si l'on sortait des
+                sentiers battus, les solutions étaient toutes similaires, et reposaient sur la <b>simulation</b> du
+                programme,
+                avec une <b>détection de cycle</b>.<br /><br />
+
+                Seul ce dernier point de détection de cycle pouvait montrer différentes versions, notamment dans les
+                <b>structures</b> utilisées.<br />
+                Les différences concernant la <b>complexité algorithmique spatiale</b>, et en <b>temps d'insertion</b>
+                et de <b>recherche
+                    d'un indice</b>.
+                On pouvait par exemple utiliser:
+                <ul>
+                    <li>Une simple <b>liste</b> classique dans laquelle on insère les instructions visitées (recherche:
+                        <code>O(N)</code>,
+                        insertion : <code>O(1)</code>)/li>
+                    <li>Un <b>treeSet</b> (recherche: <code>O(log N)</code>, insertion: <code>O(log N)</code>) </li>
+                    <li>Un <b>tableau de hachage</b> / <b>hashMap</b> (la clé correspondant à l'index d'instruction)
+                        (recherche:
+                        <code>O(1)</code>,
+                        insertion: <code>O(1)</code>) </li>
+                </ul><br />
+
+                On prendra la dernière structure avec un simple tableau de taille <b>300</b> (on a <b>300</b>
+                instructions).<br />
+
+                La simulation combinée avec la détection de cycle peut être implémentée via ce code:
+                <pre class="line-numbers language-python"><code>lines = open('input8.txt').read().split('\n')
+program = list(map(lambda i: (i.split(' ')[0], int(i.split(' ')[1])), lines))
+
+currentInstruction = 0
+accumulateur = 0
+
+visited = [False for _ in program]
+
+while(not visited[currentInstruction]):
+    visited[currentInstruction] = True
+    (op, val) = program[currentInstruction]
+    if(op == 'acc'):
+        accumulateur += val
+    elif(op == 'jmp'):
+        currentInstruction += val - 1
+    currentInstruction += 1
+print(accumulateur)</code></pre>
+                <br /><br />
+
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/7">Jour 8, partie 2:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la seconde partie, on veut trouver une unique instruction de type <code>JMP</code> ou
+                <code>NOP</code>, telle que :
+                <ul>
+                    <li>
+                        si cette instruction est de type <code>JMP</code>, en la changeant en <code>NOP</code> on arrive
+                        à la fin du programme
+                    </li>
+                    <li>
+                        si cette instruction est de type <code>NOP</code>, en la changeant en <code>JMP</code> on arrive
+                        à la fin du programme
+                    </li>
+                </ul>
+
+                On ne peut changer qu'une seule instruction.<br />
+                De manière formelle, "arriver à la fin du programme" correspond à atteindre l'instruction d'indice X+1,
+                si X est le nombre d'instructions du programme.
+                <br /><br />
+                <h3>Solutions</h3>
+
+                Il existe deux solutions principales.<br />
+                La première, très intuitive, consiste simplement à tenter toutes les modifications possibles des
+                instructions <code>JUMP</code>/<code>NOP</code>.<br />
+                Ca donne une complexité en <code>O(N^2)</code>:
+                <ul>
+                    <li>
+                        On a <b>N</b> changements possibles au maximum (si on a aucune instruction
+                        <code>ACC</code>)
+                    </li>
+                    <li>
+                        Chaque simulation n'exécute au maximum que <b>N</b> instructions vu que si on exécute deux
+                        fois la même instruction, on aura bouclé.
+                    </li>
+                </ul>
+
+                <br /><br />
+                L'entrée fourni étant très petite, cette complexité reste acceptable.<br />
+                Mais il est possible de faire mieux, avec une complexité en <code>O(N)</code>.
+                <br /><br />
+
+                Si l'on fait un parcours depuis chaque instruction pour savoir si depuis une instruction, sans changer
+                aucune instruction, on peut accéder à la fin du programme, on peut enregistrer cette information pour
+                chaque instruction.<br /><br />
+
+                Cette première étape se fait en complexité <code>O(N)</code>, vu que chaque noeud "instruction" ne sera
+                visité qu'une
+                fois: s'il a déjà été visité, alors il aura déjà été marqué comme pouvant accéder ou non à la fin, et
+                donc propager cette information au noeud précédent en complexité constante.<br /><br />
+
+                Ici, le schéma présente cette première étape:
+                <ul>
+                    <li> <code>Depart</code> est l'instruction à partir de laquelle on lance le parcours (on le fait
+                        pour chaque
+                        instruction)</li>
+                    <li> La couleur blanche correspond à un noeud pas encore exploré</li>
+                    <li> La couleur verte correspond à un noeud exploré qui peut accèder à la fin du programme sans
+                        changement</li>
+                    <li> La couleur rouge correspond à un noeud exploré ne pouvant pas accèder à la fin du programme
+                    </li>
+                </ul>
+                <br /><br />
+                Un programme correspondant pourrait être par exemple le suivant:
+                <pre class="line-numbers language-python"><code>ACC +42
+JMP -1
+NOP 1
+ACC 1337</code></pre>
+                <br /><br />
+                <div style="text-align:center;">
+                    <img style="width:1000px" src="assets/img/PremiereEtapeDay8.png" />
+                </div>
+                <br /><br />
+
+                La seconde étape consiste à simuler le programme comme pour la partie 1. <br />
+                Sauf qu'à chaque nop / jmp croisé, on vérifie si le fait de changer cette instruction permet d'accéder à
+                un noeud vert:<br />
+                <ul>
+                    <li>
+                        Si c'est le cas, on switche cette instruction (on a trouvé l'<b>instruction problématique</b>)
+                        et on
+                        continue le programme jusqu'à sa terminaison de manière classique.
+                    </li>
+                    <li>
+                        Sinon, on garde l'instruction dans son état originale, et on continue l'exécution.
+                    </li>
+                </ul>
+
+                Même principe que pour la partie 1, cette simulation se fait en un maximum de <b>N</b>
+                instructions.<br /><br />
+
+                Sur le schéma, la seconde instruction posait problème: le <code> JMP -1 </code> doit être remplacé par
+                un <code> NOP -1 </code>
+                <br /><br />
+                <div style="text-align:center;">
+                    <img style="width:200px" src="assets/img/SecondeEtapeDay8.png" />
+                </div>
+                <br /><br />
+
+                Une implémentation donnerait par exemple :
+                <pre class="line-numbers language-python"><code>lines = open('input8.txt').read().split('\n')
+program = list(map(lambda i: (i.split(' ')[0], int(i.split(' ')[1])), lines))
+
+currentInstruction = 0
+accumulateur = 0
+
+NOT_VISITED, CAN_FINISH, CANT_FINISH = 0, 1, 2
+
+coloration = dict()
+coloration[len(program)] = CAN_FINISH
+
+
+def parcours(index):
+    if(coloration.get(index, NOT_VISITED) != NOT_VISITED):
+        return coloration[index]
+    if(index > len(program) or index < 0):
+        return CANT_FINISH
+    (op, val) = program[index]
+    nextIndex = [index+1, index+val][op == 'jmp']
+    coloration[index] = CANT_FINISH
+    coloration[index] = parcours(nextIndex)
+    return coloration[index]
+
+
+for i in range(len(program)):
+    parcours(i)
+
+while(currentInstruction != len(program)):
+    (op, val) = program[currentInstruction]
+    if(coloration[currentInstruction] == CANT_FINISH):
+        if(op == 'jmp' and coloration.get(currentInstruction+1, NOT_VISITED) == CAN_FINISH):
+            currentInstruction += 1
+            continue
+        elif(op == 'nop' and coloration.get(currentInstruction+val, NOT_VISITED) == CAN_FINISH):
+            currentInstruction += val
+            continue
+    accumulateur += [0, val][op == 'acc']
+    currentInstruction += [1, val][op == 'jmp']
+print(accumulateur)</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>
