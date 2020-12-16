@@ -21,6 +21,7 @@ import { Day1_2Component } from './Algorithmique/AoC/day1_2/day1_2.component';
 import { Day3Component } from './Algorithmique/AoC/day3/day3.component';
 import { Day4Component } from './Algorithmique/AoC/day4/day4.component';
 import { Day5Component } from './Algorithmique/AoC/day5/day5.component';
+import { Day6Component } from './Algorithmique/AoC/day6/day6.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { Day5Component } from './Algorithmique/AoC/day5/day5.component';
     Day1_2Component,
     Day4Component,
     Day5Component,
+    Day6Component,
     Day3Component,
   ],
   imports: [

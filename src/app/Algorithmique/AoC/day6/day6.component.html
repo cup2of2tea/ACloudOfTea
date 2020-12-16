@@ -1,0 +1,148 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 6)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/6">Jour 6, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+                On a en entrées plusieurs groupes de chaînes de caractères (délimités par des lignes vides).
+                Pour chaque groupe, il est demandé de trouver le nombre de caractères qui apparaissent au moins une fois
+                dans le groupe.
+                <br />
+                Par exemple, si l'on a un groupe qui contient les lignes suivantes:
+                <pre class="line-numbers language-python"><code>abc
+ab
+ac
+ad</code></pre>
+                alors, 4 caractères apparaissent(<code>'a'</code>, <code>'b'</code>, <code>'c'</code> et
+                <code>'d'</code>).
+                <br />
+                La réponse à renvoyer est la somme globale (à travers chaque groupe) de ces caractères comptés.
+                <br /><br />
+                Exemple avec <b>2</b> groupes:
+                <pre class="line-numbers language-python"><code>abc
+ab
+ac
+
+ab
+ab</code></pre>
+
+                Le groupe <b>1</b> a 3 lettres distinctes(<code>'a'</code>,<code>'b'</code> et <code>'c'</code>), le
+                groupe
+                <b>2</b> en a
+                deux
+                (<code>'a'</code> et
+                <code>'b'</code>).<br /> La
+                réponse est donc <b>3</b>.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solutions </h3>
+
+                Si l'on connaît bien les structures de données, ce problème peut être résolu très facilement.
+                <br /><br />
+                En effet, il existe une structure permettant d'insérer des éléments de manière unique : le
+                <b>set</b>.<br />
+
+                La méthode "<b>union</b>" du <b>set</b> peut nous être utile ici: elle prend en
+                paramètre un
+                second set, et nous renvoie un <b>set</b> contenant les éléments uniques présents dans au moins un des
+                deux sets.
+
+                <pre class="line-numbers language-python"><code>s1=set(['a','b','d'])
+s2=set(['c','d','a'])
+s1.union(s2) # Retourne le set {{'{'}}'a','b','c','d'{{'}'}}</code></pre>
+
+                En appliquant ça à notre problème, on peut donc trouver pour chaque groupe les éléments communs:
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda l: l.strip(), open('input6.txt').readlines()))
+lines += ['']  # Garde-fou
+currentGroup = set()
+res = 0
+for l in lines:
+    if(len(l) == 0):
+        res += len(currentGroup)
+        currentGroup = set()
+    else:
+        currentGroup = currentGroup.union(set(l))
+print(res)
+</code></pre>
+
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/6">Jour 6, partie 2:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+                On a en entrées plusieurs groupes de chaînes de caractères (délimités par des lignes vides).
+                Pour chaque groupe, il est demandé de trouver le nombre de caractères que l'on retrouve en commun dans
+                l'intégralité des lignes de ce groupe.
+
+                Par exemple, si l'on a un groupe qui contient les lignes suivantes:
+                <pre class="line-numbers language-python"><code>abc
+ab
+ac
+ad</code></pre>
+                alors, seul <code>'a'</code> doit être compté (<code>'b'</code> et <code>'c'</code> ne sont pas présents
+                sur <b>2</b> lignes, <code>'d'</code> sur <b>3</b> lignes).<br />
+                <br />
+                La réponse à renvoyer est la somme globale (à travers chaque groupe) de ces caractères comptés.
+                <br /><br />
+                Exemple avec <b>2</b> groupes:
+                <pre class="line-numbers language-python"><code>abc
+ab
+ac
+
+ab
+ab</code></pre>
+
+                Le groupe <b>1</b> a une lettre commune à toutes les lignes (<code>'a'</code>), le groupe <b>2</b> en a
+                deux
+                (<code>'a'</code> et
+                <code>'b'</code>).<br /> La
+                réponse est donc <b>3</b>.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solutions </h3>
+
+                La méthode "<b>intersection</b>" du <b>set</b> nous permet de résoudre le problème très
+                facilement: elle prend en
+                paramètre un
+                second set, et nous renvoie un <b>set</b> contenant les éléments qui sont en communs entre les deux
+                sets.
+
+                <pre class="line-numbers language-python"><code>s1=set(['a','b','d'])
+s2=set(['c','d','a'])
+s1.inter(s2) # Retourne le set {{'{'}}'a','d'{{'}'}}</code></pre>
+
+                En appliquant ça à notre problème, on peut donc trouver pour chaque groupe les éléments communs:
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda l: l.strip(), open('input6.txt').readlines()))
+lines += ['']  # Garde-fou
+currentGroup = set([chr(i) for i in range(ord('a'), ord('z')+1)])
+res = 0
+for l in lines:
+    if(len(l) == 0):
+        res += len(currentGroup)
+        currentGroup = set([chr(i) for i in range(ord('a'), ord('z')+1)])
+    else:
+        currentGroup = currentGroup.intersection(set(l))
+print(res)
+</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>
