@@ -18,6 +18,10 @@ export class HomeAlgorithmComponent implements OnInit {
     this.posts = [
 
       {
+        route: '/articles/Aoc9',
+        title: 'Jour 9 de l\'Advent of Code'
+      },
+      {
         route: '/articles/Aoc8',
         title: 'Jour 8 de l\'Advent of Code'
       },

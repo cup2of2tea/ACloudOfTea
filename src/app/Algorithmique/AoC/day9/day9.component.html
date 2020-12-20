@@ -1,0 +1,225 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 9)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/9">Jour 9, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour aujourd'hui, on récupère une liste d'entiers, et l'on doit vérifier que pour chaque élément autre
+                que les 25 premiers, si l'élément est à l'indice i, alors il existe <code>i-25 <= j < k < i</code> tels
+                que <code>tab[j]+tab[k] = tab[i]</code>.<br /><br />
+
+                Le premier élément qui ne répond pas à cette règle sera l'intrus (et la réponse) de la partie 1.
+
+                Par exemple, si à la place d'une prédécence d'ordre 25, on simplifie à une valeur de 3, alors pour
+                l'entrée:
+
+                <pre class="line-numbers language-python"><code>1
+2
+3
+4
+6
+10
+11
+16</code></pre>
+
+                Alors on a :
+                <pre class="line-numbers language-python"><code>tab[3] = 4  = tab[0]+tab[2]     // i = 3, j = 0, k = 2
+tab[4] = 6  = tab[1]+tab[3]     // i = 4, j = 1, k = 3
+tab[5] = 10 = tab[3]+tab[4]     // i = 5, j = 3, k = 4
+tab[6] = 11
+tab[7] = 16 = tab[4]+tab[5]     // i = 7, j = 4, k = 5</code></pre>
+                <br />
+                Et donc, l'élément <code>tab[6]=11</code> est l'intrus.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Ici on a un cas un peu particulier, où une solution optimisée théoriquement peut être en pratique plus
+                lente qu'une solution naïve.
+                <br /><br />
+                La solution naïve se devine très facilement:
+                il suffit d'itérer sur chaque élément, vérifier pour chaque pair d'éléments dans les 25 précédents si la
+                somme de ceux-ci peut être égale à l'élément qu'on cherche.
+                <br /><br />
+                L'ordre de grandeur des opérations est de l'ordre de <code>N*(25^2)</code>. On peut affiner légèrement
+                cet ordre :
+                <br /><br />
+                Pour chaque <code>j</code> testé, on ne vérifiera que les <code>k</code> compris entre <code>j+1</code>
+                et <code>i-1</code>.<br />
+
+                Donc on aura pour :
+                <ul>
+                    <li><code>j = i-25</code>, on a <code>24 k</code> différents</li>
+                    <li><code>j = i-24</code>, on a <code>23 k</code> différents</li>
+                    <li>...</li>
+                </ul>
+                soit <code>24+23+22... = (24*25)/2 </code> pairs <code>(j,k)</code> vérifiées.<br /><br />
+
+
+                On pourrait à la place stocker les données des <b>25</b> précédents nombres, et les mettre à jour au fur
+                et à mesure du parcours de la liste, en retirant le <b>25</b> ème élément plus ancien, et en ajoutant le
+                nouveau élément après l'avoir traité.<br />
+                Cette technique s'apparente à une approche de type <b>"fenêtre coulissante"</b>.<br />
+                Ensuite, un peu comme pour le jour 1, plutôt que d'itérer sur chaque pair <code>(j,k)</code>, on peut
+                itérer uniquement sur les indices <code>j</code>, et chercher si l'élément <code>tab[k]-tab[j]</code>
+                existe dans
+                la structure.<br />
+                Une structure de ce type pourrait être par exemple un multiset, qui permet de faire des requêtes
+                d'insertion / recherche en <code>O(logN)</code>, tout en conservant la multiplicité éventuelle des
+                éléments (contrairement aux sets qui ne conservent les éléments que de manière unique).<br /><br />
+                Ce genre de structure, suivant l'implémentation, peut néanmoins être relativement lourde, notamment pour
+                des données de petite tailles.<br />
+                L'ordre de grandeur pour cette seconde stratégie est <code>N*25*log(25)</code> opérations, mais selon
+                certaines
+                situations, la stratégie naïve peut rester préférable.<br /><br />
+
+                Une implémentation de la stratégie naïve pourrait prendre la forme suivante:
+                <br /><br />
+                <pre class="line-numbers language-python"><code>lines = list(map(int, open('input9.txt').read().split('\n')))
+
+for i in range(25, len(lines)):
+    found = False
+    for j in range(i-25, i):
+        if(found):
+            break
+        for k in range(j+1, i):
+            if(lines[j]+lines[k] == lines[i]):
+                found = True
+                break
+    if(not found):
+        print(lines[i])
+        break</code></pre>
+
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/9">Jour 9, partie 2:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                En seconde partie, on cherche à trouver un ensemble d'éléments contiguës (au minimum 2) de telle sorte
+                que la somme de ces éléments soit égale à l'intrus trouvé en partie 1.<br /><br />
+
+                Par exemple, si on a comme intrus <b>42</b>, et qu'on a entrée:
+                <pre class="line-numbers language-python"><code>14
+12
+7
+13              
+5
+17
+16</code></pre>
+                <br />
+                alors on a 7+13+5+17. <br /><br />
+
+                La réponse à soumettre est la somme des du plus grand et du plus petit nombre de l'intervalle (ici,
+                5+17=22).
+
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Une solution naïve consisterait simplement à essayer toutes les pairs (x,y) avec (<code>x < y</code>) et
+                faire la somme de l'intervalle [x,y] pour vérifier si l'on atteint la cible. <br />
+                Cette solution est en <code>O(N^2)</code> et ne présente pas grand intérêt.<br /><br />
+                <pre class="line-numbers language-python"><code>import sys
+lines = list(map(int, open('input9.txt').read().split('\n')))
+
+intrus = 22477624  # Remplacer par sa valeur
+for i in range(len(lines)):
+    for j in range(i+1, len(lines)):
+        if(sum(lines[i:j+1]) == intrus):
+            print(min(lines[i:j+1])+max(lines[i:j+1]))
+            sys.exit(0)</code></pre>
+
+                <br /><br />
+                Une solution plus optimisée utilise un concept très intéressant en algorithmique: le <b>balayage de
+                    données avec 2
+                    pointeurs</b>.<br />
+                Le principe présente des similarités avec le concept de <b>fenêtre glissante</b>, qui contiendra un
+                intervalle de données, et qui sera mise à jour au fur et à mesure du balayage d'une structure plus
+                grosse (liste par exemple), sans recalculer l'intégralité des informations de l'intervalle.<br /><br />
+
+                Dans le cas d'un balayage à deux pointeurs, c'est un peu un balayage avec une <b>fenêtre glissante</b>,
+                mais de taille dynamique.<br />
+                On a un pointeur <code>gauche</code> et un pointeur <code>droite</code> qui pointent sur les extrêmes de
+                l'intervalle courant.<br /><br />
+
+                <b>Etape 0</b>: Les deux pointeurs sont initalisés à <b>-1</b>.<br />
+                <b>Etape 1</b>: A chaque itération de la boucle externe, on incrémente le pointeur <code>droite</code>,
+                en
+                ajoutant la donnée pointée à un accumulateur <code>somme</code>.<br />
+                <b>Etape 2</b>: Tant que cette somme est supérieure à la valeur recherchée, on enlève la donnée pointée
+                par
+                <code>gauche</code> de <code>somme</code>, et on incrémente le pointeur.<br />
+                Si cette somme est égale (et que l'on n'a pas <code>gauche = droite</code> (intervalle de taille 1)),
+                alors on a trouvé notre intervalle.<br />
+                Sinon on boucle en repartant de l'étape 1.<br /><br />
+
+                En procédant ainsi, on trouve pour chaque indice <code>droite</code> le plus petit intervalle
+                <code>[gauche,droite]</code> telle que:
+                <pre class="line-numbers language-python"><code>somme(tab[gauche:droite+1]) <= cible</code></pre>
+                <br /><br />
+                Egalement, comme nos pointeurs ne font qu'augmenter, on ne peut avoir au maximum que <code>2*N</code>
+                étapes.<br /><br />
+
+
+                <div class="proTip">
+                    <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
+                    Il existe un type d'algorithme qui ressemble beaucoup à un balayage linéaire (en complexité
+                    <code>O(N)</code>) avec deux pointeurs, mais qui sont en réalité de complexité
+                    <code>O(N^2)</code>.<br />
+                    J'appelle ces algorithmes les algorithmes <b>accordéons</b>.<br />
+                    La principale différence est que plutôt qu'avoir deux pointeurs ne se déplaçant que dans une seule
+                    direction, on a au moins un des deux pointeurs qui peut prendre plusieurs directions.<br /><br />
+
+                    Dans ce cas, on peut très bien avoir de très grosses oscillations de taille de l'intervalle entre
+                    deux itérations, par exemple avoir :
+                    <pre class="line-numbers language-python"><code>//[gauche,droite]
+[0,42]  // iteration 42
+[42,43] // iteration 43
+[0,44]  // iteration 44
+[43,45] // iteration 45
+...</code></pre>
+                    Si la transition d'un intervalle <code>[x,y]</code> vers un intervalle <code>[x+z,y]</code> se fait
+                    en <code>z</code> opérations, ce genre de dilatations / compressions peut être très coûteux, avec
+                    toutes les paires <code>(x,y)</code> (pour <code>x <= y</code>) prises comme intervalles.
+                </div><br />
+
+                Une implémentation de la solution avec deux pointeurs suit:
+                <pre class="line-numbers language-python"><code>lines = list(map(int, open('input9.txt').read().split('\n')))
+intrus = 22477624  # Remplacer par sa valeur
+somme,gauche,droite = 0,0,0
+
+while(droite < len(lines)):
+    somme += lines[droite]
+    while(somme > intrus):
+        somme -= lines[gauche]
+        gauche += 1
+    if(somme == intrus):
+        print(min(lines[gauche:droite+1])+max(lines[gauche:droite+1]))
+        break
+    droite += 1</code></pre>
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
