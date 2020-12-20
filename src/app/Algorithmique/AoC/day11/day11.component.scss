@@ -1,0 +1,47 @@
+:host ::ng-deep {
+    fa-icon {
+        float: left;
+        top: -36px;
+        left: -16px;
+        position: relative;
+        color: #d4d40f;
+        font-size: 47px;
+    }
+}
+@media only screen and (min-width: 1400px) {
+    .sommaire {
+        position: fixed;
+        left: 30px;
+        background-color: #e7f7f7;
+        border: solid 1px #00000054;
+        padding: 5px 20px 0px 0px;
+        a{
+            cursor: pointer;
+        }
+    }
+    
+    code {
+        font-size:16px;
+    }
+}
+
+@media only screen and (max-width: 1399px) {
+    .sommaire {
+        display:none;
+    }
+    code {
+        font-size:13px;
+    }
+}
+
+.proTip{
+    background-color: #f6fbab;
+    border: solid 1px #e6ce57;
+    margin: 15px;
+    padding-right: 5px;
+    padding: 10px;
+}
+
+img {
+    max-width: 90% !important;
+}

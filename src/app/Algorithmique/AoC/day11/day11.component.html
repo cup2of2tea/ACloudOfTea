@@ -1,0 +1,157 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 11)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/11">Jour 11, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour ce problème, on a une <b>grille 2d</b> sous la forme d'une liste de chaînes de caractères,
+                décrivant
+                l'état d'une salle d'attente, avec des sièges vides, des sièges occupés et du sol.<br /><br />
+
+
+                Après chaque minute, cet état transite vers un nouvel état dépendant uniquement de l'état
+                précédent.<br />
+                On a, pour chaque siège de la grille :
+                <ul>
+                    <li>Une transition de siège vide vers siège occupé s'il n'y a aucun siège occupé autour</li>
+                    <li>Une transition de siège occupé vers siège vide s'il y a <b>4</b> sièges occupés ou plus autour
+                    </li>
+                </ul>
+
+                Ce processus se poursuit tant qu'il y a au moins un changement entre deux états successifs.<br /><br />
+                La valeur à soumettre est le nombre de sièges occupés à la fin de ce processus.<br /><br />
+
+                Cette simulation rappelle le principe des automates cellulaires, notamment <a
+                    href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"><b>Conway's Game of life</b></a> où
+                l'on a ici
+                aussi, des transitions entre différents états influencés par des conditions sur des voisinnages
+                restreints.
+
+                <br /><br />
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Comme bien souvent pour l'AoC, une solution très simple naïve permet de résoudre le problème sans
+                souci.<br />
+                Ici par exemple, en simulant le processus de manière très classique de la grille actuelle sur une autre
+                grille, puis en considérant cette nouvelle grille comme la grille de la prochaine itération, on trouve
+                très rapidement la solution.<br /><br />
+
+                On va tout de même s'amuser un peu en rajoutant deux optimisations.<br /><br />
+
+                La première optimisation à laquelle on peut penser, est que plutôt que de faire des copies / recopies /
+                créations de nouvelles grilles, pourquoi ne pourrait-on pas simplement modifier la grille que l'on a
+                déjà?<br />
+                Un problème à ça est que, si l'on n'a pas de structure auxiliaire permettant de calculer le nombre de
+                sièges occupés des sièges voisins de chaque coordonnée, lorsque l'on met à jour la coordonnée
+                <code>(x,y)</code>, on
+                risque d'impacter le calcul des autres coordonnées voisines. Et maintenir cette structure auxiliaire
+                présenterait le même coût qu'utiliser de nouvelles grilles.<br /><br />
+
+                Une solution est possible, en plus de la valeur au niveau de la grille, on peut également enregistrer le
+                tour du dernier changement.<br />
+                Si ce tour récupéré pour un voisin correspond au tour actuel, alors on prend sa valeur
+                opposée.<br /><br />
+
+                Une deuxième optimisation pourrait être de ne prendre en compte au tour <b>T+1</b> seulement les
+                coordonnées et
+                voisinnages des sièges ayant changé pendant le tour <b>T</b>. <br />
+                En effet, les sièges n'ayant aucun siège voisin avec un changement d'état, ne changeront pas d'état à ce
+                tour.<br /><br />
+
+                Si l'on combine ces deux optimisations, on obtient le code suivant :
+
+                <pre class="line-numbers language-python"><code>from itertools import *
+lines = list(map(list, open('input11.txt').read().split('\n')))
+
+lastChange = [[-1 for i in line] for line in lines]
+
+changes = set([(x, y) for y in range(len(lines[0]))
+               for x in range(len(lines)) if lines[x][y] != '.'])
+
+it = 0
+while(len(changes) != 0) :
+    newChanges = set()
+    for (x, y) in changes:
+        countBusy = 0
+        intervalle = list(product(range(max(x-1, 0), min(x+2, len(lines))),
+                                  range(max(y-1, 0), min(y+2, len(lines[0])))))
+        for (x2, y2) in intervalle :
+            if(x2 == x and y2 == y) :
+                continue
+            val = lines[x2][y2] == '#'
+            if(lastChange[x2][y2] == it) :
+                val = not val
+            countBusy += val
+        if(lines[x][y] == 'L' and countBusy == 0) :
+            lastChange[x][y] = it
+            lines[x][y] = '#'
+        elif(lines[x][y] == '#' and countBusy >= 4) :
+            lastChange[x][y] = it
+            lines[x][y] = 'L'
+        if(lastChange[x][y] == it) :
+            for (x2, y2) in intervalle :
+                newChanges.add((x2, y2))
+    changes = newChanges
+    it += 1
+res = 0
+for x in range(len(lines)) :
+    for y in range(len(lines[x])) :
+        res += (lines[x][y] == '#')
+print(res)</code></pre>
+                <br /><br />
+
+                En local, j'obtiens une exécution de ~= <b>1.9</b> secondes en python 3.8. Sans optimisations, je passe
+                à <b>5</b>
+                secondes.<br /><br />
+
+                Néanmoins, il existe énormément d'autres possibilités d'optimisation, bien meilleures que celles
+                présentées ici.<br /> Notamment <a href="https://twitter.com/C_Papazian">Xoff</a> a utilisé d'autres
+                techniques d'optimisations:
+                <ul>
+                    <li>Un précalcul des coordonnées voisines</li>
+                    <li>Une forme d'aplatissement des structures qu'il manipule</li>
+                </ul>
+
+                Son code utilise chez moi <b>0.9</b> secondes pour s'exécuter entièrement (partie 1 et partie 2
+                comprises).
+                <br /><br />
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/11">Jour 11, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                La seconde partie consistait à changer uniquement une règle :<br />
+                Le <b>4</b> de "Une transition de siège occupé vers siège vide s'il y a <b>4</b> sièges occupés ou plus
+                autour" devenait un <b>5</b>.
+
+                La question était ensuite la même.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                La solution étant identique à la partie 1 en modifiant le 4, exceptionnellement je m'abstiendrai de tout
+                code / description dans cette section.
+
+            </div>
+        </div>
+    </div>
+</section>
