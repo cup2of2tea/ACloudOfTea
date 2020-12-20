@@ -1,0 +1,205 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 10)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/10">Jour 10, partie 1:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                On a en entrées une liste d'entiers correspondant à des adaptateurs éléctriques, chaque valeur donnant
+                la valeur du flux sortant de l'adaptateur.<br />
+                Egalement, on a une prise fournissant un flux de valeur <b>0</b>, ainsi qu'un dernier adapteur
+                éléctrique absent de la liste, qui aura pour valeur la valeur maximale de la liste <b>+
+                    3</b>.<br /><br />
+
+                Chaque adapteur de valeur <code>V</code> peut prendre en entrée un flux de valeur <code>V-1</code>,
+                <code>V-2</code> ou <code>V-3</code>.
+
+                En partant de la source 0, et en allant jusqu'au dernier adaptateur en passant par tous les adaptateurs,
+                il faut trouver le nombre de transitions réalisées entre une entrée <code>V</code> et une sortie
+                <code>V+1</code>, de même pour le
+                nombre de transitions entre une entrée <code>V</code> et une sortie <code>V+3</code>.
+
+                Par exemple, pour la liste
+
+                <pre class="line-numbers language-python"><code>1
+3
+5
+6
+9
+12</code></pre>
+                <br />
+                On a <b>2</b> transitions de valeurs <b>1</b> (<b>0=>1</b> et <b>5=>6</b>), 2 transitions de valeurs
+                <b>2</b>
+                (<b>1=>3</b> et <b>3=>5</b>) et <b>3</b>
+                transitions de valeurs <b>3</b> (<b>6=>9</b>, <b>9=>12</b> et <b>12=>15</b>).<br /><br />
+
+                La valeur à soumettre est le produit des deux nombres trouvés.
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Etant donné que les transitions ne se font que de manière croissante, et que l'on doit passer par tous
+                les adapteurs, on peut trier la liste, cela nous donnera l'ordre dans lequel on doit parcourir les
+                adapteurs.<br /><br />
+
+                A partir de cette liste, la solution est triviale:<br />
+                Il suffit de parcourir la liste en enregistrant les différences entre les éléments successifs, et garder
+                deux variables à jour pour compter le nombre de transitions des deux types à enregistrer.<br /><br />
+
+                En code, cela donne ceci:
+
+                <pre class="line-numbers language-python"><code>lines = list(map(int, open('input10.txt').read().split('\n')))
+lines.sort()
+lines = [0] + lines + [lines[-1]+3]
+compte = dict()
+for i in range(1, len(lines)):
+    compte[lines[i]-lines[i-1]] = compte.get(lines[i]-lines[i-1], 0)+1
+print(compte[1]*compte[3])</code></pre>
+                <br /><br />
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/10">Jour 10, partie 2:</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la partie 2, plutôt que d'utiliser l'intégralité des adaptateurs, on veut trouver le nombre
+                d'arrangements possibles de telle sorte que l'on puisse relier la source 0 au dernier adaptateur (celui
+                absent de notre liste).<br /><br />
+
+                Si on prend l'exemple suivant:
+                <pre class="line-numbers language-python"><code>1
+2
+3</code></pre>
+
+                alors on peut avoir les chemins suivants:
+
+                <pre class="line-numbers language-python"><code>0 => 1 => 2 => 3 => 6
+0 => 1 => 3 => 6
+0 => 2 => 3 => 6
+0 => 3 => 6</code></pre>
+
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Jusqu'à maintenant, les solutions demandaient des connaissances algorithmiques de niveaux variant entre
+                débutants et intermédiaires.<br />
+                Ici on passe au niveau supérieur, vu que l'on va utiliser une notion plus avancée, appellée
+                <b>programmation dynamique</b>.<br /><br />
+
+                Ce nom, bien qu'intimidant, cache en fait des techniques qui peuvent parfois être appliquées de manière
+                très simple.<br />
+                Le principe est de résoudre un problème, en le décomposant en sous-problèmes, sous-problèmes qui
+                eux-mêmes peuvent également être décomposés. <br />Ces résolutions conduisent à la découverte de
+                résultats intermédiaires, qui seront également stockés pour être réutilisés dans d'autres décompositions
+                éventuelles.<br /><br />
+
+                Un exemple très simple de <b>programmation dynamique</b> (même si ce n'est pas forcément la solution la
+                plus
+                adaptée à ce problème), peut s'appliquer au calcul de la fonction fibonacci: <br /><br />
+
+                Une implémentation naïve fera une simple récursion sur l'arbre de calcul des différents termes, et
+                recalculera plusieurs fois certains termes:
+                <pre class="line-numbers language-python"><code>def fibonacci(n):
+if(n<=1):
+    return n
+return fibonacci(n-1)+fibonacci(n-2)</code></pre>
+                <br />
+                On peut à la place enregistrer dans un tableau les termes déjà calculés (principe de
+                <b>mémoïsation</b>):
+                <pre class="line-numbers language-python"><code>allFib = dict()
+allFib[0] = 0
+allFib[1] = 1
+
+def fibonacci(n):
+    if(n in allFib):
+        return allFib[n]
+    allFib[n] = fibonacci(n-1)+fibonacci(n-2)
+    return allFib[n]</code></pre>
+
+                <br />
+
+                (Pour la culture générale, si l'on a un unique élément à calculer, il est plus adapté d'utiliser la
+                solution suivante):
+                <pre class="line-numbers language-python"><code>def fibonacci(n):
+    a, b = 0, 1
+    for i in range(n):
+        a, b = b, a+b
+    return a</code></pre>
+                <br />
+
+                <div class="proTip">
+                    <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
+                    De manière générale, si vous avez l'impression de recalculer plusieurs fois les mêmes choses, et que
+                    ces
+                    choses ont un domaine restreint, il peut être intéressant de voir si une approche de type
+                    <b>programmation dynamique peut s'appliquer</b>.
+                </div><br />
+
+                Pour en revenir à notre problème, plutôt que de faire un parcours de l'arbre des possibilités avec une
+                récursion et tester tous les chemins possibles (<b>bruteforce</b>), on peut enregistrer pour chaque
+                adaptateur depuis lequel on part, le nombre de chemins permettant d'accèder au dernier
+                adaptateur.<br /><br />
+
+                On passe ainsi d'une complexité en <code>O(N!)</code> à du <code>O(N)</code> (vu qu'il n'existe que N
+                états à calculer).
+
+                <pre class="line-numbers language-python"><code>lines = list(map(int, open('input10.txt').read().split('\n')))
+lines.sort()
+lines = [0] + lines + [lines[-1]+3]
+
+memo = [None for i in lines]
+
+def dp(idx):
+    if(idx == len(lines)-1):
+        return 1
+    if(memo[idx] is not None):
+        return memo[idx]
+
+    res = 0
+    idx2 = idx + 1
+    while(idx2 < len(lines) and lines[idx2] <= lines[idx]+3):
+        res += dp(idx2)
+        idx2 += 1
+
+    memo[idx] = res
+    return res
+
+print(dp(0))</code></pre><br />
+
+                <div class="proTip">
+                    <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
+                    Attention: "nombre d'états d'un <b>dp</b> = ordre de grandeur du nombre d'explications" n'est pas
+                    une
+                    affirmation tout le temps correcte!<br />
+                    Cela dépend également des traitements qui sont faits au niveau de l'état.<br /><br />
+                    Par exemple ici, j'itére sur les <code>idx2</code> pour lesquels je peux faire une transition depuis
+                    <code>idx</code>. Comme
+                    ma liste est strictement croissante, et que les transitions ne peuvent pas dépasser 3, je ne fais
+                    donc au maximum que 3 opérations ici, MAIS dans un cas plus générique avec des transitions plus
+                    libres, je pourrais avoir par exemple <code>N</code> opérations, et l'on se retrouverait avec un
+                    algorithme de programmation dynamique avec <code>N</code> états, mais avec un ordre grandeur
+                    d'opérations de <code>N^2</code>!
+                </div><br />
+
+
+            </div>
+        </div>
+    </div>
+</section>
