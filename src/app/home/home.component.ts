@@ -20,6 +20,10 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.posts = [
       {
+        route: '/articles/Aoc13',
+        title: 'Jour 13 de l\'Advent of Code'
+      },
+      {
         route: '/articles/Aoc12',
         title: 'Jour 12 de l\'Advent of Code'
       },

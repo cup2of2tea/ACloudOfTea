@@ -1,0 +1,160 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 12)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/13">Jour 13, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour ce problème, on a en entrées la description des horaires de passages d'un ensemble de bus.<br />
+                Ces derniers réalisent tous leurs premiers passages à un instant <code>t=0</code>, et ensuite réalisent
+                des passages
+                périodiques avec une période égale à l'identifiant du bus.<br /><br />
+
+                Par exemple, le bus <b>2</b> passera aux temps <code>t=0,2,4,6,8 ...</code>, le bus <b>3</b> passera aux
+                temps
+                <code>t=0,3,6,9,12</code>.<br /><br />
+
+                On cherche à déterminer le premier bus que l'on peut prendre à partir d'un certain temps
+                <code>t</code>.<br />
+                La réponse sera l'identifiant de ce bus multiplié par le délai <code>d</code> qu'on devra attendre avant
+                de prendre le bus.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Pour trouver la réponse, on peut soit:
+                <ul>
+                    <li>
+                        Simuler pour chaque instant <code>t</code>, et vérifier si un bus peut être pris à cet instant
+                    </li>
+                    <li>
+                        Etre un peu plus malin
+                    </li>
+                </ul>
+
+                Tout simuler peut être très coûteux. Ici, on pouvait complèter le problème sans souci, mais cette
+                approche a peu d'intérêt à être développée. <br /><br />
+
+                A la place, plutôt que d'essayer tous les temps possibles, on peut tester pour chaque bus, le prochain
+                instant t pour lequel le bus passera. <br />
+                Exprimé autrement, si on a le bus d'identifiant <code>id</code>, on cherche le plus petit multiple de
+                <code>id</code> qui soit supérieur ou égal à notre temps d'arrivée à l'arrêt <code>t</code>.
+
+                <br /><br />
+
+                Or, ce plus petit multiple peut être exprimé ainsi: <br />
+                <ng-katex [equation]="equations[0]"></ng-katex>
+
+                avec <ng-katex [equation]="equations[1]"></ng-katex>
+                la valeur <code>x</code> arrondie à l'entier supérieur.
+
+                <br /><br />
+
+                Il suffit ensuite de calculer cette valeur pour chaque bus, et prendre la plus petite.<br /><br />
+
+                <pre class="line-numbers language-python"><code>import math
+
+lines = open('input13.txt').read().split('\n')
+debut = int(lines[0])
+buses = lines[1].split(',')
+res = (1e9, 1e9)
+
+for bus in buses:
+    if(bus != 'x'):
+        periode = int(bus)
+        nextStop = math.ceil(debut/periode)*periode
+        res = min(res, (nextStop-debut, periode))
+print(res[0]*res[1])</code></pre>
+                <br /><br />
+
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/13">Jour 13, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la seconde partie, les bus et périodes ne changent pas.<br /><br />
+                On doit maintenant trouver l'instant <code>t</code> minimal, tel qu'à cet instant, le premier bus de la
+                liste est à
+                l'arrêt, et que pour chaque autre bus de la liste, l'écart entre ces deux bus dans la liste correspond
+                au nombre de minutes d'écarts entre les arrivées à la station de bus.<br /><br />
+
+                Un exemple sera plus clair. Si on a : <br /><br />
+                <pre class="line-numbers language-python"><code>2,5,x,7</code></pre>
+
+                alors, si l'instant <code>t</code> est la solution, le bus d'identifiant <code>2</code> passe à
+                l'instant <code>t</code>, le bus <code>5</code> à l'instant <code>t+1</code>, le bus <code>7</code> à
+                l'instant <code>t+3</code> (on saute x, mais l'écart est preservé).<br /><br />
+
+                Avec une notation mathématique, on aura donc:
+                <pre class="line-numbers language-python"><code>(t)     %   2   == 0
+(t+1)   %   5   == 0
+(t+3)   %   7   == 0</code></pre>
+                <br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Ici encore, une solution naïve permet de résoudre le problème, mais resterait tout de même très très
+                lente.<br /><br />
+
+                Par contre, on peut changer légèrement les équations de l'exemple précédent pour déceler un pattern
+                connu: <br />
+
+                <pre class="line-numbers language-python"><code>t   %   2   == 0
+t   %   5   == (-1)%5
+t   %   7   == (-3)%7</code></pre>
+                <br />
+
+                Un théorème appellé le <b><a href="https://en.wikipedia.org/wiki/Chinese_remainder_theorem">théorème des
+                        restes chinois</a></b> énonce que ce genre de système d'équations peut être résolu de manière
+                unique si
+                les "diviseurs" (ici <b>2</b>, <b>5</b> et <b>7</b>) sont premiers entre eux.<br />
+                C'est le cas pour cet exemple, vu que <b>2</b> <b>5</b> et <b>7</b> sont tous premiers et différents.
+                <br /><br /> Un examen de l'entrée nous montre que c'est également le cas pour l'entrée à
+                résoudre.<br /><br />
+
+                Pour la résolution de ce système d'équation, je ne vais pas rentrer dans les détails de l'algorithme qui
+                sont un peu complexes pour le contexte de cet article.<br />
+                On peut notamment utiliser une librairie (<b>sympy</b>), qui implémente cet algorithme, de la manière
+                suivante, en énumérant simplement les variables constituant le système:
+
+                <pre class="line-numbers language-python"><code>from sympy.ntheory.modular import crt
+
+lines = open('input13.txt').readlines()
+b = lines[1].split(',')
+
+divisors = []
+remainders = []
+
+for i in range(len(b)):
+    if(b[i] == 'x'):
+        continue
+    divisor = int(b[i])
+    # t % divisor = (-i)%divisor
+    divisors.append(divisor)
+    remainders.append(-i)
+print(crt(divisors, remainders)[0])</code></pre>
+
+
+            </div>
+        </div>
+    </div>
+</section>
