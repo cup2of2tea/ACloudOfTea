@@ -146,3 +146,12 @@ h3{
 code {
     background-color:  #e4dcdc9e;
 }
+
+@media only screen and (max-width: 1399px) {
+    .sommaire {
+        display:none;
+    }
+    pre[class*="language-"] {
+        font-size: 0.75em !important;
+    }
+}

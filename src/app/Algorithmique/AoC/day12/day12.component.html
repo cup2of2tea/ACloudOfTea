@@ -1,0 +1,230 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 12)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/12">Jour 12, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour ce problème, on doit simuler le déplacement d'un bateau sur une grille <b>2D</b> à coordonnées
+                entières.
+                <br />
+                Pour cela, on reçoit en entrée un ensemble d'instructions décrivant les déplacements/rotations du
+                bateau:
+                <ul>
+                    <li>
+                        Les instructions <code>N</code>, <code>S</code>, <code>E</code> et <code>W</code> correspondent
+                        respectivement à des déplacements vers le Nord (North), Sud (South), Est (East) et Ouest (West)
+                    </li>
+                    <li>
+                        Les instructions <code>L</code> et <code>R</code> correspondent à des rotations vers la gauche
+                        ou vers la droite d'un nombre de degrés donnés
+                    </li>
+                    <li>
+                        L'instruction <code>F</code> (Forward) permet de faire avancer le bateau dans la direction
+                        pointée
+                        actuellement
+                    </li>
+                </ul>
+
+                <br />
+                Les premiers types d'instructions (<code>N</code>, <code>S</code>, <code>E</code> et <code>W</code>) ne
+                sont pas impactés et n'impactent pas l'orientation du
+                bateau.<br />
+                De plus, seuls des multiples de <b>90</b> sont pris en tant que valeurs de rotations.<br /><br />
+
+                La valeur à soumettre est la <b>distance de Manhattan</b> séparant les coordonnées de départ et les
+                coordonnées
+                de fin du bateau après application des instructions.
+                <br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Cette simulation ne pose pas de complexité particulière. <br />
+                On a besoin de conserver 3 valeurs au fur et à mesure de la simulation: <br />
+                x et y, qui nous donnent les positions du bateau, ainsi qu'une troisième variable pour nous indiquer
+                l'orientation du bateau.<br />
+                Cette troisième variable pourrait par exemple être la valeur en degrés de l'orientation du bateau, ou
+                simplement une valeur du set <code>{{'{'}}0,1,2,3{{'}'}}</code> pour indiquer vers quelle direction l'on
+                pointe
+                <code>N</code>,
+                <code>S</code>, <code>E</code> et <code>W</code>.<br /><br />
+
+                Le premier choix permettrait de simplifier les calculs de rotations, on va donc faire ce choix.
+                <br /><br />
+
+                A partir de cette modélisation, il suffit de lire les instructions et d'appliquer les traitements de la
+                manière suivante:
+                <ul>
+                    <li> Pour <code>N</code>, <code>S</code>, <code>E</code> et <code>W</code>, simplement modifier x et
+                        y avec un delta correspondant à la direction</li>
+                    <li> Pour <code>F</code>, pareil que pour <code>N</code>, <code>S</code>, <code>E</code> et
+                        <code>W</code>, en prenant la direction <code>d = orientation/90</code></li>
+                    <li>
+                        Pour <code>L</code> et <code>R</code>, modifier l'orientation, en prenant sa valeur modulo
+                        <b>360</b>
+                        (<b>360°</b> est équivalent à <b>0°</b>, <b>90°</b> est équivalent à <b>450°</b> etc...)
+                    </li>
+                </ul>
+
+                En codant cette approche, on a le code suivant:
+
+                <pre class="line-numbers language-python"><code>lines = open('input12.txt').read().split('\n')
+
+delta = {{'{'}}0: (-1, 0), 90: (0, -1), 180: (1, 0), 270: (0, 1){{'}'}}
+d = {{'{'}}'N': 0, 'W': 90, 'S': 180, 'E': 270{{'}'}}
+(x, y, orientation) = (0, 0, d['E'])
+
+for l in lines:
+    (typ, val) = (l[0], int(l[1:]))
+    if(typ == 'L'):
+        orientation = (orientation+val) % 360
+    elif(typ == 'R'):
+        orientation = (orientation-val+360) % 360
+    elif(typ == 'F'):
+        x += delta[orientation][0]*val
+        y += delta[orientation][1]*val
+    else:
+        x += delta[d[typ]][0]*val
+        y += delta[d[typ]][1]*val
+
+# Manhattan: abs(x-0)+abs(y-0) == abs(x)+abs(y)
+print(abs(x)+abs(y))</code></pre>
+                <br /><br />
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/12">Jour 12, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la seconde partie, le principe est le même: on a toujours notre bateau pour lequel on simule les
+                mouvements.<br />
+                Mais par contre, on se rend compte que l'interprétation que l'on a faite des instructions durant la
+                partie 1 est en grande partie erronée.
+                <br /><br />
+                En effet, s'ajoute à notre bateau un concept que l'on appelera "vecteur directeur".<br />
+                Pour l'instruction <code>Forward</code>, à la place de faire des déplacements d'une valeur fixée par les
+                instructions, cette valeur sera multipliée par le vecteur directeur. <br />
+                De plus, le reste des instructions n'est plus que destinée à manipuler ce vecteur directeur:
+                <ul>
+                    <li><code>N</code>, <code>S</code>, <code>E</code> et <code>W</code> déplacent le point ciblé par le
+                        vecteur directeur suivant la direction et la valeur donnée</li>
+                    <li><code>L</code> et <code>R</code> réalisent une rotation de ce vecteur autour du bateau</li>
+                </ul>
+
+                Par exemple, si notre bateau est en <code>(0,0)</code>, avec un vecteur directeur initial
+                <code>(0,0)</code>, voici un exemple d'éxécution d'instructions:
+                <pre class="line-numbers language-python"><code>N2      # Le vecteur directeur passe de (0,0) à (-2,0)
+L90     # Le vecteur passe à (0,-2)
+L90     # Le vecteur passe à (2,0)
+F2      # On avance le bateau de 2 fois le vecteur directeur, soit (4,0)</code></pre>
+
+                En rajoutant deux nouvelles variables <code>vx</code> et <code>vy</code> pour représenter le vecteur
+                directeur, les instructions
+                <code>N</code>, <code>S</code>, <code>E</code>, <code>W</code> et <code>F</code> sont très simples à
+                implémenter.<br /><br />
+
+                La principale difficulté de cette partie 2 réside dans la rotation de notre vecteur directeur autour du
+                bateau.<br /><br />
+
+                On peut avoir 2 approches fonctionnant aussi bien toutes les deux.<br />
+                Dans un premier temps, on peut essayer quelques exemples, pour voir le résultat de ces rotations sur un
+                vecteur quelconque.<br /><br />
+
+                <pre class="line-numbers language-python"><code>L90 sur (0,0)       => (0,0)
+L90 sur (2,0)       => (0,2)
+L90 sur (-2,0)      => (0,-2)
+R90 sur (0,2)       => (2,0)
+L90 sur (3,4)       => (-4,3)
+L90 sur (-4,3)      => (-3,-4)
+L90 sur (-3,-4)     => (4,-3)
+R90 sur (3,4)       => (4,-3)</code></pre>
+
+                Il semblerait qu'en appliquant une rotation d'un multiple de <b>90°</b>, on garde des valeurs
+                similaires, qu'on
+                <b>permute</b> et/ou pour lesquelles on prend des valeurs <b>opposées</b>.<br />
+                <br />
+
+                En fait,<br />
+                <pre class="line-numbers language-python"><code>L 90(x,y)   = (-y,x)    = R 270(x,y)
+R 90(x,y)   = (y,-x)    = L 270(x,y)
+L 180(x,y)  = (-x,-y)   = R 180(x,y)</code></pre>
+
+                Comme on peut appliquer nos <b>rotation modulo 360</b>, on a toutes les formules nécessaires à la
+                simulation
+                des rotations. <br /><br />
+
+                Une solution plus avancée aurait été d'utiliser les <b>matrices de rotations</b>. <br />
+                Ici l'intérêt est inexistant: les formules précédentes sont <b>rigoureusements exactes</b> et ont
+                l'avantage de
+                ne pas utiliser de calcul sur les flottants / fonctions trigonométriques lourdes.<br /><br />
+                Néanmoins, pour une version plus complexe de l'énoncé où les rotations n'étaient pas limitées à des
+                multiples de <b>90</b>, les formules de la première version n'auraient pas suffi.<br />
+
+                Pour réaliser la rotation d'un point par rapport au point <code>(0,0)</code>, il suffit de réaliser la
+                <b>multiplication
+                    matricielle</b> suivante:
+
+                <br /><br />
+                <div>
+                    <ng-katex [equation]="equations[0]"></ng-katex>
+                </div>
+                <br /><br />
+
+                <br />
+                La matrice de gauche est ici appellée <b>matrice de rotation</b>.<br /><br />
+
+                Comme cette seconde version présente une lourdeur sans intérêt ici, l'implémentation qui suit reprendra
+                la logique de la première version:
+
+                <pre class="line-numbers language-python"><code>lines = open('input12.txt').read().split('\n')
+
+delta = {{'{'}}0: (-1, 0), 90: (0, -1), 180: (1, 0), 270: (0, 1){{'}'}}
+d = {{'{'}}'N': 0, 'W': 90, 'S': 180, 'E': 270{{'}'}}
+(x, y, vx, vy) = (0, 0, -1, 10)
+
+def leftRot(coord):
+    return (-coord[1], coord[0])
+
+def rightRot(coord):
+    return (coord[1], -coord[0])
+
+for l in lines:
+    (typ, val) = (l[0], int(l[1:]))
+    if(typ == 'L'):
+        for r in range((val % 360)//90):
+            (vx, vy) = leftRot((vx, vy))
+    elif(typ == 'R'):
+        for r in range((val % 360)//90):
+            (vx, vy) = rightRot((vx, vy))
+    elif(typ == 'F'):
+        x += vx*val
+        y += vy*val
+    else:
+        vx += delta[d[typ]][0]*val
+        vy += delta[d[typ]][1]*val
+
+# Manhattan: abs(x-0)+abs(y-0) == abs(x)+abs(y)
+print(abs(x)+abs(y))</code></pre>
+            </div>
+
+        </div>
+    </div>
+</section>
