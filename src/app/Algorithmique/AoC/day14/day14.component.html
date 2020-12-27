@@ -2,7 +2,7 @@
     <div class="wrapperArticle">
         <div class="article">
             <h1 class="post-title ">
-                Advent of code 2020 (jour 13)
+                Advent of code 2020 (jour 14)
             </h1>
             <div class="blockArticle">
 
@@ -27,7 +27,7 @@
                 <h3 id="day3_part1_statement"> Enoncé </h3>
 
                 Le problème du jour 14 nous demande de simuler un programme avec différents types d'instructions qui
-                modifient une mémoire virtuelle initialisée à <b>0</b>.<br /><br>
+                modifient une mémoire virtuelle initialisée à <b>0</b>.<br /><br />
 
                 On a également en complément de cette mémoire une variable <code>mask</code>, qui modifie la manière
                 avec laquelle on interprète les instructions.<br /><br />
@@ -58,6 +58,7 @@
                     </li>
                 </ul>
 
+
                 Par exemple, on a:
                 <pre class="line-numbers language-python"><code>mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX01
 mem[0] = 6 
@@ -65,6 +66,9 @@ mem[0] = 6
 # y est transformé en (0....0101)2 = 5</code></pre>
 
                 <br /><br />
+
+                La valeur à soumettre est la somme des valeurs en mémoire après exécution du programme. <br /><br />
+
 
                 <h3 id="day3_part1_statement"> Solution</h3>
                 La première étape de choisir une structure de donnée pour stocker la mémoire n'est pas complètement

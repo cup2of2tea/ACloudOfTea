@@ -1,0 +1,101 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 15)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/15">Jour 15, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+                Le but du problème de ce jour 15 est de générer une suite de nombres, ayant pour premiers termes
+                l'entrée donnée.<br /><br />
+
+                Cette suite est générée à partir des termes initiaux de la façon suivante:
+                <ul>
+                    <li>Si le dernier terme n'a jamais été vu auparavant, le terme suivant est <b>0</b></li>
+                    <li>
+                        Sinon, le terme suivant est la distance entre le dernier terme et la position du dernier terme
+                        de même valeur
+                    </li>
+                </ul>
+                <br /><br />
+                Par exemple:
+
+                <pre class="line-numbers language-python"><code>suiteInitiale = [0,3,6]
+[0,3,6,0]           # On a un seul 6
+[0,3,6,0,3]         # 3 - 0 = 3
+[0,3,6,0,3,3]       # 4 - 1 = 3
+[0,3,6,0,3,3,1]     # 5 - 4 = 1
+[0,3,6,0,3,3,1,0]   # Premier 1</code></pre>
+
+                <br /><br />
+                On doit soumettre le 2020 ème terme de cette suite. <br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                La solution naïve consiste à générer au fur et à mesure le tableau que l'on a vu plus haut en exemple.
+                <br />
+                Pour vérifier si un nombre est déjà présent, on peut itérer sur le tableau, et dans le cas où ce nombre
+                existe, conserver dans une variable l'indice pour lequel on l'a vu en dernier.<br /><br />
+
+                La complexité est en <code>O(N^2)</code>, avec N le nombre de termes de la suite (pour chaque élément,
+                on itérera sur l'intégralité du tableau dans le pire des cas).<br /><br />
+
+                Une solution plus intelligente serait d'utiliser un dictionnaire pour stocker le dernier indice de
+                chaque valeur.<br />
+                Grâce à ça, on pourra vérifier en temps constant la présence d'un nombre ainsi que sa dernière
+                position.<br /><br />
+
+                On passe donc à une complexité en <code>O(N)</code>.<br />
+                L'implémentation est très simple:
+
+
+                <pre class="line-numbers language-python"><code>starting = [8, 0, 17, 4, 1, 12] # A remplacer avec l'input
+
+d = dict()
+for i in range(len(starting)-1):
+    d[starting[i]] = i
+
+last = starting[-1]
+for i in range(len(starting)-1, 2019):
+    previous = last
+    if(last in d):
+        last = i - d[last]
+    else:
+        last = 0
+    d[previous] = i
+print(last)</code></pre>
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/15">Jour 15, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+                Le principe est le même qu'en partie 1, mais à la place du 2020 ème terme, on cherche le 30000000 ème
+                terme.
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                La solution est la même que pour la partie 1. <br />
+                Les contraintes de la partie 2 sont essentiellement destinées à empêcher la résolution via l'algorithme
+                naïf en <code>O(N^2)</code>.
+
+            </div>
+        </div>
+    </div>
+</section>
