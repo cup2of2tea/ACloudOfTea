@@ -1,0 +1,260 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 16)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/16">Jour 16, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+                L'entrée du problème d'aujourd'hui est scindée en trois parties:
+                <ul>
+                    <li> La première décrit un ensemble de champs, ainsi que des contraintes de taille associées</li>
+                    <li>
+                        La seconde nous donne la longueur des champs que l'on a sur notre ticket
+                    </li>
+                    <li>
+                        Pour finir, on nous donne un ensemble de tickets avec les longueurs des champs présents sur
+                        chacun de ces tickets
+                    </li>
+                </ul>
+
+                Dans cette première sous-tâche, l'objectif est de déterminer les champs qui ne peuvent pas correspondre
+                au moindre champs.<br />
+                La réponse sera la somme des tailles de ces champs.<br /><br />
+
+                Par exemple:
+
+                <pre class="line-numbers language-cxx"><code>class: 1-3 or 5-7
+row: 6-11 or 33-44
+seat: 13-40 or 45-50
+
+your ticket:
+7,1,14
+
+nearby tickets:
+7,3,47
+40,4,50</code></pre>
+                Un champs <code>class</code> doit faire entre <b>1</b> et <b>3</b> caractères ou entre <b>5</b> et
+                <b>7</b> caractères.<br /><br />
+
+                Le premier ticket est valide (<b>7</b> peut correspondre à <code>class</code> ou <code>row</code>,
+                <b>3</b> à <code>class</code>, <b>47</b> à <code>seat</code>).<br />
+                Par contre, pour le second ticket, <b>4</b> n'est présent dans aucun intervalle, mais les autres champs
+                sont valides.<br />
+                Pour cet exemple, on devrait donc renvoyer <b>4</b>.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Pour cette première partie, rien de bien compliqué.<br />
+                C'est essentiellement un problème de parsing d'entrées et de modélisation, les vérifications se font
+                ensuite simplement en itérant sur les champs des tickets et sur les contraintes.<br /><br />
+
+                <pre class="line-numbers language-python"><code>import re
+lines = open('input16.txt').read().split('\n')
+part = 0
+champDefinitions = []
+r = r'^(?P&lt;key>[a-z ]*): (?P&lt;from1>[0-9]*)-(?P&lt;to1>[0-9]*) or (?P&lt;from2>[0-9]*)-(?P&lt;to2>[0-9]*)$'
+
+res = 0
+for line in lines:
+    if(len(line) == 0):
+        part += 1
+    elif(part == 0):
+        (key, from1, to1, from2, to2) = re.search(r, line).groups()
+        (from1, to1, from2, to2) = map(int, [from1, to1, from2, to2])
+        champDefinitions.append((key, from1, to1, from2, to2))
+    elif(part == 2):
+        if('tickets' in line):
+            continue
+        allFields = list(map(int, line.split(',')))
+        for field in allFields:
+            res += field
+            for (_, from1, to1, from2, to2) in champDefinitions:
+                if((field >= from1 and field <= to1) or (field >= from2 and field <= to2)):
+                    res -= field
+                    break
+print(res)</code></pre>
+                <br /><br />
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/16">Jour 16, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour cette seconde partie, ça se corse sérieusement.<br /><br />
+
+                On apprend que l'ordre dans lequel les champs apparaissent dans les tickets est fixe, et l'on cherche à
+                déterminer à quelle définition de champ correspond chaque champ du ticket.<br />
+
+                Egalement, un ticket valide ne contient que des champs valides. Les tickets contentant les champs que
+                l'on a donc détecté comme invalides en partie 1 doivent donc être écartés.<br /><br />
+
+                Si l'on multiplie la longueur des champs de notre ticket pour lesquels la clé commence par
+                <code>departure</code>, on obtient notre réponse à la sous-tâche 2.<br /><br />
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Ce problème peut être résolu via un algorithme classique dit de <b>Maximum Matching</b>.<br /><br />
+
+                Dans un problème de matching maximal dans un groupe biparti, on a un ensemble de noeuds d'un
+                côté (ici nos champs de tickets) connectés à un ensemble de noeuds d'un autre côté (les définitions de
+                champs, si les contraintes sont satisfaites).<br />
+
+                Le but est ensuite d'associer des noeuds de chaque côté, de telle que chaque noeud ne soit associé à un
+                unique autre noeud (présent de l'autre côté).<br /><br />
+
+                Plutôt que d'utiliser des algorithmes de matching complexes, on peut exploiter une propriété qui découle
+                du fait que la solution attendue est unique.<br /><br />
+
+                Si le matching maximal est unique, au moins un noeud de ce matching présente un <b>degré</b>
+                (nombre d'arcs connectés) à <b>1</b>.<br /><br />
+
+                La preuve qui suit a été développée par <b><a
+                        href="https://twitter.com/Tashiqi">Tashiqi</a></b>:<br /><br />
+
+                Si l'on part du matching maximal, et que l'on suppose que tous les noeuds ont un degré supérieur ou égal
+                à <b>2</b>, alors il est possible de réaliser un cycle "alternant" (un arc sur deux est dans le matching
+                maximal, un arc sur deux ne l'est pas).<br /><br />
+
+                En effet, tant que l'on ne boucle pas, à chaque noeud, on aura forcément un arc connecté qui fait partie
+                du matching, et au moins un arc qui n'en fera pas partie.<br />
+                On peut donc parcourir les noeuds en alternant ces arcs jusqu'à réaliser un cycle.<br />
+
+                A partir de ce cycle, il suffira ensuite d'"inverser" le matching des arcs contenus dans ce cycle:
+                <ul>
+                    <li>
+                        Chaque arc du cycle contenu dans le matching en est retiré
+                    </li>
+                    <li>
+                        Chaque arc non contenu est ajouté
+                    </li>
+                </ul>
+
+                On obtient ainsi un nouveau matching différent, et l'on peut donc conclure que pour avoir un matching
+                unique, il faut au moins un noeud de <b>degré 1</b> contenu dans le matching.<br /><br />
+
+                Un exemple est donné ici, avec un matching initial représenté par les arcs rouges (<code>A=>2</code>,
+                <code>B=>3</code> et <code>C=>1</code>).
+
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/Day16Part2Fig1.png" />
+                </div>
+                <br /><br />
+                On peut obtenir le cycle alternant <code>A=>2=>B=>3=>C=>1=>A</code>.<br />
+                Si l'on inverse le matching de ce cycle, on obtiendra le matching suivant:
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/Day16Part2Fig2.png" />
+                </div>
+
+
+                <br /><br />
+
+                A partir de ça, on peut en déduire un algorithme.<br />
+                Le noeud de degré <b>1</b> pourra être couplé immédiatement avec son noeud voisin.<br />
+                Si l'on retire ensuite ces deux noeuds et que l'on cherche à nouveau un matching maximal des noeuds
+                restants, on aura une fois de plus au moins un noeud de degré <b>1</b> pour que la contrainte d'unicité
+                soit respectée.<br /><br />
+
+                Il suffira donc d'itérer sur les noeuds de degrés <b>1</b> jusqu'à la résolution complète du
+                problème.<br /><br />
+
+                Voici un code qui implémente cette logique:
+
+                <pre class="line-numbers language-python"><code>import re
+lines = open('input16.txt').read().split('\n')
+part = 0
+definitions = []
+myTicket = None
+otherTickets = []
+r = r'^(?P&lt;key>[a-z ]*): (?P&lt;from1>[0-9]*)-(?P&lt;to1>[0-9]*) or (?P&lt;from2>[0-9]*)-(?P&lt;to2>[0-9]*)$'
+
+res = 0
+
+possibleFields = dict()
+degreesOne = []
+
+for line in lines:
+    if(len(line) == 0):
+        part += 1
+    elif(part == 0):
+        (key, from1, to1, from2, to2) = re.search(r, line).groups()
+        (from1, to1, from2, to2) = map(int, [from1, to1, from2, to2])
+        definitions.append((key, from1, to1, from2, to2))
+    elif(part == 1):
+        if('ticket' in line):
+            continue
+        myTicket = list(map(int, line.split(',')))
+    elif(part == 2):
+        if('tickets' in line):
+            continue
+        allFields = list(map(int, line.split(',')))
+        allPossibilities = []
+        for field in allFields:
+            possibilities = []
+            for i in range(len(definitions)):
+                (_, from1, to1, from2, to2) = definitions[i]
+                if((field >= from1 and field &lt;= to1) or (field >= from2 and field &lt;= to2)):
+                    possibilities.append(i)
+            # Si un champs ne correspond à aucune définition, on n'ajoute pas ses possibilités
+            if(len(possibilities) == 0):
+                break
+            allPossibilities.append(possibilities)
+        
+        # Si la liste de toutes les listes de possibilités n'est pas égale au nombre de colonnes, on a donc au moins un champs invalide
+        # Le ticket est donc invalide
+        if(len(allPossibilities) != len(allFields)):
+            continue
+
+
+        # On réalise l'intersection des possibilités pour chaque champs, pour ne conserver que les possibilités communes cohérentes entre tous les tickets
+        for i in range(len(allPossibilities)):
+            possibleFields[i] = possibleFields.get(
+                i, set(range(len(definitions)))).intersection(set(allPossibilities[i]))
+
+# On initialise une première fois notre liste de noeuds à degré 1
+for i in possibleFields.keys():
+    if(len(possibleFields[i]) == 1):
+        degreesOne.append(i)
+
+# Permettra de stocker l'index de la définition correspondante à un champs
+correspondance = [None for i in possibleFields.keys()]
+
+while(len(degreesOne) != 0):
+    current = degreesOne.pop()
+    # On récupère le premier et unique élément du set possibleFields[current]
+    for k in possibleFields[current]:
+        correspondance[current] = k
+    toRemove = correspondance[current]
+    for k in possibleFields.keys():
+        if toRemove in possibleFields[k]:
+            possibleFields[k].remove(toRemove)
+            # Si un champs n'a qu'une possibilité APRES SUPPRESSION d'une autre possibilité, alors il est ajouté aux noeuds de degrés 1
+            if(len(possibleFields[k]) == 1):
+                degreesOne.append(k)
+
+res = 1
+for k in range(len(correspondance)):
+    if('departure' in definitions[correspondance[k]][0]):
+        res *= myTicket[k]
+
+print(res)</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>
