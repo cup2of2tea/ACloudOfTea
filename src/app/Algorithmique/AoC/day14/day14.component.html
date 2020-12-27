@@ -1,0 +1,283 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 13)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/14">Jour 14, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Le problème du jour 14 nous demande de simuler un programme avec différents types d'instructions qui
+                modifient une mémoire virtuelle initialisée à <b>0</b>.<br /><br>
+
+                On a également en complément de cette mémoire une variable <code>mask</code>, qui modifie la manière
+                avec laquelle on interprète les instructions.<br /><br />
+
+                Les différents types d'instructions sont les suivants :
+                <ul>
+                    <li>
+                        L'instruction <code>mask = x</code> qui affecte le masque <code>x</code> à la variable
+                        <code>mask</code> </li>
+                    <li>
+                        L'instruction <code>mem[x] = y</code> qui affecte la valeur <code>y</code> <b> modifiée par
+                            mask</b> à la case mémoire <code>x</code>.
+                    </li>
+                </ul>
+
+                Pour le second type d'instruction, la modification se fait de la manière suivante:
+                <ul>
+                    <li>
+                        Pour chaque caractère <b>'0'</b> de la variable <code></code>, on change le bit correspondant de
+                        y pour lui faire prendre la valeur <b>0</b>
+                    </li>
+                    <li>
+                        Pour chaque caractère <b>'1'</b> de la variable <code></code>, on change le bit correspondant de
+                        y pour lui faire prendre la valeur <b>1</b>
+                    </li>
+                    <li>
+                        Les caractères <b>'x'</b> ne présentent pas d'impact
+                    </li>
+                </ul>
+
+                Par exemple, on a:
+                <pre class="line-numbers language-python"><code>mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX01
+mem[0] = 6 
+# Représentation binaire de 6: (0....0110)2
+# y est transformé en (0....0101)2 = 5</code></pre>
+
+                <br /><br />
+
+                <h3 id="day3_part1_statement"> Solution</h3>
+                La première étape de choisir une structure de donnée pour stocker la mémoire n'est pas complètement
+                triviale:<br />
+                Les adresses sont encodées sur <b>36 bits</b>, et donc peuvent atteindre théoriquement des valeurs entre
+                <b>0</b> et
+                <b>2^36-1=68719476735</b>.<br />
+                Un simple tableau de <b>68719476735</b> cases mémoires occuperait bien trop de place en mémoire.<br />
+                Par contre, on peut utiliser une structure que l'on a déjà vu à maintes reprises durant les précédents
+                jours: un <b>dictionnaire</b>, qui aura pour clé l'adresse mémoire.<br /><br />
+
+                Maintenant qu'on a la structure utilisée pour la mémoire, il faut maintenant voir comment interpréter
+                les différentes instructions.<br /><br />
+
+                La principale complexité provient du deuxième type d'instruction, qui met à jour la mémoire.<br />
+                En effet, si l'on conserve un unique masque binaire pour la mise à jour des valeurs, on n'a pas en notre
+                disposition le moindre opérateur binaire qui ferai la transformation en une unique
+                opération.<br /><br />
+                On pourrait par contre, de manière naïve, itérer sur l'intégralité des bits de la valeur <code>y</code>
+                pour vérifier si, dans le cas où le caractère correspondant du masque n'est pas <b>'X'</b>, la valeur
+                n'est pas différente, et la changer si les deux diffèrent.<br /><br />
+                Pour changer le bit <b>b</b> à <b>0</b>, on peut faire ainsi (avec <b>~</b> l'opérateur <b>not</b>,
+                <b>&</b>
+                l'opérateur binaire <b>and</b>):
+                <pre class="line-numbers language-python"><code>       b
+  111111111
+       &
+~(111110111)   # ~(1<<b)
+       =
+  111111111
+       &
+ (000001000)
+       =
+  111110111</code></pre>
+                <br /><br />
+
+                Inversement, pour changer le bit <b>b</b> à <b>1</b>, on peut procéder ainsi(avec <b>~</b> l'opérateur
+                binaire
+                <b>or</b>):
+                <pre class="line-numbers language-python"><code>       b
+  100000000
+       |
+ (000001000)   # (1<<b)
+       =
+  100001000</code></pre>
+                <br /><br />
+
+                Cette solution pourrait être implémentée ainsi:
+
+                <pre class="line-numbers language-python"><code>import re
+lines = open('input14.txt').read().split('\n')
+memory = dict()
+mask = None
+regexMask = r'^mask = (?P&lt;mask&gt;[01X]*)$'
+regexMem = r'^mem\[(?P&lt;x&gt;\d*)\] = (?P&lt;y&gt;\d*)$'
+
+for line in lines:
+    g = re.search(regexMask, line) or re.search(regexMem, line)
+    if(len(g.groups()) == 1):
+        # On inverse le masque pour que le caractère 0
+        # corresponde au bit 0
+        mask = list(reversed(g.group('mask')))
+    else:
+        (x, y) = map(int, g.groups())
+        for b in range(len(mask)):
+            if(mask[b] == 'X'):
+                continue
+            bitForce = int(mask[b])
+            if((bitForce << b) != (y & (1 << b))):
+                if(bitForce == 0):
+                    # Pour mettre à 0 le bit b
+                    y &= ~(1 << b)
+                else:
+                    # Pour mettre à 1 le bit b
+                    y |= (1 << b)
+        memory[x] = y
+print(sum(memory.values()))
+</code></pre>
+                <br /><br />
+
+                Une solution plus élégante existe:<br /><br />
+                Supposons que l'on conserve deux masques binaires à la place d'un unique masque, et que le premier
+                masque contient tous les <b>0</b> du masque "initial", avec des <b>1</b> pour tous les autres bits
+                (<b>X</b> ou
+                <b>1</b>), et que le deuxième masque contient tous les <b>1</b> du masque "initial", avec des <b>0</b>
+                pour tous les
+                autres bits (<b>X</b> ou <b>0</b>).<br />
+                Par exemple (en racourcissant le masque pour plus de simplicité):
+
+                <pre class="line-numbers language-python"><code>mask = 1X0X01
+mask1 = 110101
+mask2 = 100001</code></pre>
+
+                alors, la valeur y peut être transformée simplement ainsi:
+
+                <pre class="line-numbers language-python"><code>y2 = (y & mask1) | mask2</code></pre>
+
+                Le code devient donc:
+                <pre class="line-numbers language-python"><code>import re
+lines = open('input14.txt').read().split('\n')
+memory = dict()
+mask = mask1 = mask2 = None
+regexMask = r'^mask = (?P&lt;mask>[01X]*)$'
+regexMem = r'^mem\[(?P&lt;x>\d*)\] = (?P&lt;y>\d*)$'
+for line in lines:
+    g = re.search(regexMask, line) or re.search(regexMem, line)
+    if(len(g.groups()) == 1):
+        mask = g.group('mask')
+        mask1 = int(mask.replace('X', '1'), 2)
+        mask2 = int(mask.replace('X', '0'), 2)
+    else:
+        (x, y) = map(int, g.groups())
+        memory[x] = (y & mask1) | mask2
+print(sum(memory.values()))
+</code></pre>
+                <br /><br />
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/14">Jour 14, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                La seconde partie redéfinit complètement la manière d'utiliser la variable masque.<br />
+                <ul>
+                    <li> Un caractère <b>0</b> doit être ignoré, et correspondrait donc à un X de la partie 1</li>
+                    <li> Un caractère <b>1</b> force la valeur d'un bit à <b>1</b></li>
+                    <li>Un caractère <b>X</b> est un caractère flottant et peut avoir deux impacts différents: forcer un
+                        bit à 0 ou forcer un bit à 1.</li>
+                </ul>
+
+                En attribuant chaque possibilité d'impact à chaque caractère <b>X</b>, on obtient un certain nombre de
+                manières d'interpréter la variable masque.<br />
+                Pour chacune de ces possibilités, lorsque l'on exécute le second type d'instruction, on transforme
+                l'adresse avec cette possibilité pour modifier les valeurs en mémoires.<br /><br />
+
+                Par exemple, avec un masque réduit à 4 bits:
+                <pre class="line-numbers language-python"><code>mask = 1XX01</code></pre>
+                et qu'on traduit les possibilités dans un format similaire à la partie 1, on aura:
+                <pre
+                    class="line-numbers language-python"><code>possibilites=['100X1','101X1','110X1','111X1']</code></pre>
+                <br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Si l'on transforme les possibilités de la manière décrite plus haut, on peut facilement appliquer la
+                solution de la partie 1 aux adresses pour mettre à jour la mémoire.<br />
+                Il nous manque donc un algorithme pour générer les différentes possibilités à partir de la variable
+                masque.<br /><br />
+
+                Ce genre d'algorithme dit <b>génératif</b> est souvent réalisé des manières suivantes:
+                <ul>
+                    <li>via un parcours, qui peut être fait de manière itérative, ou récursive</li>
+                    <li>via la génération de masques binaires</li>
+                </ul>
+
+                Ici, aucune solution ne m'a pleinement satisfait en terme d'élégance.<br />
+                Je vais donc choisir la solution en fonction de son aspect intuitif, plutôt que pour des métriques de
+                performances ou de compacité. <br />
+                Ma préférence portera donc sur l'utilisation d'un parcours récursif.<br /><br />
+                De manière générale, toutes les solutions auraient présenté une complexité de <code>O(2^N)</code> pour
+                générer les différentes possibilités, étant donné que pour chaque <b>X</b>, on a <b>2</b> possibilités
+                de bits.<br />
+                Par contre les solutions récursifs présentent habituellement un coût plus important, du fait de la
+                manipulation de la pile.<br /><br />
+
+                La solution récursive consistera à parcourir le masque, et pour chaque <b>X</b> à explorer les deux
+                possibilités de manière récursive. <br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/Day14Part2.png" />
+                </div>
+
+                <br /><br />
+                Ces masques obtenus peuvent ensuite être simplement appliqués comme pour la partie 1.<br /><br />
+                Exemple de code : <br /><br />
+
+                <pre class="line-numbers language-python"><code>import re
+lines = open('input14.txt').read().split('\n')
+memory = dict()
+regexMask = r'^mask = (?P&lt;mask>[01X]*)$'
+regexMem = r'^mem\[(?P&lt;x>\d*)\] = (?P&lt;y>\d*)$'
+
+allMasks = set()
+
+def recu(s, i):
+    global allMasks
+    if(i >= len(s)):
+        allMasks.add(''.join(s))
+    else:
+        ori = s[i]
+        if(s[i] == '1'):
+            recu(s, i+1)
+        elif(s[i] == 'X'):
+            s[i] = '0'
+            recu(s, i+1)
+            s[i] = '1'
+            recu(s, i+1)
+        elif(s[i] == '0'):
+            s[i] = 'X'
+            recu(s, i+1)
+        s[i] = ori
+
+for line in lines:
+    g = re.search(regexMask, line) or re.search(regexMem, line)
+    if(len(g.groups()) == 1):
+        mask = g.group('mask')
+        allMasks = set()
+        recu(list(mask), 0)
+    else:
+        (x, y) = map(int, g.groups())
+        for mask in allMasks:
+            mask1 = int(mask.replace('X', '1'), 2)
+            mask2 = int(mask.replace('X', '0'), 2)
+            memory[(x & mask1) | mask2] = y
+print(sum(memory.values()))</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
