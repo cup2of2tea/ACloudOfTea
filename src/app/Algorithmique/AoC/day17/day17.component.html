@@ -1,0 +1,166 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 17)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/17">Jour 17, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Le problème du jour 17 se rapproche un peu du problème du jour 11:<br /><br />
+                On doit réaliser une simulation de type automate cellulaire, avec des règles à appliquer aux différentes
+                coordonnées en fonction de leurs voisins.<br />
+                Mais contrairement au jour 11, cette fois-ci la simulation doit être réalisée dans un <b>espace à 3
+                    dimensions</b>, et les coordonnées voisines sont celles qui différent au maximum de <b>1</b> suivant
+                l'un des axe.<br />
+
+                Par exemple, <code>(0,0,0)</code> a, entre autres, les voisins <code>(1,1,1)</code>,
+                <code>(-1,0,-1)</code>, <code>(1,0,-1)</code> mais n'a pas pour voisin <code>(2,0,1)</code> et
+                <code>(0,0,-2)</code>.<br /><br />
+
+                Les règles de mise à jour des coordonnées sont les suivantes:
+                <ul>
+                    <li>Si une position est active et qu'elle a 2 ou 3 voisins activés, alors elle reste active. Sinon
+                        elle devient inactive.
+                    </li>
+                    <li>
+                        Si une position est inactive et qu'elle a 3 voisins activés, alors elle devient active. Sinon
+                        elle reste inactive.
+                    </li>
+                </ul>
+                <br />
+
+                La valeur à soumettre est le nombre de positions actives après <b>6 étapes</b> de
+                simulation.<br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                On peut en premier lieu définir la structure qui va stocker l'état de nos positions:<br />
+                Etant donné que la simulation s'étend dans toutes les directions, et que la structure peut être très peu
+                dense (avoir des positions activées très écartées, mais d'un nombre très faible au total), plutôt que de
+                stocker ces données dans un tableau à multiples dimensions, et de gérer les coordonnées avec des offsets
+                (pour éviter les coordonnées négatives avec la propagation multi directionnelle), on peut utiliser un
+                <b>dictionnaire avec les coordonnées en clé</b>.<br /><br />
+
+                Par exemple, si l'on a la coordonnée <b>(x,y,z)</b> activée initialement, il suffira de faire
+                <code>d[(x,y,z)]='#'</code>.<br /><br />
+
+                Une seconde remarque importante est qu'une position désactivée ne changera jamais d'état si elle n'est
+                jamais voisine avec une position activée.<br />
+                Comme on cherche le nombre de positions actives à la fin, on peut faire en sorte de stocker uniquement
+                les positions actives, et de mettre à jour celles-ci ainsi que leurs positions voisines à chaque
+                étape.<br />
+                Plutôt que de passer par un <b>dictionnaire</b> (désolé pour la feinte plus haut), on peut donc avoir un
+                simple <b>set</b> de positions
+                actives.<br />
+                On utilise plutôt un set qu'une <b>liste</b> pour éviter la vérification en <code>O(N)</code> de la
+                présence
+                d'une position active dans cette <b>liste</b>, lorsque l'on réalise les étapes de
+                simulation.<br /><br />
+
+                Le fait de stocker uniquement les positions actives permet grandement d'optimiser notre solution:
+                beaucoup de positions sont activées puis desactivées au fur et à mesure de la simulation.<br /><br />
+
+                Une dernière étape est d'appliquer les règles de voisinnage.<br />
+                On peut encore une fois utiliser un <b>dictionnaire</b> pour incrémenter les différents compteurs de
+                voisins
+                activés à partir de notre set, et ainsi vérifier les changements d'états des différentes
+                positions.<br /><br />
+
+                Exemple de code:
+                <pre class="line-numbers language-python"><code>import itertools
+lines = open('input17.txt').read().split('\n')
+
+actives = set()
+
+for i in range(len(lines)):
+    for j in range(len(lines[i])):
+        if(lines[i][j] == '#'):
+            actives.add((0, i, j))
+
+for e in range(6):
+    actives2 = set()
+    neighs = dict()
+    for (x, y, z) in actives:
+        # itertools.product donne le produit cartésien des itérables passés
+        # par exemple, itertools.product(range(x-1,x+2),range(y-1,y+2))
+        # donne [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
+        for (x2, y2, z2) in itertools.product(range(x-1, x+2), range(y-1, y+2), range(z-1, z+2)):
+            if(x2 == x and y2 == y and z2 == z):
+                continue
+            neighs[(x2, y2, z2)] = neighs.get((x2, y2, z2), 0) + 1
+    for (x, y, z) in neighs.keys():
+        if((x, y, z) not in actives):
+            if(neighs[(x, y, z)] == 3):
+                actives2.add((x, y, z))
+        else:
+            # Faut avouer que python a des trucs parfois kiffants
+            if(3 >= neighs[(x, y, z)] >= 2):
+                actives2.add((x, y, z))
+    actives = actives2.copy()
+
+print(len(actives))</code></pre>
+                <br /><br />
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/17">Jour 17, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                La seconde partie est très simple:<br />
+                On a exactement les mêmes règles / objectifs que pour la partie 1, sauf que l'on rajoute une 4 ème
+                dimension.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                On peut très facilement adapter notre code de la partie 1 pour ajouter cette 4 ème dimension, et obtenir
+                directement la valeur attendue:
+
+                <pre class="line-numbers language-python"><code>import itertools
+lines = open('input17.txt').read().split('\n')
+
+actives = set()
+
+for i in range(len(lines)):
+    for j in range(len(lines[i])):
+        if(lines[i][j] == '#'):
+            actives.add((0, 0, i, j))
+
+for e in range(6):
+    actives2 = set()
+    neighs = dict()
+    for (x, y, z, k) in actives:
+        for (x2, y2, z2, k2) in itertools.product(range(x-1, x+2), range(y-1, y+2), range(z-1, z+2), range(k-1, k+2)):
+            if(x2 == x and y2 == y and z2 == z and k2 == k):
+                continue
+            neighs[(x2, y2, z2, k2)] = neighs.get((x2, y2, z2, k2), 0)+1
+    for (x, y, z, k) in neighs.keys():
+        if((x, y, z, k) not in actives):
+            if(neighs[(x, y, z, k)] == 3):
+                actives2.add((x, y, z, k))
+        else:
+            if(3 >= neighs[(x, y, z, k)] >= 2):
+                actives2.add((x, y, z, k))
+    actives = actives2.copy()
+
+print(len(actives))</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
