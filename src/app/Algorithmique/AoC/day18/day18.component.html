@@ -1,0 +1,161 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 18)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/18">Jour 18, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Le problème d'aujourd'hui demandait d'évaluer un ensemble d'expressions arithmétiques simples,
+                constituées uniquement <b>d'additions</b>, de <b>multiplications</b>, mais avec des règles un peu
+                différentes que pour
+                une évaluation classique.<br />
+
+                En effet, pour cette première sous-partie, la <b>multiplication</b> et <b>l'addition</b> avaient les
+                <b>mêmes priorités</b>,
+                l'évaluation des expressions se faisant de gauche à droite (exception pour les expressions parenthésées
+                qui conservaient leurs priorités).<br /><br />
+
+                Pour chaque expression, on obtient une valeur, et la solution est la somme de toutes ces
+                valeurs.<br /><br />
+
+                Par exemple, si on
+                <pre class="line-numbers language-python"><code>1 + 2 * 3       # Evaluée comme (1 + 2) * 3 = 9
+1 * 2 + 3       # Evaluée comme (1 * 2) + 3 = 5
+1 * (2 + 3)     # Evaluée comme 1 * (2 + 3) = 5</code></pre>
+
+                on obtient donc la réponse <b>(9+5+5) = 19</b>.
+                <br /><br />
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Ce problème peut être abordé de deux manières différentes:
+                <ul>
+                    <li>Soit on construit un parser syntaxique (plus ou moins bricolé) et l'on évalue suivant les appels
+                        récursifs / parcours de l'arbre géneré</li>
+                    <li>Soit on ruse un peu</li>
+                </ul>
+
+                La première solution peut être assez pénible
+                <ul>
+                    <li> Si l'on fait une solution propre, le code peut être assez considérable à écrire</li>
+                    <li> Si l'on fait une solution bricolage, le code est peu élégant et très spécifique</li>
+                </ul>
+
+                C'est pourquoi on verra plutôt une solution rusée.<br /><br />
+
+                La solution rusée consiste à garder les évaluateurs d'expressions arithmétiques existants, mais en
+                tweakant légèrement ces expressions ou la manière avec laquelle elles sont évaluées, pour correspondre à
+                l'énoncé.<br /><br />
+
+                Dans mon cas, ce que j'ai fait c'est que j'ai créé une classe <code>MyInt</code>, pour laquelle je
+                redéfinis ses opérateurs.<br />
+                Ici, comme l'addition et la multiplication ont la même priorité, si l'on remplace une multiplication par
+                une soustraction, on respecte les règles de priorité classiques.<br />
+                Il suffit ensuite, au niveau de la classe, de redéfinir <b>l'opérateur "soustraction"</b> comme
+                effectuant une
+                <b>opération de multiplication</b>.<br /><br />
+
+                Ensuite, on peut remplacer à la volée les lignes pour changer les opérateurs, et encapsuler nos
+                différentes valeurs numériques à l'intérieur d'une instance de cette classe <code>MyInt</code>, et de
+                l'interpréter avec la fonction <code>exec</code>.<br /><br />
+
+                Cela donne ceci:
+
+                <pre class="line-numbers language-python"><code>import re
+
+lines = open('input18.txt').read().split('\n')
+
+class MyInt:
+    def __init__(self, val):
+        self.val = val
+
+    def __add__(self, other):
+        return MyInt(self.val+other.val)
+
+    def __sub__(self, other):
+        # C'est ici que la magie opère
+        return MyInt(self.val*other.val)
+
+somme = MyInt(0)
+it = 0
+for line in lines:
+    # Transforme par exemple "1 + 2 * 3" en  "tmp = MyInt(1) + MyInt(2) * MyInt(3)"
+    line = 'tmp = ' + \
+        re.sub('([0-9]+)', 'MyInt(\\1)', line).replace('*','-')
+    exec(line)
+    somme = somme + tmp
+
+print(somme.val)</code></pre>
+
+                <br /><br />
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/18">Jour 18, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la seconde partie, plutôt que d'avoir un même niveau de priorité, cette fois-ci l'addition a un
+                niveau de priorité plus important que la multiplication.<br />
+
+                Le reste de l'énoncé ne change pas.
+                <br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                On peut utiliser le même type de magouille que pour la première partie.<br /><br />
+                Cette fois-ci, pour inverser les priorités, on remplacera au niveau de la chaîne à évaluer les
+                additions par des multiplications et
+                vice-versa. <br />
+                On inversera également au niveau des opérateurs de la classe les deux traitements.<br /><br />
+
+                En code, ça nous donne donc:
+
+                <pre class="line-numbers language-python"><code>import re
+
+lines = open('input18.txt').read().split('\n')
+
+class MyInt:
+    def __init__(self, val):
+        self.val = val
+
+    def __add__(self, other):
+        return MyInt(self.val*other.val)
+
+    def __mul__(self, other):
+        return MyInt(self.val+other.val)
+
+somme = MyInt(0)
+it = 0
+tmp = None
+for line in lines:
+
+    line = 'tmp = ' + \
+        re.sub('([0-9]+)', 'MyInt(\\1)', line).replace('+','?').replace('*', '+').replace('?', '*')
+
+    exec(line)
+    somme = somme * tmp
+
+print(somme.val)</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>
