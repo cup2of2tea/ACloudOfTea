@@ -1,0 +1,250 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 19)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/19">Jour 19, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                On a en entrée ce qu'on appelle en informatique la description d'une <b><a
+                        href="https://fr.wikipedia.org/wiki/Grammaire_formelle">grammaire formelle</a></b>, soit un
+                ensemble de règles permettant de définir un ensemble de mots acceptés par cette grammaire.<br /><br />
+
+                Ici, les nombres correspondent à des <b>symboles non terminaux</b>, c'est à dire que l'on peut
+                développer ces symboles, alors que les caractères <b>'a' ... 'z'</b> sont des symboles
+                terminaux.<br /><br />
+
+                Par exemple, si l'on a la grammaire suivante:
+                <pre class="line-numbers language-python"><code>
+1 : 2 3 | 4
+2 : 4 4
+3: 'a'
+4: 'b'</code></pre>
+
+                alors les mots acceptés sont les suivants: <b>'bba' et 'b'</b>.<br /><br />
+
+                En plus de la description de la grammaire, on a également un ensemble de mots.<br />
+                La valeur à soumettre est le nombre de mots appartenant à la grammaire formelle. <br /><br />
+
+                <h3 id="day3_part1_statement"> Solutions </h3>
+
+                Certaines solutions ont été développées à partir de <b>regex</b> (expressions régulières), mais je ne
+                connais pas les détails de ces solutions. <br /><br />
+
+                Je suis parti sur une autre approche, qui consiste à parcourir récursivement les règles, en extrayant
+                les sous-chaînes d'un motif à rechercher.<br /><br />
+
+                L'idée globale est la suivante:<br /><br />
+
+                Le premier appel à la fonction récursive passe en paramètre le symbole "racine" duquel est géneré
+                l'intégralité des mots de la grammaire formelle.<br />
+                Egalement, est passé en paramètre le mot pour lequel on veut vérifier son appartenance à la
+                grammaire.<br /><br />
+
+                Pour chaque option de développement (les options étant séparés par le symbole <b>'|'</b>), on itère
+                récursivement sur les différents symboles non terminaux pour trouver l'ensemble des réductions de
+                préfixes possibles du motif à rechercher.<br />
+                Lorsque l'on étudie séquentiellement les différents symboles non terminaux, on récupère donc un ensemble
+                de mots de l'appel récursif, et cet ensemble constitue l'ensemble des mots de départs que l'on va
+                chercher pour les symboles terminaux suivants de ce même groupe.<br /><br />
+
+                Par exemple, si l'on a la grammaire:
+
+                <pre class="line-numbers language-python"><code>1: 23
+2: 4 5 | 5
+4: 5 5 | 5
+3: 5 | 6
+5: 'a'
+6: 'b'</code></pre>
+
+                et que l'on cherche à déterminer si le mot 'aab' appartient à la grammeire, alors notre premier appel
+                récursif aura les arguments (1,'aab'), et on aura le déroulement suivant:
+
+                <pre class="line-numbers language-python"><code>appel(1,'aab') 
+Première étape (recherches: {{'{'}}'aab'{{'}'}}):
+    appel(2,'aab')
+    Premier groupe (45):
+        Premiere étape (recherches: {{'{'}}'aab'{{'}'}}):
+            appel(4,'aab')
+            Premier groupe (55):
+                appel(5,'aab') => retourne {{'{'}}'ab'{{'}'}}
+                appel(5,'ab') => retourne {{'{'}}'b'{{'}'}}
+            => {{'{'}}'b'{{'}'}}
+            Second groupe (5):
+                appel(5,'aab') => retourne {{'{'}}'ab'{{'}'}}
+            => {{'{'}}'ab'{{'}'}}
+
+            Donc 
+            appel(4,'aab') => retourne {{'{'}}'ab','b'{{'}'}}
+        
+        Seconde étape (recherches: {{'{'}}'ab','b'{{'}'}}):
+            appel(5,'ab') => retourne {{'{'}}'b'{{'}'}}
+            appel(5,'b') => retourne {{'{'}}{{'}'}}
+    =>{{'{'}}'b'{{'}'}}
+
+    Second groupe (5):
+        appel(5,'aab') => retourne {{'{'}}'ab'{{'}'}}
+    => {{'{'}}'ab'{{'}'}}
+
+    appel(2,'aab') => retourne {{'{'}}'b','ab'{{'}'}}
+
+Seconde étape (recherches: {{'{'}}'b','ab'{{'}'}}):
+    appel(3,'b'):
+    Premier groupe (5):
+        appel(5,'b') => retourne {{'{'}}{{'}'}}
+    Second groupe (6):
+        appel(6,'b') => retourne {{'{'}}''{{'}'}}
+    
+    appel(3,'ab'):
+    Premier groupe (5):
+        appel(5,'b') => retourne {{'{'}}'b'{{'}'}}
+    Second groupe (6):
+        appel(6,'b') => retourne {{'{'}}{{'}'}}
+
+appel(1,'aab') => {{'{'}}'','b'{{'}'}}</code></pre>
+
+                <br /><br />
+
+                Comme on obtient une chaîne vide dans le retour de l'appel principal, on en déduit que le mot est
+                accepté par la grammaire.<br /><br />
+
+                Exemple d'implémentation:
+                <pre class="line-numbers language-python"><code>lines = open('input19.txt').read().split('\n')
+
+g = dict()
+
+for i in range(len(lines)):
+    line = lines[i]
+    if(len(line) < 1):
+        break
+
+    (f, to) = line.split(':')
+    f = int(f)
+
+    if('"' in to):
+        g[f] = to.replace('"', '').strip()
+        continue
+    allTos = list(map(str.strip, to.split('|')))
+
+    for i in range(len(allTos)):
+        allTos[i] = list(map(int, allTos[i].split(' ')))
+
+    g[f] = allTos
+
+tests = lines[i+1:]
+
+def recu(rule, searching):
+    if(isinstance(g[rule], str)):
+        if(len(searching) > 0 and searching[0] == g[rule][0]):
+            return set([searching[1:]])
+        return set()
+    res = set()
+    for group in g[rule]:
+        currentSearch = set([searching])
+        for w in group:
+            newSearch = set()
+            for z in currentSearch:
+                newSearch = newSearch.union(recu(w, z))
+            currentSearch = newSearch.copy()
+        res = res.union(currentSearch)
+    return res
+
+res = 0
+for message in tests:
+    if('' in recu(0, message)):
+        res += 1
+print(res)</code></pre>
+
+                <br /><br />
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/19">Jour 19, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                La partie 2 est identique à la partie 1 à l'exception de deux règles de la grammaire qui ont été
+                modifiées, pour permettre les cycles.<br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                La solution décrite plus haut n'est pas affectée par ce changement.<br />
+                C'est dû au fait que le cycle est de la forme <code>"a: b a | b"</code> et non
+                <code>"a: a b | b"</code>. <br />
+                Comme le symbole b n'aboutit pas sur des cycles, étant donné que les appels récursifs réduisent d'au
+                moins un caractère les chaînes à rechercher, on n'a donc pas de récursivité infinie. <br /><br />
+
+                Le code ne change donc pas, à part la partie permettant de modifier à la volée les deux règles:
+
+                <pre class="line-numbers language-python"><code>lines = open('input19.txt').read().split('\n')
+
+g = dict()
+
+for i in range(len(lines)):
+    line = lines[i]
+    if(len(line) < 1):
+        break
+
+    (f, to) = line.split(':')
+    f = int(f)
+    if(f == 8):
+        to = ' 42 | 42 8'
+    elif(f == 11):
+        to = ' 42 31 | 42 11 31'
+
+    if('"' in to):
+        g[f] = to.replace('"', '').strip()
+        continue
+    allTos = list(map(str.strip, to.split('|')))
+
+    for i in range(len(allTos)):
+        allTos[i] = list(map(int, allTos[i].split(' ')))
+
+    g[f] = allTos
+
+tests = lines[i+1:]
+
+
+def recu(rule, searching):
+    if(isinstance(g[rule], str)):
+        if(len(searching) > 0 and searching[0] == g[rule][0]):
+            return set([searching[1:]])
+        return set()
+    res = set()
+    for group in g[rule]:
+        currentSearch = set([searching])
+        for w in group:
+            newSearch = set()
+            for z in currentSearch:
+                newSearch = newSearch.union(recu(w, z))
+            currentSearch = newSearch.copy()
+        res = res.union(currentSearch)
+    return res
+
+res = 0
+for message in tests:
+    if('' in recu(0, message)):
+        res += 1
+print(res)</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>
