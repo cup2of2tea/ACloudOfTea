@@ -1,0 +1,488 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 20)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/20">Jour 20, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                On a en entrée un ensemble de pièces de puzzle sous la forme de grilles 2D avec 2 valeurs possibles pour
+                chaque case (<code>'#'</code> ou <code>'.'</code>) et auxquelles sont associés des
+                identifiants.<br /><br />
+
+                L'objectif est de reconstruire le puzzle, de telle sorte que deux pièces se touchent via un côté que si
+                ce côté est identique pour les deux pièces.<br />
+                Par exemple, cette reconstruction est valide:
+                <pre class="line-numbers language-python"><code>..# #..
+#.# #..
+#.# #..
+
+#.# ###
+... .#.
+### ###</code></pre>
+                mais pas celle-ci:
+                <pre class="line-numbers language-python"><code>#.. ..#
+#.. #.#
+#.. #.#
+
+#.# ###
+... .#.
+### ###                   
+                </code></pre>
+
+                On peut appliquer des rotations aux pièces, ainsi que des retournements symétriques.<br />
+                Par exemple, pour une pièce de <b>3x3</b> avec les cases numérotées de <b>1</b> à <b>9</b> de la manière
+                suivante:
+
+                <pre class="line-numbers language-python"><code>1 2 3 
+4 5 6
+7 8 9</code></pre>
+
+
+                toutes les transformations possibles sont les suivantes:
+
+                <pre class="line-numbers language-python"><code>1 2 3     7 4 1     9 8 7     3 6 9
+4 5 6     8 5 2     6 5 4     2 5 8
+7 8 9     9 6 3     3 2 1     1 4 7
+
+7 8 9     9 6 3     3 2 1     1 4 7
+1 2 3     7 4 1     9 8 7     3 6 9
+4 5 6     8 5 2     6 5 4     2 5 8</code></pre>
+
+                La ligne du haut est générée en appliquant une rotation supplémentaire par rapport à la pièce de gauche,
+                et la ligne d'en bas correspond au retournement de la pièce du dessus verticalement.<br />
+                On a donc une méthode simple pour générer toutes les variantes de la pièce.<br /><br />
+
+                Un élément supplémentaire concernant le puzzle est que <b>le bord extérieur des pièces formant le
+                    contour
+                    n'a aucune correspondance avec les autres pièces</b>.<br /><br />
+
+                La réponse à renvoyer est le produit des id des pièces présentes dans les coins.<br />
+                <br />
+
+                <h3>Solution</h3>
+
+                Pour la première partie, il n'était pas nécessaire de reconstruire tout le puzzle. <br />
+                En effet, il suffisait de trouver les pièces pour lesquels on avait deux bords avec lesquels aucune
+                correspondance ne pouvait être réalisée.<br /><br />
+
+                Néanmoins, comme on aura besoin de la reconstruction du puzzle pour la partie 2, la résolution du puzzle
+                sera faite dès la partie 1.<br /><br />
+
+                Ce problème était assez complexe, et nécessitait la mise en place de beaucoup d'éléments pour une
+                résolution efficace.<br />
+
+                <div class="proTip">
+                    <fa-icon [icon]="['far', 'lightbulb']"></fa-icon>
+                    Il est intéressant dans certains cas de précalculer beaucoup d'informations, si celles-ci
+                    permettent d'accélérer des calculs ultérieurs.<br />
+                    Ici par exemple, plutôt que de faire des rotations / retournements des pièces, ainsi que de comparer
+                    les bords des pièces au fur et à mesure de notre algorithme, on peut précalculer ces informations
+                    dès le début pour plus tard.
+                </div><br />
+
+                Pour précalculer toutes les versions d'une pièce, il nous faut également les fonctions permettant de :
+                <ul>
+                    <li>Faire une rotation</li>
+                    <li>Faire un retournement</li>
+                </ul>
+
+                Le retournement est très simple, il suffit de retourner simplement chaque ligne d'une pièce:
+                <pre class="line-numbers language-python"><code>1 2 3      3 2 1
+4 5 6  =>  6 5 4
+7 8 9      9 8 7</code></pre>
+
+                La rotation est légèrement plus complexe, l'algorithme étant le suivant:
+                <pre class="line-numbers language-python"><code>rotation(piece):
+res = copie(piece)
+pour i dans [0,N-1]:
+    pour j dans [0,N-1]:
+         res[N-1-j][i] = piece[i][j]</code></pre>
+
+                A partir de ça, on peut définir une méthode qui prendra en paramètre, et qui génèrera toutes les
+                rotations / retournements de cette pièce.<br /><br />
+
+
+                Une seconde étape de précalcul est de trouver, pour chaque pièce dans une configuration donnée (rotation
+                / retournement), trouver les pièces et configurations pouvant matcher.<br />
+
+                On verra les raisons plus tard, mais j'ai stocké cette information pour accèder efficacement à
+                l'information "quelles pièces (<b>avec configuration</b>) peuvent être ajoutées en haut/en bas/à
+                droite/à
+                gauche de ma pièce (<b>avec configuration</b>)?".<br /><br />
+
+                Pour éviter de réaliser un grand nombre de comparaisons plus ou moins complexes (matcher les bords
+                horizontaux/ verticaux), pour calculer les matchs on va uniquement comparer 2 lignes: <b>la ligne du
+                    bas</b> de
+                la première pièce avec <b>la ligne du haut</b> de la second pièce.<br /><br />
+
+                Cette comparaison, si fructueuse, nous permet en fait de retrouver à partir d'une configuration, toutes
+                les autres rotations pour lesquels on aura également un match.<br />
+                En effet, si l'on a un match pour une rotation r1 et une rotation r2, alors le match sera également
+                présent pour une rotation supplémentaire sur les deux pièces (mais dans une direction diffèrente).<br />
+                On peut ainsi appliquer les 4 rotations pour ajouter ces nouvelles configurations aux
+                matchs.<br /><br />
+                <div style="text-align:center;">
+                    <img style="width:500px" src="assets/img/matches.png" />
+                </div>
+
+                On a maintenant toutes les informations nécessaires pour accélérer notre bruteforce.<br />
+                En effet, l'algorithme final de résolution est un simple bruteforce avec backtracking:<br />
+                On essaie à chaque coordonnée les pièces, et on vérifie si les contraintes de matching sont bien
+                respectées.<br /><br />
+
+                Si l'on faisait ainsi de manière naïve, même avec précalcul des variantes de pièces, on risque d'avoir
+                un programme qui prend beaucoup de temps.<br />
+                C'est ici que rentre en jeu le précalcul des matchings suivant les directions. Cela nous permet en effet
+                d'élaguer certains noeuds d'explorations, en vérifiant les cas suivants:
+                <ul>
+                    <li> Si on est en <b>première ligne</b>, il faut que notre pièce n'ait <b>aucun matching possible
+                            vers le haut
+                        </b></li>
+                    <li> Si on est en <b>première colonne</b>, il faut que notre pièce n'ait <b>aucun matching possible
+                            vers la
+                            gauche</b></li>
+                    <li> Mêmes principes pour <b>dernière ligne / colonne</b> </li>
+                    <li> Si on est dans les <b>cas contraires</b>, il faut au contraire qu'il existe <b>un matching
+                            possible vers
+                            les directions avec pièces</b></li>
+                </ul>
+
+                Egalement, on vérifie au fur et à mesure le matching avec les pièces déjà posées (à gauche ou en
+                haut).<br /><br />
+
+
+                Avec toutes ces optimisations, la complexité reste la même (un bon <code>O(N!)</code> hideux), mais on
+                élague
+                beaucoup de branches, et vu que c'est l'AOC, les cas d'entrée sont "simples".<br />
+                On obtient donc un programme quasi instantané (0.4 secondes).
+
+                <pre class="line-numbers language-python"><code>import math
+lines = open('input20.txt').read().split('\n')
+allTiles = []
+currentTile = []
+currentId = ''
+for line in lines:
+    if(len(line) == 0):
+        allTiles.append((currentTile, currentId))
+        currentTile = []
+    elif('Tile' in line):
+        currentId = line.replace('Tile', '').replace(':', '').strip()
+    else:
+        currentTile.append(line)
+
+tileDim = len(allTiles[0][0])
+puzzleDim = int(math.sqrt(len(allTiles)))
+
+def flip(tile):
+    return [''.join(line[::-1]) for line in tile]
+
+def rotate(tile):
+    return [''.join([tile[len(tile)-1-y][x] for y in range(len(tile))]) for x in range(len(tile))]
+
+def generateAllVersions(tile):
+    currentFlip = tile.copy()
+    res = []
+    for f in range(2):
+        currentRot = currentFlip.copy()
+        for r in range(4):
+            res.append(currentRot)
+            currentRot = rotate(currentRot)
+        currentFlip = flip(currentFlip)
+    return res
+
+versionsPerId = dict([(id, generateAllVersions(tile))
+                        for (tile, id) in allTiles])
+
+SOUTH, WEST, NORTH, EAST = 0, 1, 2, 3
+
+allCorners = []
+
+def matchs(tile1Versions, tile2Versions):
+    res = []
+    for i in range(len(tile1Versions)):
+        for j in range(len(tile2Versions)):
+            if(tile1Versions[i][-1] == tile2Versions[j][0]):
+                res.append((i, j))
+
+    return res
+
+allMatches = dict()
+
+for k in versionsPerId.keys():
+    allMatches[k] = dict([((f, r, direction), []) for f in range(2)
+                            for r in range(4) for direction in range(4)])
+    for k2 in versionsPerId.keys():
+        if(k == k2):
+            continue
+        ms = matchs(versionsPerId[k], versionsPerId[k2])
+        for (i, j) in ms:
+            f1 = i//4
+            f2 = j//4
+            r1 = i % 4
+            r2 = j % 4
+            # Si deux pièces ont les lignes inférieurs qui matchent, alors si l'on fait
+            # le même nombre de rotations gauches pour une pièce que le nombre de rotations
+            # droite pour l'autre, on a un match
+            for r in range(4):
+                key = (f1, (r1+r) % 4, r)
+
+                allMatches[k][key] = allMatches[k].get(
+                    key, [])+[(k2, f2, (r2+r) % 4)]
+
+def bruteforce(grid, i, j, allMatches, remaining, allKeys):
+    if(i >= len(grid)):
+        return True
+    i2 = i+(j+1)//len(grid)
+    j2 = (j+1) % len(grid)
+
+    for kIdx in range(len(allKeys)):
+        if((1 << kIdx) & remaining):
+            continue
+        k = allKeys[kIdx]
+        for f in range(2):
+            for r in range(4):
+                if(i == 0):
+                    if(len(allMatches[k][(f, r, NORTH)]) > 0):
+                        continue
+                elif(grid[i-1][j] not in allMatches[k][(f, r, NORTH)]):
+                    continue
+
+                if(i+1 < len(grid)):
+                    if(len(allMatches[k][(f, r, SOUTH)]) == 0):
+                        continue
+
+                if(j == 0):
+                    if(len(allMatches[k][(f, r, WEST)]) > 0):
+                        continue
+                elif(grid[i][j-1] not in allMatches[k][(f, r, WEST)]):
+                    continue
+
+                if(j+1 < len(grid)):
+                    if(len(allMatches[k][(f, r, EAST)]) == 0):
+                        continue
+
+                grid[i][j] = (k, f, r)
+                if(bruteforce(grid, i2, j2, allMatches, remaining | (1 << kIdx), allKeys)):
+                    return True
+                grid[i][j] = None
+    return False
+
+grid = [[None for col in range(puzzleDim)] for row in range(puzzleDim)]
+bruteforce(grid, 0, 0, allMatches, 0, list(allMatches.keys()))
+
+corners = 1
+for i in range(0, puzzleDim, puzzleDim-1):
+    for j in range(0, puzzleDim, puzzleDim-1):
+        corners *= int(grid[i][j][0])
+
+print(corners)</code></pre>
+
+
+                <br /><br />
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/20">Jour 20, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la seconde partie, on part du puzzle reconstitué lors de la partie 1, en supprimant les bords de
+                chaque pièce.<br /><br />
+
+                A partir de cette grille obtenue, on doit chercher un certain pattern, et supprimer les cases
+                <code>'#'</code>
+                appartenant à ce pattern de la grille, puis compter les cases <code>'#'</code> restantes.<br />
+
+                Etant donné que ce pattern n'apparaît pas pour tous les retournements / rotations de la grille
+                reconstituée, il faut tester toutes les configurations possibles.<br /><br />
+
+                La valeur à soumettre est donc le nombre de cases <code>'#'</code> n'appartenant pas à ce pattern trouvé
+                dans la
+                bonne configuration de la grille.
+                <br /><br />
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Ayant déjà résolu le puzzle en première partie, cette seconde partie est triviale:<br />
+
+                On peut réutiliser la fonction qui nous permet de générer toutes les variantes d'une pièce sur la
+                nouvelle grille reconstruite, pour tester toutes les possibilités de rotations / retournements.<br />
+                Ensuite, il suffit d'appliquer de manière naïve la recherche du pattern à travers la grille.<br /><br />
+
+                Une seule configuration fait apparaître le pattern (c'est la seule configuration pour laquelle on
+                affiche une valeur différente), la valeur à soumettre correspond donc à cette configuration.
+
+                <pre class="line-numbers language-python"><code>import math
+lines = open('input20.txt').read().split('\n')
+allTiles = []
+currentTile = []
+currentId = ''
+for line in lines:
+    if(len(line) == 0):
+        allTiles.append((currentTile, currentId))
+        currentTile = []
+    elif('Tile' in line):
+        currentId = line.replace('Tile', '').replace(':', '').strip()
+    else:
+        currentTile.append(line)
+
+tileDim = len(allTiles[0][0])
+puzzleDim = int(math.sqrt(len(allTiles)))
+
+def flip(tile):
+    return [''.join(line[::-1]) for line in tile]
+
+def rotate(tile):
+    return [''.join([tile[len(tile)-1-y][x] for y in range(len(tile))]) for x in range(len(tile))]
+
+def generateAllVersions(tile):
+    currentFlip = tile.copy()
+    res = []
+    for f in range(2):
+        currentRot = currentFlip.copy()
+        for r in range(4):
+            res.append(currentRot)
+            currentRot = rotate(currentRot)
+        currentFlip = flip(currentFlip)
+    return res
+
+versionsPerId = dict([(id, generateAllVersions(tile))
+                        for (tile, id) in allTiles])
+
+SOUTH, WEST, NORTH, EAST = 0, 1, 2, 3
+
+allCorners = []
+
+def matchs(tile1Versions, tile2Versions):
+    res = []
+    for i in range(len(tile1Versions)):
+        for j in range(len(tile2Versions)):
+            if(tile1Versions[i][-1] == tile2Versions[j][0]):
+                res.append((i, j))
+
+    return res
+
+allMatches = dict()
+
+for k in versionsPerId.keys():
+    allMatches[k] = dict([((f, r, direction), []) for f in range(2)
+                            for r in range(4) for direction in range(4)])
+    for k2 in versionsPerId.keys():
+        if(k == k2):
+            continue
+        ms = matchs(versionsPerId[k], versionsPerId[k2])
+        for (i, j) in ms:
+            f1 = i//4
+            f2 = j//4
+            r1 = i % 4
+            r2 = j % 4
+            # Si deux pièces ont les lignes inférieurs qui matchent, alors si l'on fait
+            # le même nombre de rotations gauches pour une pièce que le nombre de rotations
+            # droite pour l'autre, on a un match
+            for r in range(4):
+                key = (f1, (r1+r) % 4, r)
+
+                allMatches[k][key] = allMatches[k].get(
+                    key, [])+[(k2, f2, (r2+r) % 4)]
+
+def bruteforce(grid, i, j, allMatches, remaining, allKeys):
+    if(i >= len(grid)):
+        return True
+    i2 = i+(j+1)//len(grid)
+    j2 = (j+1) % len(grid)
+
+    for kIdx in range(len(allKeys)):
+        if((1 << kIdx) & remaining):
+            continue
+        k = allKeys[kIdx]
+        for f in range(2):
+            for r in range(4):
+                if(i == 0):
+                    if(len(allMatches[k][(f, r, NORTH)]) > 0):
+                        continue
+                elif(grid[i-1][j] not in allMatches[k][(f, r, NORTH)]):
+                    continue
+
+                if(i+1 < len(grid)):
+                    if(len(allMatches[k][(f, r, SOUTH)]) == 0):
+                        continue
+
+                if(j == 0):
+                    if(len(allMatches[k][(f, r, WEST)]) > 0):
+                        continue
+                elif(grid[i][j-1] not in allMatches[k][(f, r, WEST)]):
+                    continue
+
+                if(j+1 < len(grid)):
+                    if(len(allMatches[k][(f, r, EAST)]) == 0):
+                        continue
+
+                grid[i][j] = (k, f, r)
+                if(bruteforce(grid, i2, j2, allMatches, remaining | (1 << kIdx), allKeys)):
+                    return True
+                grid[i][j] = None
+    return False
+
+grid = [[None for col in range(puzzleDim)] for row in range(puzzleDim)]
+bruteforce(grid, 0, 0, allMatches, 0, list(allMatches.keys()))
+
+reconstruction = []
+
+for i in range(puzzleDim):
+    for r in range(1, tileDim-1):
+        current = ''
+        for j in range(puzzleDim):
+            g = versionsPerId[grid[i][j][0]][grid[i][j][1]*4+grid[i][j][2]]
+            current += g[r][1: -1]
+        reconstruction.append(current)
+
+pattern = '''                  # 
+#    ##    ##    ###
+    #  #  #  #  #  #   '''
+patternSharp = pattern.count('#')
+pattern = pattern.split('\n')
+
+for r in generateAllVersions(reconstruction):
+    allSharp = 0
+    for x in range(len(r)):
+        for y in range(len(r[x])):
+            if(r[x][y] == '#'):
+                allSharp += 1
+            if(x+len(pattern)-1 >= len(r)):
+                continue
+            if(y+len(pattern[0])-1 >= len(r[0])):
+                continue
+            found = True
+            for x2 in range(len(pattern)):
+                for y2 in range(len(pattern[0])):
+                    if(pattern[x2][y2] == '#' and r[x+x2][y+y2] != '#'):
+                        found = False
+                        break
+            if(found):
+                allSharp -= patternSharp
+
+    print(allSharp)</code></pre>
+
+
+            </div>
+        </div>
+    </div>
+</section>
