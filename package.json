@@ -29,7 +29,7 @@
     "datatables.net": "^1.10.21",
     "jquery": "^3.5.1",
     "ng-katex": "^2.0.3",
-    "prismjs": "^1.20.0",
+    "prismjs": "^1.24.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.11.1",
     "zone.js": "~0.9.1"
