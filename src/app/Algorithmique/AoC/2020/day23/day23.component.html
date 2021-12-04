@@ -1,0 +1,229 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 23)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/23">Jour 23, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Le jour 23 est un peu similaire au jour 22, dans le sens où l'on nous demande de simuler un processus
+                sur une sorte de liste.<br />
+                Ici, on a un ensemble de tasses numérotées, et l'on applique un algorithme qui modifie l'ordre de ces
+                tasses.<br />
+                Les tasses sont disposées en cercle, on a donc la première tasse voisine avec la dernière
+                tasse.<br /><br />
+
+                Initialement, la première tasse est choisie comme repère.<br />
+                L'algorithme consiste à répéter les étapes suivantes:
+                <ul>
+                    <li>Choisir les <b>3</b> tasses suivant la tasse repère. Les enlever.</li>
+                    <li>Repérer la tasse destination, qui a pour valeur la valeur de la tasse repère moins un. Si cette
+                        dernière n'est pas présente, alors on décrément la valeur recherchée jusqu'à ce qu'il y ait une
+                        tasse correspondante (si l'on décrémente depuis <b>1</b>, on boucle sur la valeur maximale).
+                    </li>
+                    <li>Placer les <b>3</b> tasses enlevées à la suite de la tasse destination</li>
+                    <li>La nouvelle tasse repère est la tasse qui suit la tasse repère actuelle</li>
+                </ul>
+
+
+                Pour la première partie, on a <b>9</b> tasses. On doit simuler <b>100</b> étapes, et retourner les
+                tasses
+                suivant la
+                tasse 1 dans l'ordre.
+
+                <h3>Solution</h3>
+
+                Ici, les contraintes sont très faibles: on a 9 tasses et 100 étapes.<br />
+
+                On pourrait donc se contenter de simuler de manière très naïve le processus avec des listes classiques,
+                sans se poser de question.<br /><br />
+
+                Néanmoins, ma patience est de plus en plus challengée au fur et à mesure de l'avancée de cette série
+                d'articles.<br />
+                Je vais donc tricher, et plutôt aborder dès à présent les éléments de solutions permettant de passer à
+                la fois la partie 1 ET la partie 2.<br /><br />
+
+                Ici, on a deux éléments clés à gérer:
+                <ul>
+                    <li> La structure est cruciale: il nous faut savoir quels éléments suivent d'autres éléments.
+                        <br />Ce
+                        point est important pour enlever les <b>3</b> tasses, les repositionner, et changer de repère.
+                    </li>
+                    <li> On veut faire en sorte de trouver facilement la tasse destination à partir de son étiquette,
+                        sans avoir à itérer sur toute la liste.</li>
+                </ul>
+
+                Le premier élément peut être résolu avec une structure de donnée de type <code>linked list</code>.
+                <br />
+                Cette structure stocke en effet une valeur, ainsi que l'élément suivant dans la liste.<br />
+                Cette liste peut représenter notre cercle sans souci, il suffit de préciser que le dernier élément a
+                pour élément suivant le premier élément.<br /><br />
+
+                Le second élément est également très simple à résoudre, et exploite une structure que l'on a vu maintes
+                et maintes fois durant l'Aoc:<br />
+                Une <code>hashmap</code>.<br />
+
+                Ici, on aura comme clé la valeur d'une tasse, et comme valeur l'élément de la <code>linked list</code>
+                correspondant.<br /><br />
+
+                Ces deux structures seront bien entendues à être maintenues à jour au cours des différentes
+                étapes.<br /><br />
+
+                Pour la première partie, le code donnera ceci:
+
+                <pre class="line-numbers language-python"><code>s = "523764819"
+
+class LinkedList:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+hashMap = dict()
+all = []
+for i in range(len(s)):
+    all.append(LinkedList(int(s[i])))
+    if(i > 0):
+        all[i-1].next = all[i]
+    hashMap[all[i].val] = all[i]
+
+all[-1].next = all[0]
+
+current = all[0]
+
+for it in range(100):
+    l = []
+    previous = current
+    for i in range(3):
+        l.append(previous.next)
+        previous = l[-1]
+    current.next = l[-1].next
+    allVals = [a.val for a in l]
+    target = current.val-1
+    if(target == 0):
+        target = len(all)
+    while target in allVals:
+        target -= 1
+        if(target == 0):
+            target = len(all)
+
+    targetNode = hashMap[target]
+    previous_next = targetNode.next
+
+    targetNode.next = l[0]
+    l[2].next = previous_next
+    current = current.next
+current = hashMap[1].next
+for i in range(len(s)-1):
+    print(current.val,end='')
+    current=current.next</code></pre>
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/23">Jour 23, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Comme je le laissais entendre plus haut, la seconde partie est très fortement liée à la partie
+                1.<br /><br />
+
+                En effet, la simulation reste la même, mais à la place des <b>9</b> éléments composants la liste
+                (décrits par
+                la chaîne de caractère), on en a à la place <b>1 million</b>. <br />
+                Ces éléments sont ajoutés de manière croissante après la liste que l'on avait en partie 1.<br />
+                Donc:
+                <pre class="line-numbers language-python"><code>5 2 3 7 6 4 8 1 9 10 11 12 13 ... 1000000</code></pre>
+
+                Egalement, pour la partie 1, seulement <b>100</b> étapes étaient à simuler. Ici on doit en
+                simuler <b>1
+                    million</b>.<br /><br />
+
+                La valeur à retourner est le produit des deux tasses suivant la tasse <b>1</b>.
+
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Avec cette partie, on comprend les besoins d'optimisations que j'avais introduit durant la
+                partie
+                1.<br />
+                En effet, rechercher de manière naïve sur une liste de <b>1 000 000</b> éléments la tasse
+                destination
+                aurait
+                été hyper coûteux.<br />
+                Egalement, la suppression et l'insertion d'éléments en plein milieu d'une liste classique de
+                python est
+                coûteux.<br /><br />
+
+                Malheureusement, comme nous avons déjà résolu ces problématiques de performances lors de la
+                partie 1,
+                cet article se clot ici avec simplement le code:
+
+
+                <pre class="line-numbers language-python"><code>s = "523764819"
+
+class LinkedList:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+hashMap = dict()
+all = []
+for i in range(1000000):
+    if(i < len(s)):
+        all.append(LinkedList(int(s[i])))
+    else:
+        all.append(LinkedList(i+1))
+    if(i > 0):
+        all[i-1].next = all[i]
+    hashMap[all[i].val] = all[i]
+
+all[-1].next = all[0]
+
+current = all[0]
+
+for it in range(10000000):
+    l = []
+    previous = current
+    for i in range(3):
+        l.append(previous.next)
+        previous = l[-1]
+    current.next = l[-1].next
+    allVals = [a.val for a in l]
+    target = current.val-1
+    if(target == 0):
+        target = len(all)
+    while target in allVals:
+        target -= 1
+        if(target == 0):
+            target = len(all)
+
+    targetNode = hashMap[target]
+    previous_next = targetNode.next
+
+    targetNode.next = l[0]
+    l[2].next = previous_next
+    current = current.next
+
+print(hashMap[1].next.val * hashMap[1].next.next.val)</code></pre>
+
+
+            </div>
+        </div>
+    </div>
+</section>

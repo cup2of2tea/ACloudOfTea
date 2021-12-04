@@ -1,0 +1,164 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 4)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day4_part1"><a href="https://adventofcode.com/2021/day/4">Jour 4, partie 1:</a></h2>
+                <h3 id="day4_part1_statement"> Enoncé </h3>
+                Pour ce problème, on se retrouve confronté à une partie de Bingo.<br/><br/>
+                Les règles sont classiques: <br/>
+                On a des cartes avec des lignes et des colonnes, et un nombre indiqué par case.<br/>
+                Un ensemble de nombre est tiré au hasard, et au fur et à mesure du tirage, on marque
+                les cases correspondantes sur nos cartes, si le nombre tiré est présent sur la carte.<br/>
+
+                Dès qu'une ligne ou une colonne est complète, la carte est considérée comme gagnante.<br/><br/>
+
+                Dans cette première partie, on souhaite simplement trouver la première carte à être considérée
+                comme gagnante à partir de notre tirage.<br/>
+                La réponse à envoyer est le produit des cases non marquées de cette carte et du nombre
+                tiré en dernier qui nous a permis de rendre la carte gagnante.
+
+                <h3 id="day4_part1_solution"> Solution </h3>
+                Solution encore une fois très simple.<br/>
+                Pour représenter nos cartes, on va simplement partir sur des listes à deux dimensions.<br/>
+                Puis, on va itérer sur les nombres tirés, et pour chaque nombre tiré, on va marquer
+                (soit en liant nos cartes à une autre liste à deux dimensions qui nous indiquera le marquage,
+                soit en donnant des valeurs spéciales aux cases déjà marquées) les différentes cases correspondantes.<br/><br/>
+
+                Pour vérifier si une carte est gagnante, il suffit d'itérer sur chaque ligne / colonne, et vérifier
+                que toutes les cases sont bien marquées.<br/>
+                Cela nous donne le code suivant:
+                <pre class="line-numbers language-python"><code>lines = open('input4.txt').read().split('\n')
+tirage = list(map(int,lines[0].replace('\n','').split(',')))
+
+allCards = []
+
+def parseCardLine(line):
+    return list(map(int,filter(lambda x:len(x) > 0, line.split(' '))))
+
+for i in range(2,len(lines),6):
+    allCards.append(list(map(parseCardLine,lines[i:i+5])))
+
+def displaySolution(card, lastNumber):
+    somme = 0
+    for x in range(len(card)):
+        for y in range(len(card[x])):
+            if(card[x][y] != -1):
+                somme += card[x][y]
+    print(somme*lastNumber)
+
+def isWin(card):
+    for rowIdx in range(len(card)):
+        rowIsFull = True
+        for colIdx in range(len(card[rowIdx])):
+            if(card[rowIdx][colIdx] != -1):
+                rowIsFull = False
+        if(rowIsFull):
+            return True
+
+    for colIdx in range(len(card[0])):
+        colIsFull = True
+        for rowIdx in range(len(card)):
+            if(card[rowIdx][colIdx] != -1):
+                colIsFull = False
+        if(colIsFull):
+            return True
+    return False
+    
+for number in tirage:
+    for card in allCards:
+        for row in card:
+            for colIdx in range(len(row)):
+                if(row[colIdx] == number):
+                    row[colIdx] = -1
+
+    wins = list(filter(isWin,allCards))
+    if(len(wins) != 0):
+        displaySolution(wins[0],number)
+        break</code></pre>
+
+
+                <h2 id="day4_part2"><a href="https://adventofcode.com/2021/day/4">Jour 4, partie 2:</a></h2>
+                <h3 id="day4_part2_statement"> Enoncé </h3>
+                La seconde partie est identique à la première, sauf qu'on veut à la place la dernière
+                carte gagnante.
+                
+                <h3 id="day4_part2_solution"> Solution </h3>
+                Notre code est identique à la première partie, simplement tant qu'on atteint pas la
+                dernière carte gagnante, on filtre au fur et à mesure les cartes déjà gagnées.
+
+                <pre class="line-numbers language-python"><code>lines = open('input4.txt').read().split('\n')
+tirage = list(map(int,lines[0].replace('\n','').split(',')))
+
+allCards = []
+
+def parseCardLine(line):
+    return list(map(int,filter(lambda x:len(x) > 0, line.split(' '))))
+
+for i in range(2,len(lines),6):
+    allCards.append(list(map(parseCardLine,lines[i:i+5])))
+
+def displaySolution(card, lastNumber):
+    somme = 0
+    for x in range(len(card)):
+        for y in range(len(card[x])):
+            if(card[x][y] != -1):
+                somme += card[x][y]
+    print(somme*lastNumber)
+
+def isWin(card):
+    for rowIdx in range(len(card)):
+        rowIsFull = True
+        for colIdx in range(len(card[rowIdx])):
+            if(card[rowIdx][colIdx] != -1):
+                rowIsFull = False
+        if(rowIsFull):
+            return True
+
+    for colIdx in range(len(card[0])):
+        colIsFull = True
+        for rowIdx in range(len(card)):
+            if(card[rowIdx][colIdx] != -1):
+                colIsFull = False
+        if(colIsFull):
+            return True
+    return False
+    
+for number in tirage:
+    for card in allCards:
+        for row in card:
+            for colIdx in range(len(row)):
+                if(row[colIdx] == number):
+                    row[colIdx] = -1
+
+    if(len(allCards) == 1):
+        if(isWin(allCards[0])):
+            displaySolution(allCards[0],number)
+            break
+    else:
+        allCards = list(filter(lambda card: not isWin(card),allCards))</code></pre>
+               
+            </div>
+        </div>
+    </div>
+</section>

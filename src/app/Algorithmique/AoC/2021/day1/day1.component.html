@@ -1,0 +1,147 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 1)
+            </h1>
+            <div class="blockArticle">
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day1_part1"><a href="https://adventofcode.com/2021/day/1">Jour 1, partie 1:</a></h2>
+                <br />
+                <h3 id="day1_part1_statement"> Enoncé </h3>
+                On a en entrée une liste d'entiers correspondant à des mesures de profondeur.<br/>
+                On cherche à compter le nombre de mesures supérieures à la mesure précédente.<br/><br/>
+
+                Par exemple, avec les valeurs suivantes:
+                <pre class="line-numbers language-python"><code>199
+200
+208
+210
+200
+207
+240
+269
+260
+263</code></pre>
+
+                On a <b>210</b> qui est supérieur à la valeur précédente (<b>208</b>), de même pour <b>207</b>, 
+                <b>240</b>, <b>269</b> et <b>263</b>.<br/>
+                On aurait donc à retourner dans le cas présent <b>5</b>.
+
+                <h3 id="day1_part1_solution"> Solution</h3>
+                Il suffit simplement d'itérer sur la liste que l'on a en entrée, et de vérifier si l'élément que l'on est 
+                en train de traiter est supérieur à l'élément précédent. <br/><br/>
+
+                On disposait de très peu de liberté sur la solution, il n'y avait rien de mieux à faire 
+                qu'un simple parcours linéaire de la liste.<br/>
+                On pouvait néanmoins avoir une petite différence de code selon si le choix se portait
+                sur le stockage de la valeur précédente dans une variable, ou si simplement
+                on utilisait les indices de tableau pour récupérer la valeur qui précédait celle qu'on traitait
+                actuellement.<br/> <br/>
+                
+                Le code qui suit a une complexité en <b>O(N)</b>.
+                <pre class="line-numbers language-python"><code>lines = open('input1.txt').read().split('\n')
+measurements = list(map(int,lines))
+
+answer = 0
+for i in range(1,len(measurements)):
+    if(measurements[i] > measurements[i-1]):
+        answer += 1
+print(answer)</code></pre>
+
+                
+            </div>
+            <div>
+                <h2 id="day1_part1"><a href="https://adventofcode.com/2021/day/1">Jour 1, partie 2:</a></h2>
+                <br />
+                <h3 id="day1_part2_statement"> Enoncé </h3>
+                On a les mêmes entrées que pour la partie 1, on doit appliquer le même principe pour
+                calculer la réponse, mais sur la somme des fenêtres glissantes de taille <b>3</b>.
+
+                Par exemple, avec les valeurs suivantes:
+                <pre class="line-numbers language-python"><code>199
+200
+208
+210
+200
+207
+240
+269
+260
+263</code></pre>
+            
+                On a les fenêtres de taille 3 suivantes:
+                <pre class="line-numbers language-python"><code>sum([199,200,208]) = 607
+sum([200,208,210]) = 618
+sum([208,210,200]) = 618
+sum([210,200,207]) = 617
+sum([200,207,240]) = 647
+sum([207,240,269]) = 716
+sum([240,269,260]) = 769
+sum([269,260,263]) = 792</code></pre>
+
+                On aurait donc à retourner dans le cas présent <b>5</b>.
+
+                <h3 id="day1_part2_solution_naive"> Solution naïve</h3>
+                Une solution naïve consistait à simplement itérer sur chacune des fenêtres coulissantes,
+                et de faire la somme de ces fenêtres soit de manière manuelle avec une boucle, soit
+                en utilisant les capacités du langage.<br/>
+                De manière similaire que pour la première partie, on peut donc stocker le résultat de 
+                la somme précédente dans une variable, et comparer ainsi les sommes obtenues au fur
+                et à mesure de l'avancement de la fenêtre avec les précédents résultats.<br/><br/>
+
+                Une solution en s'appuyant sur le fonctionnalités Python pourrait ainsi avoir cette forme:
+                <pre class="line-numbers language-python"><code>lines = open('input1.txt').read().split('\n')
+measurements = list(map(int,lines))
+
+answer = 0
+previousSomme = sum(measurements[0:3])
+for i in range(1,len(measurements)-2):
+    currentSomme = sum(measurements[i:i+3])
+    if(currentSomme &gt; previousSomme):
+        answer += 1
+    previousSomme = currentSomme
+print(answer)</code></pre>
+
+                Cette solution fait un nombre d'opérations de l'ordre de <b>X*N</b> avec X la taille de la
+                fenêtre coulissante, vu que pour chaque fenêtre, on recalcule la somme (complexité linéaire).
+
+            <h3 id="day1_part2_solution_less_naive"> Solution moins naïve</h3>
+                Plutôt que de recalculer entièrement la somme à chaque itération, on pouvait également 
+                comparer l'élément courant (à l'indice <b>i</b>) avec l'élément sortant de la fenêtre (à
+                l'indice <b>i-3</b>).<br/><br/>
+
+                En effet, si on a
+                <pre class="line-numbers language-python"><code>arr[i]+arr[i-1]+arr[i-2] > arr[i-1]+arr[i-2]+arr[i-3]</code></pre>
+                alors en soustrayant des deux côtés <b>arr[i-1]+arr[i-2]</b>, on a
+                <pre class="line-numbers language-python"><code>arr[i] > arr[i-3]</code></pre>
+
+                Un code se basant sur cette idée aurait une complexité en <b>O(N)</b> et la forme suivante:
+                <pre class="line-numbers language-python"><code>lines = open('input1.txt').read().split('\n')
+measurements = list(map(int,lines))
+
+answer = 0
+for i in range(3,len(measurements)):
+    if(measurements[i] &gt; measurements[i-3]):
+        answer += 1
+print(answer)</code></pre>
+            </div>
+        </div>
+    </div>
+</section>

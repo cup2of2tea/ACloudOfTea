@@ -1,0 +1,206 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 22)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/22">Jour 22, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour le jour 22, on nous donne les règles d'un jeu de cartes, ainsi que les decks de deux joueurs.
+                <br />
+                Il s'agit ensuite de simuler le résultat de l'affrontement de ces deux joueurs, pour calculer la réponse
+                à retourner.<br /><br />
+
+                Pour la partie 1, les règles sont similaires aux règles du jeu de la bataille:<br />
+                <ul>
+                    <li>Chaque joueur tire la première carte de son paquet</li>
+                    <li>On compare les valeurs de ces deux cartes</li>
+                    <li>Le joueur ayant la carte avec la plus haute valeur remporte la carte de l'adversaire, et remet
+                        d'abord sa carte, puis la carte de l'adversaire en dessous de sa pile</li>
+                </ul>
+
+
+                Par exemple, si l'on a les decks suivants:
+
+                <pre class="line-numbers language-python"><code>Joueur 1: 1 2 3
+Joueur 2: 4 5 6</code></pre>
+
+                Alors, à l'étape suivante on se retrouve avec :
+
+                <pre class="line-numbers language-python"><code>Joueur 1: 2 3
+Joueur 2: 5 6 4 1</code></pre>
+
+                A préciser que toutes les cartes ont des valeurs différentes. Il n'y a donc pas de règle concernant
+                l'égalité, qui n'arrivera jamais.<br /><br />
+
+
+                <h3>Solution</h3>
+
+                Avec cet exercice, on régresse fortement d'un point de vue algorithmique, vu que la solution consiste
+                simplement à implémenter la simulation du déroulement de la partie. <br />
+                Il faut néanmoins faire attention aux structures / opérations utilisées à chaque étape, pour éviter que
+                la simulation ne soit trop coûteuse.<br /><br />
+
+                Ici, étant donné que les opérations consistent simplement à extraire en début de liste et rajouter en
+                fin de listes un nombre constant et infime d'éléménts, le coût est en <code>O(1)</code> et est donc
+                négligeable.<br /><br />
+
+                Une implémentation assez efficace pour les besoins de l'AOC suit:
+
+                <pre class="line-numbers language-python"><code>lines = open('input22.txt').read().split('\n')
+players = [[] for i in range(2)]
+
+i = 0
+for line in lines:
+    if('Player 2' in line):
+        i = 1
+    if('Player' not in line and len(line) > 0):
+        players[i].append(int(line))
+
+def playGame(player1, player2, visited):
+    while(len(player1) > 0 and len(player2) > 0):
+        a,b=player1[0],player2[0]
+        
+        player1 = player1[1:]
+        player2 = player2[1:]
+        if(b > a):
+            player2 = player2+[b,a]
+        else:
+            player1 = player1+[a,b]
+    return (player1, player2)
+
+p1 = players[0]
+p2 = players[1]
+(p1,p2)=playGame(p1, p2, [])
+if(len(p1) == 0):
+    (p1,p2) = (p2,p1)
+p1.reverse()
+s = 0
+for (i,val) in enumerate(p1):
+    s += (i+1)*val
+print(s)</code></pre>
+
+
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/22">Jour 22, partie 2 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour la seconde partie du jour, les règles sont un peu modifiées.<br /><br />
+
+                On conserve les règles de la première partie, mais si la valeur des cartes tirées par chacun des joueurs
+                est inférieure ou égale à la taille restante des decks des joueurs correspondants, alors le gagnant est
+                non plus déterminée par la carte la plus haute, mais par le gagnant d'une sous-partie.<br />
+
+                Cette sous-partie a les mêmes règles (partie 1 + l'aspect récursif introduit en partie 2), et commence
+                avec les decks de l'état parent réduits de telle sorte que la taille des nouveaux decks est égale à la
+                valeur des cartes de l'étape précédente.<br /><br />
+
+                Par exemple, si l'on a :
+                <pre class="line-numbers language-python"><code>Joueur 1: 1 4 6
+Joueur 2: 2 3 5</code></pre>
+
+                Alors le gagnant de cette étape est le gagnant de la sous-partie:
+                <pre class="line-numbers language-python"><code>Joueur 1: 4
+Joueur 2: 3 5</code></pre>
+
+                Après avoir calculé le gagnant de cette sous-partie, les règles d'attributions des cartes reste le même
+                pour les cartes <b>1</b> et <b>2</b> ici.<br /><br>
+
+                Egalement, en ajout de cette règle, si durant une partie un état est croisé plusieurs fois (on se
+                retrouve plusieurs fois avec exactement les mêmes cartes pour les deux joueurs), automatiquement le
+                joueur <b>1</b> est déclaré vainqueur.<br /><br />
+
+
+                <h3>Solution</h3>
+                Même chose que pour la partie 1, on peut se contenter de simuler. <br /><br />
+                On peut gérer les nouvelles règles de la manière suivante:
+                <ul>
+                    <li>Règle d'état déjà visité: on peut ajouter au fur et à mesure du déroulement de la partie les
+                        decks des joueurs dans une structure, pour vérifier que l'état n'est pas déjà apparu</li>
+                    <li>Règle des sous-parties récursives: well, l'item nous donne déjà la piste de résolution: il
+                        suffit de faire un appel récursif sur les sous-listes des decks des joueurs.
+                    </li>
+                </ul>
+
+                Deux petites précisions concernant les performances:
+                <ul>
+                    <li>Une première précision qui concerne également la première partie: Pour la simulation il est
+                        préférable d'éviter les appels récursifs, quand on peut ici se contenter de boucler avec while.
+                        Notamment en seconde partie, cela nous aurait donné une profondeur d'appel récursifs assez
+                        considérable</li>
+                    <li>Second point: Si l'on se contente de stocker les états déjà visités dans des listes, on peut
+                        sans souci résoudre ce problème. Avec mon code, cela prend ~= 20 secondes. Néanmoins, la
+                        vérification de la présence d'un état se fait en complexité linéaire <code>O(N)</code> (voire
+                        quadratique si l'on prend en compte le fait que l'état est composée de deux listes). <br />
+                        On peut améliorer ça en remplaçant par un set, auxquels on ajoute des tuples (list n'étant pas
+                        hashable en python), et obtenir une complexité <code>O(log(N))</code></li>
+                </ul>
+
+                En appliquant ce second point d'optimisation, on obtient le code suivant:
+
+                <pre class="line-numbers language-python"><code>lines = open('input22.txt').read().split('\n')
+players = [[] for i in range(2)]
+
+i = 0
+for line in lines:
+    if('Player 2' in line):
+        i = 1
+    if('Player' not in line and len(line) > 0):
+        players[i].append(int(line))
+
+def playGame(player1, player2):
+    visited = set()
+    while(len(player1) > 0 and len(player2) > 0):
+        h = (tuple(player1),tuple(player2))
+        if(h in visited):
+            return (player1, player2, True)
+        visited.add(h)
+        a,b=player1[0],player2[0]
+        
+        player1 = player1[1:]
+        player2 = player2[1:]
+        isWin = False
+        if(len(player1) >= a and len(player2) >= b):
+            isWin = playGame(player1[0:a],player2[0:b])[2]
+        else:
+            isWin = a > b
+        
+        if(not isWin):
+            player2 = player2+[b,a]
+        else:
+            player1 = player1+[a,b]
+    return (player1, player2, len(player1) > 0)
+
+p1 = players[0]
+p2 = players[1]
+(p1,p2,_)=playGame(p1, p2)
+if(len(p1) == 0):
+    (p1,p2) = (p2,p1)
+p1.reverse()
+s = 0
+for (i,val) in enumerate(p1):
+    s += (i+1)*val
+print(s)</code></pre>
+            </div>
+        </div>
+    </div>
+</section>

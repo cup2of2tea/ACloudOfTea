@@ -1,0 +1,181 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code of Code 2021 (jour 3)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/of Code 2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/of Code 2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2021/day/3">Jour 3, partie 1:</a></h2>
+                <br />
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+                On a en entrée un rapport de diagnostic sous la forme de liste de nombre binaires.<br/>
+                Cette liste nous permet de déterminer 2 paramètres liés au sous-marin, <b>gamma rate</b>
+                et <b>epsilon rate</b>.<br/><br/>
+
+                Pour calculer ces deux paramètres, il faut itérer sur les colonnes de bits de la liste,
+                et trouver la valeur la plus représentée dans cette colonne.<br/>
+                Cette valeur nous donne la valeur du bit de la colonne correspondante pour le 
+                <b>gamma rate</b>, et l'opposé de cette valeur nous donne la valeur du bit de la colonne
+                correspondante pour le <b>epsilon rate</b>.<br/><br/>
+
+                Par exemple, pour la liste de valeurs binaire suivante:
+                <pre class="line-numbers language-python"><code>00100
+11110
+10110</code></pre>
+                
+                On a les valeurs les plus représentées suivantes:
+                <pre class="line-numbers language-python"><code>Première colonne: 0, 1, 1 => 1
+Seconde colonne: 0, 1, 0 => 0
+Troisième colonne: 1, 1, 1 => 1 
+Quatrième colonne: 0, 1, 1 => 1
+Cinquième colonne: 0, 0, 0 => 0</code></pre>
+
+                Et donc, <b>gamma rate = (10110)2</b> et <b>epsilon rate = (01001)2</b>.<br/><br/>
+                Il faut ensuite convertir ces valeurs en valeurs décimales et en faire le produit
+                pour obtenir la solution.
+
+                <h3 id="day3_part1_solution"> Solution </h3>
+                Ce problème restait également très simple d'un point de vue algorithmique, on pouvait
+                itérer de manière très naïve sur les colonnes puis sur les charactères
+                de chaque masque binaire pour déterminer la valeur la plus présente de chaque colonne
+                et ainsi calculer les paramètres du sous-marin.<br/><br/>
+
+                Il y avait cependant plusieurs possibilités pour générer les valeurs décimales à la fin.<br/>
+                Par exemple, on pouvait construire au fur et à mesure les représentations binaires de
+                nos paramètres, puis les évaluer grâce à la fonction <b>int(string,base)</b>:
+                <pre class="line-numbers language-python"><code>int('10110',2) => 22</code></pre>
+                
+                On pouvait aussi multiplier au fur et à mesure des colonnes le bit avec la puissance
+                de 2 correspondante:
+
+                <pre class="line-numbers language-python"><code>(1*2^4)+(0*2^3)+(1*2^2)+(1*2^1)+(0*2^0) => 22</code></pre>
+            
+                ou même, si notre langage ne proposait pas de moyen de calculer facilement des puissances
+                de 2 (en python, on a <b>2**N</b>, <b>pow(2,N)</b> ou même <b>1&lt;&lt;N</b>), on pouvait
+                exploiter la propriété suivante en "factorisant":
+
+                <pre class="line-numbers language-python"><code>(b3*2^3)+(b2*2^2)+(b1*2^1)+(b0*2^0)
+= (((b3 * 2) + b2) * 2 + b1) * 2 + b0</code></pre>
+
+                Si on utilise la dernière astuce pour notre solution python, on obtient le code suivant:
+                <pre class="line-numbers language-python"><code>report = open('input3.txt').read().split('\n')
+nbBits = len(report[0])
+
+epsilonRate = 0
+gammaRate = 0
+for i in range(nbBits):
+    nbOnes = 0
+    for j in range(len(report)):
+        if(report[j][i] == '1'):
+            nbOnes += 1
+    nbZeroes = len(report) - nbOnes
+    if(nbOnes > nbZeroes):
+        gammaRate = gammaRate * 2 + 1
+        epsilonRate = epsilonRate * 2 + 0
+    else:
+        gammaRate = gammaRate * 2 + 0
+        epsilonRate = epsilonRate * 2 + 1
+
+print(gammaRate*epsilonRate)</code></pre>
+
+
+                <h2 id="day3_part2"><a href="https://adventofcode.com/2021/day/3">Jour 3, partie 2:</a></h2>
+                <br />
+                <h3 id="day3_part2_statement"> Enoncé </h3>
+                Pour la partie 2, on réutilise le rapport de diagnostic plus haut, mais pour déterminer 
+                d'autres paramètres.<br/>
+                Ici, on cherche à déterminer les paramètres "oxygen generator rating" et 
+                "CO2 scrubber rating".<br/><br/>
+
+                Ces paramètres correspondent aux valeurs binaires uniques restantes après l'application
+                itérative des filtres suivants (tant que l'on a plus d'un élément dans la liste):
+                <ul>
+                    <li>
+                        A l'étape i:
+                        <ul>
+                            <li>On calcule la valeur la plus présente de la colonne <b>i</b>, dans la liste 
+                                des éléments restants (en cas d'égalité, <b>0</b> ou <b>1</b> suivant le paramètre à filtrer)
+                            </li>
+                            <li>On enlève de cette liste les éléments n'ayant pas cette valeur sur le bit <b>n°i</b></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                Par exemple, si on cherche le paramètre "oxygen generator rating" avec ces valeurs:
+                <pre class="line-numbers language-python"><code>00100
+11110
+10110</code></pre>
+                
+                On aura les étapes suivantes:
+                <pre class="line-numbers language-python"><code>[00100,11110,10110]
+=>[11110,10110]
+=>[11110] = oxygen generator rating </code></pre>
+                
+                <h3 id="day3_part2_solution"> Solution </h3>
+                On peut réutiliser notre code pour extraire les valeurs les plus représentées des colonnes
+                de la partie 1.<br/>
+
+                En complément à ça, il faut itérer sur la liste des éléments présents actuellement pour
+                supprimer les éléments qui ne répondent pas à nos critères.<br/><br/>
+
+                Etant donné que le filtre est différent entre les deux paramètres, il faut conserver
+                deux listes différentes au fur et à mesure des traitements des colonnes.<br/><br/>
+
+                Pour avoir un code relativement propre, on peut faire une fonction paramètrable
+                pour gérer le calcul des deux paramètres de la même façon.<br/><br/>
+
+                On obtient le code suivant:
+
+                <pre class="line-numbers language-python"><code>report = open('input3.txt').read().split('\n')
+nbBits = len(report[0])
+
+def getParameter(report, inverted=False):
+    # On copie le rapport pour éviter de changer le rapport original
+    currentReport = report[:]
+    etape = 0
+    while(len(currentReport) &gt; 1):
+        nbOnes = 0
+        for j in range(len(currentReport)):
+            if(currentReport[j][etape] == '1'):
+                nbOnes += 1
+        nbZeroes = len(currentReport) - nbOnes
+        filterIn = '0'
+        if(not inverted):
+            if(nbOnes &gt;= nbZeroes):
+                filterIn = '1'
+        else:
+            if(nbOnes &lt; nbZeroes):
+                filterIn = '1'
+        currentReport = list(filter(lambda line:line[etape] == filterIn, currentReport))
+        etape += 1
+    return currentReport[0]
+
+# Conversion de la chaîne de caractère vers l'entier décimal
+oxygeneRate = int(getParameter(report),2)
+co2Rate = int(getParameter(report,True),2)
+
+print(oxygeneRate*co2Rate)</code></pre>
+
+                
+            </div>
+        </div>
+    </div>
+</section>

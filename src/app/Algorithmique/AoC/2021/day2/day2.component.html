@@ -1,0 +1,168 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 2)
+            </h1>
+            <div class="blockArticle">
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day2_part1"><a href="https://adventofcode.com/2021/day/2">Jour 2, partie 1:</a></h2>
+                <br />
+                <h3 id="day2_part1_statement"> Enoncé </h3>
+                On simule le déplacement d'un sous-marin à partir d'instructions données en entrée.<br/>
+                Ces instructions peuvent être les suivantes:<br/>
+                <ul>
+                    <li><b>Forward x</b> : Déplace le sous-marin vers l'avant de <b>x</b> unités</li>
+                    <li><b>Down x</b> : Descend le sous-marin de <b>x</b> unités</li>
+                    <li><b>Up x</b> : Remonte le sous-marin de <b>x</b> unités</li>
+                </ul>
+            
+                Pour les coordonnées, on définira la première valeur comme étant l'avancement horizontal,
+                et la seconde valeur la profondeur.
+
+                Par exemple, avec les entrées suivantes, et en initialisant la position du sous-marin à <b>(0,0)</b>:
+                <pre class="line-numbers language-python"><code>forward 5
+down 5
+forward 8
+up 3
+down 8
+forward 2</code></pre>
+                
+                On aura les déplacements suivants: 
+                <pre class="line-numbers language-python"><code>(0,0) => forward 5
+(0,5) => down 5
+(5,5) => forward 8
+(5,13) => up 3
+(2,13) => down 8
+(10,13) => forward 2
+(10,15)</code></pre>
+
+                La réponse à envoyer correspond au produit des deux éléments de la coordonnée.
+                
+                <h3 id="day2_part1_solution"> Solution </h3>
+                Ce problème était de mon avis plus simple que le premier.<br/>
+                Même s'il recquérait un parsing pas forcément évident, il suffisait ensuite de faire
+                la simulation en suivant les instructions décrites par l'énoncé.<br/><br/>
+                
+                Pour rajouter un peu d'épices à ce problème très plat, j'ai rendu mon code légèrement funky,
+                en faisant des appels dynamiques de fonction en fonction de la commande récupérée des
+                instructions.<br/>
+                Vous pouvez vous référer au commentaire (et à la doc python) pour ça.
+                <pre class="line-numbers language-python"><code>lines = open('input2.txt').read().split('\n')
+
+def forward(horizontal, depth, val):
+    horizontal += val
+    return (horizontal,depth)
+
+def up(horizontal, depth, val):
+    depth -= val
+    return (horizontal,depth)
+
+def down(horizontal, depth, val):
+    depth += val
+    return (horizontal,depth)
+
+horizontal = 0
+depth = 0
+for line in lines:
+    commandeParts = line.split(' ')
+    commandeType = commandeParts[0]
+    value = int(commandeParts[1])
+    # commandeType est une chaîne de caractère ('up', 'down', 'forward')
+    # locals() permet de récupérer les définitions locales, notamment les fonctions locales
+    # on appelle donc dynamiquement les fonctions up/down/forward en fonction
+    # de la valeur de commandeType
+    (horizontal,depth) = locals()[commandeType](horizontal, depth, value)
+
+print(horizontal*depth)</code></pre>
+
+                <h2 id="day2_part2"><a href="https://adventofcode.com/2021/day/2">Jour 2, partie 2:</a></h2>
+                <br />
+                <h3 id="day2_part2_statement"> Enoncé </h3>
+                La partie 2 est similaire à la partie 1.<br/>
+                On a juste des changements d'interprétations
+                au niveau des commandes, et l'ajout d'une nouvelle variable (aim).<br/><br/>
+
+                Les impacts des instructions de la phase 2 sont les suivants:
+                <ul>
+                    <li><b>down x</b> augmente la aim de <b>x</b> unités</li>
+                    <li><b>up x</b> diminue la aim de <b>x</b> unités</li>
+                    <li><b>forward x</b> <ul>
+                        <li>augmente la position horizontale de <b>x</b> unités</li>
+                        <li>augmente la profondeur de <b>x * aim</b> unités</li>
+                    </ul></li>
+                </ul>
+
+                En reprenant l'exemple plus haut, et en considérant le triplet (horizontal, depth, aim) initialisé à (0,0,0):
+                <pre class="line-numbers language-python"><code>forward 5
+down 5
+forward 8
+up 3
+down 8
+forward 2</code></pre>
+                
+                On aura les déplacements suivants: 
+                <pre class="line-numbers language-python"><code>(0,0,0) => forward 5
+(0,5,0) => down 5
+(0,5,5) => forward 8
+(40,13,5) => up 3
+(40,13,2) => down 8
+(40,13,10) => forward 2
+(60,15,10)</code></pre>
+
+                Comme pour la première partie, la réponse est le produit de l'avancement horizontal et 
+                de la profondeur.
+                
+                <h3 id="day2_part2_solution"> Solution </h3>
+                
+                Rien de spécial à dire, on met juste à jour nos fonctions pour prendre en compte les
+                nouveaux impacts.
+
+                <pre class="line-numbers language-python"><code>lines = open('input2.txt').read().split('\n')
+
+def forward(horizontal, depth, aim, val):
+    horizontal += val
+    depth += val * aim
+    return (horizontal, depth, aim)
+
+def up(horizontal, depth, aim, val):
+    aim -= val
+    return (horizontal, depth, aim)
+
+def down(horizontal, depth, aim, val):
+    aim += val
+    return (horizontal, depth, aim)
+
+(horizontal, depth, aim) = (0,0,0)
+for line in lines:
+    commandeParts = line.split(' ')
+    commandeType = commandeParts[0]
+    value = int(commandeParts[1])
+    # commandeType est une chaîne de caractère ('up', 'down', 'forward')
+    # locals() permet de récupérer les définitions locales, notamment les fonctions locales
+    # on appelle donc dynamiquement les fonctions up/down/forward en fonction
+    # de la valeur de commandeType
+    (horizontal, depth, aim) = locals()[commandeType](horizontal, depth, aim, value)
+
+print(horizontal*depth)</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -17,25 +17,32 @@ import { IsogradSeptembreComponent } from './Algorithmique/IsogradSeptembre/isog
 import { HomeComponent } from './home/home.component';
 import { HomeAlgorithmComponent } from './homeAlgorithm/homeAlgorithm.component';
 import { HomeOptimizationComponent } from './homeOptimization/homeOptimization.component';
-import { Day1_2Component } from './Algorithmique/AoC/day1_2/day1_2.component';
-import { Day3Component } from './Algorithmique/AoC/day3/day3.component';
-import { Day4Component } from './Algorithmique/AoC/day4/day4.component';
-import { Day5Component } from './Algorithmique/AoC/day5/day5.component';
-import { Day6Component } from './Algorithmique/AoC/day6/day6.component';
-import { Day7Component } from './Algorithmique/AoC/day7/day7.component';
-import { Day8Component } from './Algorithmique/AoC/day8/day8.component';
-import { Day9Component } from './Algorithmique/AoC/day9/day9.component';
-import { Day10Component } from './Algorithmique/AoC/day10/day10.component';
-import { Day11Component } from './Algorithmique/AoC/day11/day11.component';
-import { Day12Component } from './Algorithmique/AoC/day12/day12.component';
-import { Day13Component } from './Algorithmique/AoC/day13/day13.component';
-import { Day14Component } from './Algorithmique/AoC/day14/day14.component';
-import { Day15Component } from './Algorithmique/AoC/day15/day15.component';
-import { Day16Component } from './Algorithmique/AoC/day16/day16.component';
-import { Day17Component } from './Algorithmique/AoC/day17/day17.component';
-import { Day18Component } from './Algorithmique/AoC/day18/day18.component';
-import { Day19Component } from './Algorithmique/AoC/day19/day19.component';
-import { Day20Component } from './Algorithmique/AoC/day20/day20.component';
+import { Day1_2Component } from './Algorithmique/AoC/2020/day1_2/day1_2.component';
+import { Day3Component } from './Algorithmique/AoC/2020/day3/day3.component';
+import { Day4Component } from './Algorithmique/AoC/2020/day4/day4.component';
+import { Day5Component } from './Algorithmique/AoC/2020/day5/day5.component';
+import { Day6Component } from './Algorithmique/AoC/2020/day6/day6.component';
+import { Day7Component } from './Algorithmique/AoC/2020/day7/day7.component';
+import { Day8Component } from './Algorithmique/AoC/2020/day8/day8.component';
+import { Day9Component } from './Algorithmique/AoC/2020/day9/day9.component';
+import { Day10Component } from './Algorithmique/AoC/2020/day10/day10.component';
+import { Day11Component } from './Algorithmique/AoC/2020/day11/day11.component';
+import { Day12Component } from './Algorithmique/AoC/2020/day12/day12.component';
+import { Day13Component } from './Algorithmique/AoC/2020/day13/day13.component';
+import { Day14Component } from './Algorithmique/AoC/2020/day14/day14.component';
+import { Day15Component } from './Algorithmique/AoC/2020/day15/day15.component';
+import { Day16Component } from './Algorithmique/AoC/2020/day16/day16.component';
+import { Day17Component } from './Algorithmique/AoC/2020/day17/day17.component';
+import { Day18Component } from './Algorithmique/AoC/2020/day18/day18.component';
+import { Day19Component } from './Algorithmique/AoC/2020/day19/day19.component';
+import { Day20Component } from './Algorithmique/AoC/2020/day20/day20.component';
+import { Day21Component } from './Algorithmique/AoC/2020/day21/day21.component';
+import { Day22Component } from './Algorithmique/AoC/2020/day22/day22.component';
+import { Day23Component } from './Algorithmique/AoC/2020/day23/day23.component';
+import { Day1_2021Component } from './Algorithmique/AoC/2021/day1/day1.component';
+import { Day2_2021Component } from './Algorithmique/AoC/2021/day2/day2.component';
+import { Day3_2021Component } from './Algorithmique/AoC/2021/day3/day3.component';
+import { Day4_2021Component } from './Algorithmique/AoC/2021/day4/day4.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +72,13 @@ import { Day20Component } from './Algorithmique/AoC/day20/day20.component';
     Day18Component,
     Day19Component,
     Day20Component,
+    Day21Component,
+    Day22Component,
+    Day23Component,
+    Day1_2021Component,
+    Day2_2021Component,
+    Day3_2021Component,
+    Day4_2021Component,
   ],
   imports: [
     BrowserModule,

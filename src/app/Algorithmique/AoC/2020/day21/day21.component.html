@@ -1,0 +1,181 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2020 (jour 21)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2020/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2020/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/21">Jour 21, partie 1 :</a></h2>
+                <h3 id="day3_part1_statement"> Enoncé </h3>
+
+                Pour le jour 21, on a en entrée une liste de plats, chacun de ces plats étant décrits par une liste
+                d'ingrédients ainsi qu'une liste d'allergènes.<br />
+                Chacun de ces allergène est inclus à l'intérieur d'un et un seul ingrédient.<br /><br />
+
+                Pour la première partie, il s'agit de déduire à partir de la description de chacun des plats, quels sont
+                les ingrédients qui ne peuvent être des allergènes.<br />
+                Ce nombre sera la valeur à soumettre pour valider la première partie.<br /><br />
+
+
+                <h3 id="day3_part1_statement"> Solution </h3>
+
+                Pour chaque allergène présent dans un plat, on sait qu'un des ingrédient de ce plat le contient.<br />
+                Or, si cet allergène revient dans différents plats, comme un seul ingrédient doit être associé à
+                l'allergène, alors l'ingrédient en question sera donc commun à l'ensemble de ces plats.<br /><br />
+
+                Il est donc possible de déterminer les ingrédients candidats pour chaque allergène, en réalisant
+                l'intersection des ingrédients des plats contenant l'allergène.<br />
+
+                On peut coder ça très facilement avec des sets:
+
+                <pre class="line-numbers language-python"> <code>lines = open('input21.txt').read().split('\n')
+
+foods = []
+# Le set de tous les allergènes
+totAl = set()
+# Le set de tous les ingrédients
+totIng = set()
+# Le dictionnaire liant un allergène aux différents ingrédients candidats
+revIng = dict()
+# Le nombre d'occurences d'un ingrédient
+apparition = dict()
+
+for line in lines:
+    (ingredients, alergens) = line.replace(
+        'contains', '').replace(')', '').replace(',', '').split('(')
+    allIng = ingredients.strip().split(' ')
+    allAle = alergens.strip().split(' ')
+    foods.append((allIng, allAle))
+    for al in allAle:
+        totAl.add(al)
+        revIng[al] = set()
+    for ing in allIng:
+        totIng.add(ing)
+        apparition[ing] = 0
+
+# On initialise les différents candidats d'un allergène au set complet d'ingrédients
+for al in revIng.keys():
+    revIng[al] = totIng.copy()
+
+for (ings, ales) in foods:
+    for ing in ings:
+        apparition[ing] += 1
+    for al in ales:
+        revIng[al] = revIng[al].intersection(set(ings))
+
+res = 0
+for ing in totIng:
+    present = False
+    for al in revIng.keys():
+        if(ing in revIng[al]):
+            present = True
+            break
+    # Si un ingrédient n'est candidat d'aucun allergène
+    if(not present):
+        # On compte le nombre d'occurences pour l'ajouter à la réponse du cas 1
+        res += apparition[ing]
+
+print(res)</code></pre>
+                <br /><br />
+
+            </div>
+
+            <h2 id="day3_part1"><a href="https://adventofcode.com/2020/day/21">Jour 21, partie 2 :</a></h2>
+
+            <h3 id="day3_part1_statement"> Enoncé </h3>
+            Pour la seconde partie, on doit déterminer pour chaque allergène quel est l'ingrédient associé.<br />
+
+            A partir de ce matching réalisé, on doit ensuite afficher les ingrédients en question triés par l'ordre
+            alphabètique de l'allergène correspondant.<br /><br />
+
+            <h3 id="day3_part1_statement"> Solution </h3>
+
+            La solution à ce problème est très proche de celle du jour 16.<br />
+
+            Pour les mêmes raisons que pour la preuve donnée du jour 16, on peut simplement itérer en prenant
+            l'allergène pour lequel un seul ingrédient peut correspondre.<br /><br />
+
+            Le code en découle naturellement:
+
+            <pre class="line-numbers language-python"><code>lines = open('input21.txt').read().split('\n')
+
+foods = []
+# Le set de tous les allergènes
+totAl = set()
+# Le set de tous les ingrédients
+totIng = set()
+# Le dictionnaire liant un allergène aux différents ingrédients candidats
+revIng = dict()
+# Le nombre d'occurences d'un ingrédient
+apparition = dict()
+
+for line in lines:
+    (ingredients, alergens) = line.replace(
+        'contains', '').replace(')', '').replace(',', '').split('(')
+    allIng = ingredients.strip().split(' ')
+    allAle = alergens.strip().split(' ')
+    foods.append((allIng, allAle))
+    for al in allAle:
+        totAl.add(al)
+        revIng[al] = set()
+    for ing in allIng:
+        totIng.add(ing)
+        apparition[ing] = 0
+
+# On initialise les différents candidats d'un allergène au set complet d'ingrédients
+for al in revIng.keys():
+    revIng[al] = totIng.copy()
+
+for (ings, ales) in foods:
+    for ing in ings:
+        apparition[ing] += 1
+    for al in ales:
+        revIng[al] = revIng[al].intersection(set(ings))
+
+res=[]
+
+while(len(revIng) != 0):
+    ingredient = None
+
+    for al in revIng.keys():
+        if(len(revIng[al]) == 1):
+            ingredient = list(revIng[al])[0]
+            res += [(al,ingredient)]
+            break
+    
+    if(ingredient is not None):
+        for al in revIng.keys():
+            if(ingredient in revIng[al]):
+                revIng[al].remove(ingredient)
+    else:
+        break
+
+res.sort()
+print(','.join(map(lambda x:x[1],res)))</code></pre>
+
+
+            <pre><code>
+
+            </code></pre>
+
+        </div>
+    </div>
+</section>
