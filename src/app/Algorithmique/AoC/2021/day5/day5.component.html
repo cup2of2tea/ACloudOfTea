@@ -1,0 +1,179 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 5)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day5_part1"><a href="https://adventofcode.com/2021/day/5">Jour 5, partie 1:</a></h2>
+                <h3 id="day5_part1_statement"> Enoncé </h3>
+                On a une grille <b>2</b> dimensions avec des définitions de lignes horizontales et
+                verticales sous la forme 
+                <pre class="line-numbers language-python"><code>(x1,y1) => (x2,y2)</code></pre>.<br/>
+                L'objectif est de trouver le nombre de coordonées entières recouvertes par au moins <b>2</b> lignes.<br/><br/>
+
+                Par exemple, si on a les lignes suivantes:
+                <pre class="line-numbers language-python"><code>Ligne 1: 0,4 -> 4,4
+Ligne 2: 1,4 -> 3,4
+Ligne 3: 2,2 -> 2,1</code></pre>
+                
+                Et si l'on remplit une grille <b>5*5</b> avec l'identifiant correspondant à ces lignes, on obtient:
+                <pre class="line-numbers language-python"><code>....1
+....1
+....1
+....1
+....1
+
+.....
+....2
+....2
+....2
+.....
+
+.....
+.....
+.....
+.33..
+.....
+</code></pre>
+
+
+                Et l'on a donc les coordonnées <b>(1,4)</b>, <b>(2,4)</b> et <b>(3,4)</b> qui sont recouvertes par
+                plusieurs lignes.
+
+                <h3 id="day5_part1_solution"> Solution </h3>
+                
+                Comme on a uniquement des lignes horizontales et verticales, on peut très
+                facilement itérer sur les coordonnées avec deux boucles for pour itérer
+                sur les intervalles d'abcisses et d'ordonnées.<br/><br/>
+
+
+                <pre class="line-numbers language-python"><code>for x in range(min(x1,x2),max(x1,x2)+1):
+    for y in range(min(y1,y2),max(y1,y2)+1):</code></pre>
+
+                Comme les lignes sont horizontales / verticales, on est sûr que <b>x1 = x2</b>
+                ou <b>y1 = y2</b>, la boucle correspondante ne fera donc qu'une passe.<br/><br/>
+
+                Une erreur que j'avais commise durant la résolution de ce problème:<br/>
+                Je n'avais pas fait attention aux contraintes de l'énoncés, et n'avais pas vu
+                qu'il y avait des lignes autres qu'horizontales et verticales.<br/>
+                Du coup, la double boucle plus au dessus itérait sur un rectangle plutôt que sur
+                une ligne.<br/>
+                Si vous vous retrouvez avec des résultats absurdement élevés, il est possible que 
+                vous ayez fait la même erreur.<br/><br/>
+
+                Pour calculer le recouvrement, on peut stocker dans un dictionnaire le nombre
+                de fois qu'on a visité une certaine coordonnée, et si ce nombre est supérieur ou
+                égal à <b>2</b> à la fin de nos itérations, on incrémente le résultat.<br/><br/>
+
+                On peut donc produire le code suivant: 
+                <pre class="line-numbers language-python"><code>lines = open('input5.txt').read().split('\n')
+
+res = 0
+s = dict()
+for line in lines:
+    x1,y1,x2,y2 = map(int,line.replace(' -&gt; ',',').split(','))
+
+    if(x1 != x2 and y1 != y2):
+        continue
+
+    for x in range(min(x1,x2),max(x1,x2)+1):
+        for y in range(min(y1,y2),max(y1,y2)+1):
+            if((x,y) in s and s[(x,y)] == 1):
+                res += 1
+                s[(x,y)] += 1
+            elif((x,y) not in s):
+                s[(x,y)] = 1
+print(res)</code></pre>
+               
+
+                <h2 id="day5_part2"><a href="https://adventofcode.com/2021/day/5">Jour 5, partie 2:</a></h2>
+                <h3 id="day5_part2_statement"> Enoncé </h3>
+                
+                La partie 2 est similaire à la partie 1, la seule différence étant qu'en 
+                plus des lignes horizontales et verticales, on a également à traiter des lignes
+                diagonales.<br/>
+                Ces dernières ont une orientation de <b>45</b> degrés, il est donc très aisé de 
+                calculer les coordonnées entières par lesquelles passent ces lignes particulières.<br/><br/>
+
+                Comme pour la partie 1, la réponse à envoyer est le nombre de coordonnées recouvertes
+                par au moins <b>2</b> lignes.
+
+                <h3 id="day5_part2_solution"> Solution </h3>
+                On a plusieurs possibilités pour traiter les diagonales:
+                <ul>
+                    <li>Soit on empile les if au dessus des autres pour gérer tous les types de diagonales
+                        <ul>
+                            <li><b>Haut droite</b></li>
+                            <li><b>Bas droite</b></li>
+                            <li><b>Haut gauche</b></li>
+                            <li><b>Bas gauche</b></li>
+                        </ul>
+                    </li>
+                    <li>
+                        Soit on calcule les vecteurs de direction projetés sur les axes <b>X</b> et <b>Y</b>
+                        entre le premier point et le second point, et on itère sur la longueur
+                        de la diagonale en décalant nos coordonnées grâce à ces vecteurs de direction.
+                    </li>
+                </ul>
+
+                On va préfèrer la seconde méthode qui est un peu plus élégante.<br/><br/>
+                <div style="text-align:center">
+                    <img style="width:400px" src="assets/img/UnitaryGrid.png" />
+                </div>
+
+                En code, ça donnerait: 
+                <pre class="line-numbers language-python"><code>lines = open('input5.txt').read().split('\n')
+
+res = 0
+s = dict()
+
+for line in lines:
+    x1,y1,x2,y2 = map(int,line.replace(' -> ',',').split(','))
+
+    # Le cas des lignes diagonales
+    if(x1 != x2 and y1 != y2):
+        dx = (x2-x1) / abs(x2-x1)
+        dy = (y2-y1) / abs(y2-y1)
+
+        for it in range(max(x2,x1)-min(x2,x1)):
+            x = x1 + dx * it
+            y = y1 + dy * it
+            if((x,y) in s and s[(x,y)] == 1):
+                res += 1
+                s[(x,y)] += 1
+            elif((x,y) not in s):
+                s[(x,y)] = 1
+    # Le cas des lignes horizontales / verticales 
+    else:
+        for x in range(min(x1,x2),max(x1,x2)+1):
+            for y in range(min(y1,y2),max(y1,y2)+1):
+                if((x,y) in s and s[(x,y)] == 1):
+                    res += 1
+                    s[(x,y)] += 1
+                elif((x,y) not in s):
+                    s[(x,y)] = 1
+print(res)</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -17,6 +17,10 @@ export class HomeAlgorithmComponent implements OnInit {
   ngOnInit() {
     this.posts = [
       {
+        route: '/articles/Aoc_2021_5',
+        title: 'Jour 5 de l\'Advent of Code 2021'
+      },
+      {
         route: '/articles/Aoc_2021_4',
         title: 'Jour 4 de l\'Advent of Code 2021'
       },
