@@ -30,6 +30,7 @@ import { Day2_2021Component } from './Algorithmique/AoC/2021/day2/day2.component
 import { Day3_2021Component } from './Algorithmique/AoC/2021/day3/day3.component';
 import { Day4_2021Component } from './Algorithmique/AoC/2021/day4/day4.component';
 import { Day5_2021Component } from './Algorithmique/AoC/2021/day5/day5.component';
+import { Day6_2021Component } from './Algorithmique/AoC/2021/day6/day6.component';
 import { HomeAlgorithmComponent } from './homeAlgorithm/homeAlgorithm.component';
 import { HomeOptimizationComponent } from './homeOptimization/homeOptimization.component';
 import { HomeComponent } from './home/home.component';
@@ -64,6 +65,7 @@ const routes: Routes = [
   { path: 'articles/Aoc_2021_3', component: Day3_2021Component },
   { path: 'articles/Aoc_2021_4', component: Day4_2021Component },
   { path: 'articles/Aoc_2021_5', component: Day5_2021Component },
+  { path: 'articles/Aoc_2021_6', component: Day6_2021Component },
   {
     path: 'optimization', component: HomeOptimizationComponent
   },

@@ -1,0 +1,118 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 6)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day6_part1"><a href="https://adventofcode.com/2021/day/5">Jour 6, partie 1 et partie 2:</a></h2>
+                <h3 id="day6_part1_statement"> Enoncé </h3>
+                On a un ensemble de poissons en entrées, qui génèrent chacun un poisson tous les <b>7</b> jours.<br/>
+                Tous ces poissons ne sont pas forcément synchronisés, et le temps à attendre
+                (appellé timer interne dans l'énoncé) avant qu'un poisson
+                génère un nouveau poisson pour la première fois est donné en entrée.<br/><br/>
+
+                Les nouveaux poissons générés vont également générer d'autres poissons, mais leur timer interne
+                est initialisé à <b>8</b>.<br/><br/>
+
+                On cherche à déterminer le nombre de poissons existants après un certain nombre de jours de simulation
+                (<b>80</b> pour la phase 1).<br/><br/>
+
+                Par exemple, si on a en entrées les poissons suivants:
+                <pre class="line-numbers language-python"><code>0,1,1,2,4</code></pre>
+
+                On va avoir les étapes suivantes si l'on simule sur 5 jours:
+                <pre class="line-numbers language-python"><code>0,1,1,2,4
+6,0,0,1,3,8
+5,6,6,0,2,7,8,8
+4,5,5,6,1,6,7,7,8
+3,4,4,5,0,5,6,6,7
+2,3,3,4,6,4,5,5,6,8</code></pre>
+
+                <h3 id="day6_part2_solution"> Solution </h3>
+                
+                On peut avoir 2 approches pour la résolution de ce problème:
+                <ul>
+                    <li>Une très naïve, où l'on simule tout grâce à une liste</li>
+                    <li>Une plus futée</li>
+                </ul>
+
+                La version naïve va simplement faire comme ce qui était montré lors de l'exemple:<br/>
+                <ul>
+                    <li>A chaque étape, on <b>décremente</b> le timer interne de chaque poisson</li>
+                    <li>Si un timer interne passe en dessous de <b>0</b>, on le reset à <b>6</b> et on ajoute
+                        un nouveau poisson avec un timer interne initialisé à <b>8</b> en bout de liste
+                    </li>
+                </ul>
+
+                Cette approche est très simple à coder, mais devient lente si la liste grandit beaucoup.<br/><br/>
+
+                Pour la première étape, on a seulement <b>80</b> jours à simuler et le nombre de poissons total
+                généré est de l'ordre de <b>10^6</b>, ce qui reste ok à calculer rapidement et à stocker.<br/>
+
+                <div style="text-align:center">
+                    <img style="width:400px" src="assets/img/day80.png" />
+                </div>
+
+                Mais pour la phase 2, où l'on doit simuler <b>256</b> jours, on obtient un nombre de poisson de l'ordre
+                de <b>10^10</b>, ce qui est bien trop gros à stocker et qui augmente énormément le temps de calcul.<br/><br/>
+
+                <div style="text-align:center">
+                    <img style="width:400px" src="assets/img/day256.png" />
+                </div>
+
+                On va donc partir directement sur la solution plus futée, qui consistait à stocker pour chaque
+                valeur de compteur interne le nombre de poissons.<br/>
+                En faisant cela, on aura donc au maximum <b>9</b> entrées dans notre dictionnaire (vu que les 
+                valeurs des compteurs internes sont prises dans l'intervalle <b>[0,8]</b>), et cela simplifie
+                donc grandement la mise à jour de nos poissons.<br/><br/>
+
+                Voici un code qui utiliserait la version futée:
+                <pre class="line-numbers language-python"><code>fishes = list(map(int,open('input6.txt').read().split('\n')[0].split(',')))
+
+nbFishesPerCd = dict()
+for fish in fishes:
+    nbFishesPerCd[fish] = nbFishesPerCd.setdefault(fish,0) + 1
+
+# A changer entre la phase 1 et la phase 2
+nbDays = 256
+
+for i in range(nbDays):
+    nbFishesPerCdCopy = dict()
+    for fish in nbFishesPerCd.keys():
+        if(fish == 0):
+            nbFishesPerCdCopy[6] = nbFishesPerCdCopy.setdefault(6,0) + nbFishesPerCd[fish]
+            nbFishesPerCdCopy[8] = nbFishesPerCdCopy.setdefault(8,0) + nbFishesPerCd[fish]
+        else:
+            nbFishesPerCdCopy[fish-1] = nbFishesPerCdCopy.setdefault(fish-1,0) + nbFishesPerCd[fish]
+    nbFishesPerCd = nbFishesPerCdCopy
+
+resultat = 0
+for fish in nbFishesPerCd.keys():
+    resultat += nbFishesPerCd[fish]
+
+print(resultat)</code></pre>
+
+
+            </div>
+        </div>
+    </div>
+</section>
