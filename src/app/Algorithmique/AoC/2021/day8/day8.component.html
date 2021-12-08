@@ -1,0 +1,307 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 8)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day8_part1"><a href="https://adventofcode.com/2021/day/8">Jour 8, partie 1:</a></h2>
+                <h3 id="day8_part1_statement"> Enoncé </h3>
+                Le problème d'aujourd'hui montre un grand delta de difficulté par rapport aux premiers jours,
+                pas forcément algorithmique, mais plus en terme de complexité de l'énoncé et de code à
+                fournir.<br/><br/>
+
+                On a un écran affichant des chiffres avec des segments lumineux (7 segments au maximum).<br/>
+
+                PLACEHOLDER IMAGE SEGMENTS
+
+                Chaque segment est identifié par un caractère, mais le mapping entre ces segments et les
+                caractères que l'on a en entrée n'est pas le même.<br/><br/>
+
+                Par exemple, habituellement un chiffre <b>1</b> verrait les segments <b>c</b> et <b>f</b> 
+                s'illuminer, mais dans le cas où notre segment en entrée <b>d</b> correspondrait au vrai
+                segment <b>c</b>, alors on aurait les segments <b>d</b> et <b>f</b> illuminés.<br/>
+
+                Les chiffres sont encodés dans l'entrée en indiquant les segments illuminés.<br/><br/>
+
+                Pour la première partie, on se rend compte que certains chiffres peuvent être facilement 
+                trouvés dans l'alphabet, étant donné que le nombre de segments illuminés pour les représenter
+                sont uniques :
+                <ul>
+                    <li>Le chiffre <b>1</b> a <b>2</b> segments illuminés</li>
+                    <li>Le chiffre <b>7</b> a <b>3</b> segments illuminés</li>
+                    <li>Le chiffre <b>4</b> a <b>4</b> segments illuminés</li>
+                    <li>Le chiffre <b>8</b> a <b>7</b> segments illuminés</li>
+                </ul>
+                
+                On veut compter le nombre de chiffres <b>1,4,7,8</b> encodés (hors alphabet) qui composent
+                l'entrée.<br/><br/>
+
+                Par exemple, si l'on a :
+                <pre class="line-numbers language-python"><code>fgae 
+cfgab
+fg
+bagce</code></pre>
+     
+                On a <b>fg</b> qui utilise <b>2</b> segments, et donc qui sera forcément un digit <b>1</b>.<br/>
+                De même <b>fgae</b> qui utilise <b>4</b> segments, et ce sera donc un digit <b>4</b>.<br/>
+                On a aucun moyen simple d'identifier les autres chiffres.<br/>
+                Pour cet exemple, on devrait donc renvoyer <b>2</b>.
+
+                <h3 id="day8_part2_statement"> Solution </h3>
+                Cette partie 1 était très simple, il suffisait d'itérer sur les chaînes de caractères qui
+                composaient le code pour compter celles qui avaient une longueur comprise dans l'ensemble
+                <b>[2,3,4,7]</b>.<br/>
+
+                Les seuls pièges possibles provenaient du parsing du fichier, et il fallait également faire
+                attention de ne pas compter les chiffres qui étaient présents dans l'alphabet (les mots
+                qui précédent <b>'|'</b>).<br/><br/>
+
+                Voici un code qui permet de faire ça:
+
+                <pre class="line-numbers language-python"><code>lines = open('input8.txt').read().split('\n')
+
+resultat = 0
+ensemble = {{'{'}}2,3,4,7{{'}'}}
+for line in lines:
+    alphabet, code = map(str.strip,line.split('|'))
+    for word in code.split(' '):
+        if(len(word) in ensemble):
+            resultat += 1
+print(resultat)</code></pre>
+
+                <h2 id="day8_part2"><a href="https://adventofcode.com/2021/day/8">Jour 8, partie 2:</a></h2>
+                <h3 id="day8_part2_statement"> Enoncé </h3>
+
+                On s'attèle à présent à une tâche bien plus hardue:
+                <ul><li>On désire décoder les chiffres encodés qui nous sont passés</li></ul>
+
+                La somme de ces nombres décodés nous donne le résultat à renvoyer.
+                
+                <h3 id="day8_part2_solution_detective"> Solution version déductions </h3>
+                
+                Une première solution possible était de jouer les détectives en analysant les données et 
+                en cherchant comment deviner à quel caractère correspond un segment.<br/><br/>
+
+                On peut notamment réutiliser les <b>4</b> chiffres évoqués dans la première partie 
+                (<b>1,4,7,8</b>) pour nos déductions.<br/><br/>
+
+                On peut stocker premièrement quel mot correspond à chacun de ces chiffres:
+                <pre class="line-numbers language-python"><code>chiffres = dict()
+nbSegmentsParChiffre = {{'{'}}1:2, 4:4, 7:3, 8:7{{'}'}}
+remaining = []
+for word in words:
+    for chiffre,nbSegments in nbSegmentsParChiffre.items():
+        if(len(word) == nbSegments):
+            chiffres[chiffre] = word
+            break</code></pre>
+
+                Une première déduction est de remarquer que les segments du chiffre <b>1</b> et du
+                chiffre <b>7</b> sont identiques à l'exception du segment <b>a</b> présent dans le chiffre
+                <b>7</b>.<br/>
+
+                On peut donc chercher le caractère qui apparaît dans les mots de <b>3</b> caractères mais pas
+                de <b>2</b> caractères, qui correspondra donc au segment <b>a</b>.<br/>
+
+                <pre class="line-numbers language-python"><code>for car in chiffres[7]:
+if(car not in chiffres[1]):
+    correspondance[car] = 'a'</code></pre>
+
+                Ensuite, on peut compter le nombre d'apparitions théoriques d'un segment dans l'alphabet.<br/>
+                Si ce nombre d'apparitions est unique, il suffira de compter le nombre de fois que l'on 
+                voit un caractère pour en déduire que ce caractère correspond à ce segment.<br/>
+
+                <pre class="line-numbers language-python"><code>from collections import defaultdict
+apparitions = dict()
+apparitions['b'] = 6
+apparitions['e'] = 4
+apparitions['f'] = 9
+
+compte = {{'{'}}{{'}'}} 
+
+for word in words:
+    for car in word:
+        compte[car] = compte.setdefault(car,0) + 1
+
+for car in map(chr,range(ord('a'),ord('h'))):
+    for segment,frequency in apparitions.items():
+        if(frequency == compte[car]):
+            correspondance[car] = segment</code></pre>
+
+                
+            Pour finir, on peut maintenant itérer sur les chiffres connus (<b>1,4,7,8</b>) pour déduire
+            les segments manquants lorsqu'ils sont les seuls inconnus de ces chiffres.<br/>
+            Par exemple, des déductions précédentes, on connaît déjà la correspondance avec les segments 
+            <b>a</b> <b>b</b> <b>e</b> <b>f</b>, donc le seul segment inconnu du chiffre <b>1</b> correspond
+            au segment <b>c</b>.<br/>
+
+            <pre class="line-numbers language-python"><code>for car in chiffres[1]:
+    if(car not in correspondance):
+        correspondance[car] = 'c'
+
+for car in chiffres[4]:
+    if(car not in correspondance):
+        correspondance[car] = 'd'
+
+for car in chiffres[8]:
+    if(car not in correspondance):
+        correspondance[car] = 'g'</code></pre>
+
+            Il suffira ensuite de décoder à partir des correspondances trouvées.<br/>
+            Notre code final ressemblera à ça:
+            <pre class="line-numbers language-python"><code>from collections import defaultdict
+lines = open('input8.txt').read().split('\n')
+
+somme = 0
+for line in lines:
+    alphabet,code = map(str.strip,line.split('|'))
+
+    one,four,seven,eight = None,None,None,None
+    words = alphabet.replace('  ',' ').split(' ')
+    
+    chiffres = dict()
+    nbSegmentsParChiffre = {{'{'}}1:2, 4:4, 7:3, 8:7{{'}'}}
+    remaining = []
+    for word in words:
+        for chiffre,nbSegments in nbSegmentsParChiffre.items():
+            if(len(word) == nbSegments):
+                chiffres[chiffre] = word
+                break
+
+    correspondance = dict()
+
+    for car in chiffres[7]:
+        if(car not in chiffres[1]):
+            correspondance[car] = 'a'
+
+    apparitions = dict()
+    apparitions['b'] = 6
+    apparitions['e'] = 4
+    apparitions['f'] = 9
+
+    compte = {{'{'}}{{'}'}}
+
+    for word in words:
+        for car in word:
+            compte[car] = compte.setdefault(car,0) + 1
+
+    for car in map(chr,range(ord('a'),ord('h'))):
+        for segment,frequency in apparitions.items():
+            if(frequency == compte[car]):
+                correspondance[car] = segment
+
+    for car in chiffres[1]:
+        if(car not in correspondance):
+            correspondance[car] = 'c'
+    
+    for car in chiffres[4]:
+        if(car not in correspondance):
+            correspondance[car] = 'd'
+    
+    for car in chiffres[8]:
+        if(car not in correspondance):
+            correspondance[car] = 'g'
+    
+    allDigits = dict()
+
+    allDigits['abcefg'] = 0
+    allDigits['cf'] = 1
+    allDigits['acdeg'] = 2
+    allDigits['acdfg'] = 3
+    allDigits['bcdf'] = 4
+    allDigits['abdfg'] = 5
+    allDigits['abdefg'] = 6
+    allDigits['acf'] = 7
+    allDigits['abcdefg'] = 8
+    allDigits['abcdfg'] = 9
+
+    res = 0
+    for digitEncoded in code.split(' '):
+        digit = [correspondance[car] for car in digitEncoded]
+        digit.sort()
+        digit = ''.join(digit)
+        res = res * 10 + allDigits[digit]
+    somme += res
+print(somme)</code></pre>
+
+                <h3 id="day8_part2_solution_detective"> Solution version bruteforce </h3>
+                On peut également essayer toutes les permutations possibles de segments, pour voir si
+                l'on obtient le même alphabet en générant tous les chiffres.<br/>
+                Etant donné que le nombre de segments est faible (<b>7</b>), le nombre de permutations reste 
+                calculable (<b>(7!) = 5040</b>).<br/><br/>
+
+                Un code qui utiliserait ce système ressemblerait à ça:
+                <pre class="line-numbers language-python"><code>from itertools import *
+lines = open('input8.txt').read().split('\n')
+
+somme = 0
+for line in lines:
+    print(line)
+    alphabet,code = map(str.strip,line.split('|'))
+
+    alphabet = alphabet.split(' ')
+    for i in range(len(alphabet)):
+        alphabet[i] = list(alphabet[i])
+        alphabet[i].sort()
+    alphabet.sort()
+
+    allDigits = dict()
+    allDigits['abcefg'] = 0
+    allDigits['cf'] = 1
+    allDigits['acdeg'] = 2
+    allDigits['acdfg'] = 3
+    allDigits['bcdf'] = 4
+    allDigits['abdfg'] = 5
+    allDigits['abdefg'] = 6
+    allDigits['acf'] = 7
+    allDigits['abcdefg'] = 8
+    allDigits['abcdfg'] = 9
+
+    theoricalAlphabet = list(map(list,allDigits.keys()))
+    theoricalAlphabet.sort()
+    
+    for permutation in permutations(list('abcdefg')):
+        ourAlphabet = []
+        for word in theoricalAlphabet:
+            newWord = list(map(lambda car:permutation[ord(car)-ord('a')],word))
+            newWord.sort()
+            ourAlphabet.append(newWord)
+        ourAlphabet.sort()
+
+        if(ourAlphabet == alphabet):
+            reverseAlphabet = {{'{'}}{{'}'}}
+            for i in range(len(permutation)):
+                reverseAlphabet[permutation[i]] = chr(i+ord('a'))
+            res = 0
+            for digitEncoded in code.split(' '):
+                digit = [reverseAlphabet[car] for car in digitEncoded]
+                digit.sort()
+                digit = ''.join(digit)
+                res = res*10 + allDigits[digit]
+            somme += res
+            break
+print(somme)</code></pre>
+
+
+            </div>
+        </div>
+    </div>
+</section>
