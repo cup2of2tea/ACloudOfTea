@@ -1,0 +1,183 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 9)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day9_part1"><a href="https://adventofcode.com/2021/day/9">Jour 9, partie 1:</a></h2>
+                <h3 id="day9_part1_statement"> Enoncé </h3>
+
+                On a aujourd'hui notre premier problème de graphe de cette édition d'advent of code.<br/>
+                On a en entrée une liste à 2 dimensions de cases, qui constituent une <b>heightmap</b>, avec
+                la valeur présente sur ces cases définissant la hauteur de ce point.<br/><br/>
+
+                On cherche dans la première partie à trouver les cases ayant une valeur inférieure à la valeur
+                de chacun de ses voisins.<br/>
+                Ici, la notion de voisin est définie par une <b>4-connectivité</b> (<b>4 voisins</b>: en haut, en bas, à gauche
+                et à droite), qui diffère de la <b>8-connectivité</b> qui comprend les diagonales.<br/>
+
+                <div style="text-align:center;margin-top:50px;margin-bottom:100px">
+                    <img style="width:500px" src="assets/img/Connectivite.png" />
+                </div>
+
+                La valeur à renvoyer est la somme des niveaux de risques des lowpoints, qui est calculée comme
+                étant leurs hauteurs incrémentée par <b>1</b>.<br/><br/>
+                <h3 id="day9_part1_solution"> Solution </h3>
+
+                Pour cette première partie, il suffit donc d'itérer sur la grille et de vérifier les valeurs
+                des différents voisins pour déterminer si l'on est en présence d'un lowpoint.<br/>
+                Pour calculer facilement les voisins d'une case, on peut définir un tableau de directions
+                sur lequel on va itérer pour ajouter des deltas horizontaux et verticaux à notre position.<br/>
+                Par exemple, sur le schéma précédent qui montrait la <b>4-connectivité</b>, on a les deltas horizontaux
+                et verticaux suivants:
+                <pre class="line-numbers language-python"><code>(0,1)
+(0,-1)
+(1,0)
+(-1,0)</code></pre>
+                <br/>
+                Le code résultant est le suivant:<br/>
+
+                <pre class="line-numbers language-python"><code>lines = list(map(list,open('input9.txt').read().split('\n')))
+
+dx=[1,-1,0,0]
+dy=[0,0,1,-1]
+
+def insideGrid(x, y, grid):
+    return x >= 0 and y >= 0 and x &lt; len(grid) and y &lt; len(grid[x])
+
+resultat = 0
+for x in range(len(lines)):
+    for y in range(len(lines[x])):
+        isLowpoint = True
+        for dx,dy in zip([0,0,1,-1],[1,-1,0,0]):
+            x2 = x + dx
+            y2 = y + dy
+            if(insideGrid(x2,y2,lines) and lines[x2][y2] &lt;= lines[x][y]):
+                isLowpoint = False
+        if(isLowpoint):
+            resultat += ord(lines[x][y]) - ord('0') + 1
+
+print(resultat)</code></pre>
+               
+                <h2 id="day9_part2"><a href="https://adventofcode.com/2021/day/9">Jour 9, partie 2:</a></h2>
+                <h3 id="day9_part2_statement"> Enoncé </h3>
+                Pour la partie 2, on définit une notion de bassin qui correspond à des zones séparées par 
+                des coordonnées d'hauteur <b>9</b>.<br/>
+
+                Par exemple, sur le schéma suivant: 
+
+                <div style="text-align:center;margin-top:50px;margin-bottom:100px">
+                    <img style="width:500px" src="assets/img/Heightmap.png" />
+                </div>
+
+                On a <b>4</b> bassins séparées par des <b>9</b>.<br/><br/>
+
+                On veut trouver les <b>3</b> bassins ayant la taille la plus grande, et la réponse correspond à ces
+                <b>3</b> tailles multipliées entre elles.
+                
+                <h3 id="day9_part2_solution"> Solution </h3>
+                Pour trouver les bassins, on a besoin de faire un parcours de graphe.<br/>
+                Il existe plusieurs types de parcours de graphes (BFS, DFS ...), mais dans le cas présent, il
+                n'est pas nécessaire de faire un parcours complexe, on veut juste déterminer les régions connexes
+                qui correspondent à nos bassins.<br/>
+                On utilisera donc une version simple, le DFS.<br/><br/>
+
+                Celui-ci peut être codé de plusieurs manières:
+                <ul>
+                    <li>Soit de manière récursive</li>
+                    <li>Soit avec une structure qui gardera la liste de coordonnées que l'on doit traiter</li>
+                </ul>
+
+                La première manière est plus coûteuse vu que l'on utilise la stack pour garder les valeurs de
+                nos appels récursifs.<br/>
+                Je vais donc utiliser la seconde manière.<br/><br/>
+
+                L'algorithme est très simple:<br/>
+                <ul>
+                    <li>Pour chaque case non visitée qui n'est pas égale à 9</li>
+                    <ul>
+                        <li>On initialise notre liste de DFS avec cette coordonnée</li>
+                        <li>On itére sur la liste tant qu'il existe des éléments, en supprimant les éléments
+                            traités au fur et à mesure
+                        </li>
+                        <li>Pour chaque élément traité, si on a un voisin connecté (différent de <b>9</b>) et qui n'a
+                            pas encore été visité, on l'ajoute à notre liste
+                        </li>
+                        <li>Le nombre d'éléments traités correspondra à notre taille de bassin</li>
+                        <li>On ajoute à une liste globale la taille trouvée</li>
+                    </ul>
+                    <li>Après avoir visité tous les bassins, on trie la liste des tailles de bassins, puis
+                        on multiplie les <b>3</b> plus grands.
+                    </li>
+                </ul>
+                <div style="text-align:center;margin-top:50px;margin-bottom:100px">
+                    <img style="width:500px" src="assets/img/Dfs4.png" />
+                </div>
+
+                On aura le code suivant:<br/>
+
+                <pre class="line-numbers language-python"><code>import functools
+lines = list(map(list,open('input9.txt').read().split('\n')))
+
+dx=[1,-1,0,0]
+dy=[0,0,1,-1]
+
+def insideGrid(x, y, grid):
+    return x >= 0 and y >= 0 and x &lt; len(grid) and y &lt; len(grid[x])
+
+visites = [[False for y in range(len(lines[x]))] for x in range(len(lines))]
+taillesDeBassins = []
+
+for x in range(len(lines)):
+    for y in range(len(lines[x])):
+        if(lines[x][y] != '9' and not visites[x][y]):
+            dfs = [(x,y)]
+            visites[x][y] = True
+
+            tailleBassin = 0
+
+            while(len(dfs) &gt; 0):
+                (currentX,currentY) = dfs.pop()
+                tailleBassin += 1
+                for dx,dy in zip([0,0,1,-1],[1,-1,0,0]):
+                    x2 = currentX + dx
+                    y2 = currentY + dy
+                    if(insideGrid(x2,y2,lines) and not visites[x2][y2] and lines[x2][y2] != '9'):
+                        visites[x2][y2] = True
+                        dfs.append((x2,y2))
+                        
+            taillesDeBassins.append(tailleBassin)
+
+taillesDeBassins.sort()
+
+resultat = 1
+for element in taillesDeBassins[-3:]:
+    resultat *= element
+
+# ou bien
+resultat = functools.reduce(lambda a,b:a*b,taillesDeBassins[-3:],1)
+
+print(resultat)</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
