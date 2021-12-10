@@ -1,0 +1,150 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 10)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day10_part1"><a href="https://adventofcode.com/2021/day/10">Jour 10, partie 1:</a></h2>
+                <h3 id="day10_part1_statement"> Enoncé </h3>
+
+                On avait un ensemble de chaînes de caractères de parenthésage <b>('(',')','[',']','{{'{'}},'{{'}'}},'&lt;','&gt;')</b>.<br/><br/>
+
+                Pour la première partie, on cherche à détecter un certain type de chaînes de caractères invalides, celles
+                qui présentent à un certain moment un caractère fermant qui ne match pas le dernier caractère ouvrant.<br/>
+
+                Par exemple, si on a les chaînes de caractères suivantes: <br/>
+
+                <pre class="line-numbers language-python"><code>(] 
+[()()()]
+(((()))></code></pre>
+                
+                La première et troisième chaîne de caractères sont invalides: on devrait avoir une parenthèse fermante
+                à la place du crochet pour la première chaîne et une parenthèse fermante à la place du chevron
+                pour la dernière chaîne.<br/><br/>
+
+                L'énoncé nous fait correspondre un score à chacun des caractères fermant.<br/>
+                Il nous faut renvoyer la somme de ces scores pour les premiers caractères invalides de chaque
+                chaîne invalide pour valider la première phase.
+
+                <h3 id="day10_part1_solution"> Solution </h3>
+                On peut stocker les caractères ouvrants dans une <b>pile</b>, et à chaque caractère fermant, on vérifie
+                le caractère au sommet de la <b>pile</b>, et si celui-ci ne match pas, on est en présence d'une chaîne
+                de caractère invalide, et on a également le premier caractère qui l'invalide, qui nous permet
+                de calculer le score.<br/>
+
+                <div style="text-align:center;margin-top:50px;margin-bottom:100px">
+                    <img style="width:500px" src="assets/img/parenthesing.png" />
+                </div>
+
+                <pre class="line-numbers language-python"><code>lines = open('input10.txt').read().split('\n')
+
+resultat=0
+matching = dict(zip('{{'{'}}[(&lt;','{{'}'}}])&gt;'))
+
+scores = {{'{'}}')':3,']':57,'{{'}'}}':1197,'&gt;':25137{{'}'}}
+
+for line in lines:
+    pile = []
+    valide = True
+    for caractere in line:
+        if(caractere in matching.keys()):
+            pile.append(matching[caractere])
+        else:
+            if(len(pile) == 0 or caractere != pile.pop()):
+            resultat += scores[caractere]
+                break
+print(resultat)</code></pre>
+                
+
+                <h2 id="day10_part2"><a href="https://adventofcode.com/2021/day/10">Jour 10, partie 2:</a></h2>
+                <h3 id="day10_part2_statement"> Enoncé </h3>
+                
+                Pour la partie 2, on ignore les chaînes de caractères invalides de la partie 1, et l'on
+                cherche à la place un nouveau type de chaîne de caractères invalides: les chaînes incomplètes.<br/><br/>
+
+                Ces chaînes incomplètes n'ont pas de souci de cohérence dans l'ordre des caractères fermants,
+                mais certains caractères ouvrants n'ont pas de caractères correspondants.<br/>
+
+                Par exemple, les chaînes de caractères suivantes sont toutes invalides et doivent être traitées
+                en phase 2:
+                <pre class="line-numbers language-python"><code>([&lt;&lt;>
+((((())))</code></pre>
+
+                On a également un calcul de score, qui différe de la première partie: <br/>
+
+                Si l'on itére sur les caractères à ajouter en fin de chaîne pour la rendre valide, on calcule 
+                le score de la manière suivante:
+                <ul>
+                    <li>On initialise le score à <b>0</b></li>
+                    <li>Pour chaque caractère manquant, on multiplie le score courant par <b>5</b>, puis
+                        on ajoute un score correspondant au caractère manquant (<b>1</b>,<b>2</b>,<b>3</b> ou <b>4</b> en fonction du type 
+                        de caractère)
+                    </li>
+                </ul>
+
+                Après avoir calculé les scores de toutes les chaînes invalides, on cherche le score médian
+                à renvoyer pour valider la phase 2.
+
+
+                <h3 id="day10_part2_solution"> Solution </h3>
+                
+                On peut réutiliser le système de <b>pile</b> de la phase 1, et dans le cas des chaînes de caractères
+                incomplètes, on aura simplement la <b>pile</b> qui contiendra encore des éléments après
+                avoir été traitée entièrement.<br/><br/>
+
+                Ces éléments correspondent aux éléments qu'il faudrait ajouter à la chaîne pour la rendre
+                valide.<br/>
+                On peut donc simplement dépiler les éléments un à un et calculer le score comme défini précédemment.<br/>
+                Lorsque l'on a ajouté tous les scores à une liste, on peut trier cette liste et prendre
+                l'élément central pour obtenir la médiane.
+            
+                <pre class="line-numbers language-python"><code>lines = open('input10.txt').read().split('\n')
+
+matching = dict(zip('({{'{'}}[&lt;','){{'}'}}]&gt;'))
+
+scores = {{'{'}}')':1,']':2,'{{'}'}}':3,'&gt;':4{{'}'}}
+
+allScores=[]
+for line in lines:
+    pile = []
+    valide = True
+    for caractere in line:
+        if(caractere in matching.keys()):
+            pile.append(matching[caractere])
+        else:
+            if(len(pile) == 0 or caractere != pile.pop()):
+                pile = []
+                break
+    score = 0
+    while(len(pile) &gt; 0):
+        score *= 5
+        score += scores[pile.pop()]
+    if(score &gt; 0):
+        allScores.append(score)
+
+allScores.sort()
+print(allScores[len(allScores)//2])</code></pre>
+                
+            </div>
+        </div>
+    </div>
+</section>
