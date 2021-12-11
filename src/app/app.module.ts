@@ -49,6 +49,7 @@ import { Day7_2021Component } from './Algorithmique/AoC/2021/day7/day7.component
 import { Day8_2021Component } from './Algorithmique/AoC/2021/day8/day8.component';
 import { Day9_2021Component } from './Algorithmique/AoC/2021/day9/day9.component';
 import { Day10_2021Component } from './Algorithmique/AoC/2021/day10/day10.component';
+import { Day11_2021Component } from './Algorithmique/AoC/2021/day11/day11.component';
 
 @NgModule({
   declarations: [
@@ -91,6 +92,7 @@ import { Day10_2021Component } from './Algorithmique/AoC/2021/day10/day10.compon
     Day8_2021Component,
     Day9_2021Component,
     Day10_2021Component,
+    Day11_2021Component,
   ],
   imports: [
     BrowserModule,

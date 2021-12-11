@@ -1,0 +1,217 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 11)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day11_part1"><a href="https://adventofcode.com/2021/day/11">Jour 11, partie 1:</a></h2>
+                <h3 id="day11_part1_statement"> Enoncé </h3>
+                
+                Une grille contient un ensemble de pieuvres avec des niveaux d'énergies différents.<br/>
+                A chaque étape, le niveau d'énergie de chaque pieuvre augmente de 1. <br/>
+                Si le niveau d'une pieuvre dépasse le niveau d'énergie <b>9</b>, alors cette pieuvre émet un flash.<br/>
+
+                Ce flash augmente également le niveau d'énergie des pieuvres voisines, ce qui peut créer des réactions
+                en chaînes engendrant de nombreux flashs.<br/><br/>
+                A la fin de l'étape, lorsque l'on a fini de propager tous les flashs, les pieuvres ayant émises
+                un flash durant cette étape voient leurs niveaux d'énergies réinitialisés à 0.
+
+                Par exemple, si à un moment on a:
+                <pre class="line-numbers language-python"><code> 9  8  8
+ 3  4  8
+ 9  8  8</code></pre>
+                
+                Alors au début de l'étape, on incrémente chaque niveau 
+
+                <pre class="line-numbers language-python"><code>10  9  9
+ 4  5  9
+10  9  9</code></pre>
+
+                Et donc on aura les étapes de propagation de flash suivantes:
+                <pre class="line-numbers language-python"><code>10  10  9          10  10  10          10  10  10
+ 4   5  9    =>     4   5   9     =>    4   5  10
+10  10  9          10  10  10          10  10  10</code></pre>
+
+                
+                Le but de la première partie est de compter le nombre de flashs ayant été produits durant les
+                100 premières étapes.
+
+                <h3 id="day11_part1_solution"> Solution </h3>
+                
+                La principale difficulté de cette partie 1 était de propager efficacement les flashs.<br/>
+                Pour incrémenter les niveaux d'énergies des pieuvres au début du tour, il suffisait d'itérer
+                sur la grille.<br/><br/>
+
+                Pour la propagation, on avait deux possibilités principales: 
+                <ul>
+                    <li>On itére sur la grille tant que l'on a des nouveaux flashs produits pour 
+                        vérifier qu'ils n'engendrent pas de nouveaux flashs
+                    </li>
+                    <li>
+                        On fait une sorte de parcours, en prenant comme départs les flashs des pieuvres
+                    </li>
+                </ul>
+
+                La première solution est largement satisfaisante dans notre cas, étant donné que la grille
+                est très petite.<br/>
+                Dans le pire des cas, si on a à chaque tour une réaction en chaîne qui illumine chaque case
+                une par une, on aurait <b>(N*M)*(N*M)</b> opérations (le premier <b>N*M</b> correspond à notre
+                parcours de la grille, le second aux nombres de flashs produits).<br/><br/>
+
+                Il fallait néanmoins faire attention à ne pas propager plusieurs fois un même flash.<br/><br/>
+
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda line:list(map(int,line)),open('input11.txt').read().split('\n')))
+
+dx=[1,1,1,-1,-1,-1,0,0]
+dy=[1,-1,0,1,-1,0,1,-1]
+
+ALREADY_FLASHED = 11
+
+resultat=0
+for s in range(100):
+    for x in range(len(lines)):
+        for y in range(len(lines[x])):
+            lines[x][y] += 1
+    newFlash = True
+    while newFlash:
+        newFlash = False
+        for x in range(len(lines)):
+            for y in range(len(lines[x])):
+                if(lines[x][y] == 10):
+                    lines[x][y] = ALREADY_FLASHED
+                    newFlash = True
+                    for d in range(8):
+                        x2 = x + dx[d]
+                        y2 = y + dy[d]
+                        if(x2 &gt;= 0 and y2 &gt;= 0 and x2 &lt; len(lines) and y2 &lt; len(lines[x2]) and lines[x2][y2] &lt; 10):
+                            lines[x2][y2] += 1
+        
+        if(not newFlash):
+            break    
+    for x in range(len(lines)):
+        for y in range(len(lines[x])):
+            if(lines[x][y] == ALREADY_FLASHED):
+                resultat += 1
+                lines[x][y] = 0
+print(resultat)</code></pre>
+
+
+                <h3 id="day11_part1_solution"> Solution parcours </h3>
+
+                Pour la version parcours, plutôt que d'itérer à chaque fois sur la grille entière, on peut 
+                stocker les pieuvres qui flashent, propager le flash sur les voisins, et les ajouter
+                à notre parcours si ces derniers se mettent à flasher en conséquence.<br/>
+
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:450px" src="assets/img/Parcours.png" />
+                </div>
+
+                En code, ça donne 
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda line:list(map(int,line)),open('input11.txt').read().split('\n')))
+
+dx=[1,1,1,-1,-1,-1,0,0]
+dy=[1,-1,0,1,-1,0,1,-1]
+
+resultat=0
+etapes = 0
+for s in range(100):
+    etapes += 1
+    
+    parcours = []
+    for x in range(len(lines)):
+        for y in range(len(lines[x])):
+            lines[x][y] += 1
+            if(lines[x][y] &gt; 9):
+                parcours.append((x,y))
+                lines[x][y] = 0
+    while(len(parcours) != 0):
+        (x,y) = parcours.pop()
+        resultat += 1
+
+        for d in range(8):
+            x2 = x + dx[d]
+            y2 = y + dy[d]
+
+            if(x2 &gt;= 0 and y2 &gt;= 0 and x2 &gt; len(lines) and y2 &gt; len(lines[x2]) and lines[x2][y2] != 0):
+                lines[x2][y2] += 1
+                if(lines[x2][y2] &gt; 9):
+                    lines[x2][y2] = 0
+                    parcours.append((x2,y2))
+
+print(resultat)</code></pre>
+
+                <h2 id="day11_part2"><a href="https://adventofcode.com/2021/day/11">Jour 11, partie 2:</a></h2>
+                <h3 id="day11_part2_statement"> Enoncé </h3>
+                
+                Pour la partie 2, on refait les mêmes simulations que pour la partie 1, mais on cherche
+                à trouver l'étape pour laquelle toutes les pieuvres flashent à la fois.<br/>
+
+                Le nombre d'étapes pour y arriver nous donne la solution.<br/>
+
+                <h3 id="day11_part2_solution"> Solution </h3>
+                Il suffit de vérifier après chaque étape que notre grille ne contient pas d'autres valeurs
+                que <b>ALREADY_FLASHED</b>.
+
+                <pre class="line-numbers language-python"><code>lines = list(map(lambda line:list(map(int,line)),open('input11.txt').read().split('\n')))
+
+dx=[1,1,1,-1,-1,-1,0,0]
+dy=[1,-1,0,1,-1,0,1,-1]
+
+ALREADY_FLASHED = 11
+
+etapes = 0
+while(True):
+    etapes += 1
+    for x in range(len(lines)):
+        for y in range(len(lines[x])):
+            lines[x][y] += 1
+    newFlash = True
+    while newFlash:
+        newFlash = False
+        for x in range(len(lines)):
+            for y in range(len(lines[x])):
+                if(lines[x][y] == 10):
+                    lines[x][y] = ALREADY_FLASHED
+                    newFlash = True
+                    for d in range(8):
+                        x2 = x + dx[d]
+                        y2 = y + dy[d]
+                        if(x2 &gt;= 0 and y2 &gt;= 0 and x2 &lt; len(lines) and y2 &lt; len(lines[x2]) and lines[x2][y2] < 10):
+                            lines[x2][y2] += 1
+        
+        if(not newFlash):
+            break    
+    allFlashes = True
+    for x in range(len(lines)):
+        for y in range(len(lines[x])):
+            if(lines[x][y] == ALREADY_FLASHED):
+                lines[x][y] = 0
+            else:
+                allFlashes = False
+    if(allFlashes):
+        print(etapes)
+        break</code></pre>
+            
+            </div>
+        </div>
+    </div>
+</section>
