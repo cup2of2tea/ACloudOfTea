@@ -1,0 +1,167 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 12)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day12_part1"><a href="https://adventofcode.com/2021/day/12">Jour 12, partie 1:</a></h2>
+                <h3 id="day12_part1_statement"> Enoncé </h3>
+                
+                On récupère un réseau de caves à partir des capteurs de notre sous-marin. <br/>
+                Ce réseau est constitué de petites et grandes caves (les petites caves ayant un identifiant
+                avec des minuscules <b>[a-z]*</b> et les grandes caves des majuscules).<br/>
+
+                Ces caves sont reliés par des accès <b>bidirectionnels</b>.<br/><br/>
+
+                On a également <b>2</b> noeuds particuliers: <b>start</b> et <b>end</b>, les noeuds de départ et de fin.<br/><br/>
+
+
+                On cherche à calculer le nombre de chemins qui partent du noeud de départ et qui arrivent au noeud de
+                fin, ces chemins ne pouvant passer qu'une seule fois au maximum par petite cave.<br/><br/>
+
+                Par exemple, si l'on a:
+                <pre class="line-numbers language-python"><code>start-A
+A-b
+A-c            
+c-D
+D-end</code></pre>
+                
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:300px" src="assets/img/caves.png" />
+                </div>
+
+                On pourrait avoir les chemins suivants:
+                
+                <pre class="line-numbers language-python"><code>start => A => b => A => c => D => end
+start => A => c => D => end</code></pre>
+
+                Mais le chemin
+                <pre class="line-numbers language-python"><code>start => A => c => D => c => D => end</code></pre>
+
+                serait invalide, car on visite <b>2</b> fois la petite cave <b>c</b>.<br/>
+
+                La réponse est le nombre de chemins possibles entre <b>start</b> et <b>end</b>.
+
+                <h3 id="day12_part1_solution"> Solution </h3>
+
+                On peut simplement réaliser un parcours de graphe, en enregistrant dans l'état de parcours
+                les petites caves déjà visitées pour éviter de les revisiter à nouveau.<br/><br/>
+
+                C'est un parcours assez coûteux, étant donné que chaque état contient donc une structure
+                assez grande pour contenir beaucoup d'éléments.<br/>
+                Mais le graphe et le nombre de chemins possibles sont réduits.<br/><br/>
+
+                <pre class="line-numbers language-python"><code>lines = open('input12.txt').read().split('\n')
+adjacency = dict()
+
+for line in lines:
+    (a,b) = line.split('-')
+    adjacency.setdefault(a,[]).append(b)
+    adjacency.setdefault(b,[]).append(a)
+
+parcours = [('start',{{'{'}}'start':1{{'}'}})]
+
+resultat = 0
+while(len(parcours) != 0):
+    currentNode,visited = parcours.pop()
+
+    if(currentNode == 'end'):
+        resultat += 1
+        continue
+    
+    for voisin in adjacency[currentNode]:
+        if(voisin.islower()):
+            if(voisin in visited):
+                if(visited[voisin] >= 1):
+                    continue
+        visitedCopy = visited.copy()
+        visitedCopy[voisin] = visitedCopy.setdefault(voisin,0) + 1
+        parcours.append((voisin,visitedCopy))
+print(resultat)</code></pre>
+
+                On pourrait avoir 2 optimisations, mais qui seraient relativement négligeables dans notre contexte: 
+                <ul>
+                    <li>Avoir des <b>appels récursifs</b> et une <b>référence pour notre structure dictionnaire</b>,
+                        pour éviter d'avoir simultanément plusieurs dictionnaires dans différents états 
+                        stockés dans notre structure de parcours
+                    </li>
+                    <li>
+                        Avoir de la <b>mémoïsation</b> pour stocker le nombre de chemins que l'on peut avoir
+                        depuis un certain état si l'on a déjà visité un ensemble particulier de petites caves
+                    </li>
+                </ul>
+
+                <h2 id="day12_part2"><a href="https://adventofcode.com/2021/day/12">Jour 12, partie 2:</a></h2>
+                <h3 id="day12_part2_statement"> Enoncé </h3>
+
+                Pour la partie 2, on a maintenant le droit de visiter durant notre chemin une seule petite cave
+                2 fois. <br/>
+                Notre chemin reste donc invalide si une petite cave est visitée <b>3</b> fois ou si au moins <b>2</b> petites
+                caves sont visitées <b>2 fois ou plus</b>.<br/>
+                Une exception néanmoins pour les noeuds <b>start</b> et <b>end</b> qui ne peuvent être visités qu'une
+                fois dans toutes les situations.<br/><br/>
+
+                La réponse attendue est toujours le nombre de chemins entre <b>start</b> et <b>end</b>.
+
+                <h3 id="day12_part2_solution"> Solution </h3>
+
+                On peut refaire exactement comme pour la partie 1, en gérant un dictionnaire des petites 
+                caves visitées avec le nombre de fois qu'on les a visitées, et pour optimiser les performances,
+                on peut stocker dans un booléen le fait qu'on ait déjà visité une petite cave 2 fois durant
+                notre chemin.<br/>
+
+
+                <pre class="line-numbers language-python"><code>lines = open('input12.txt').read().split('\n')
+adjacency = dict()
+
+for line in lines:
+    (a,b) = line.split('-')
+    adjacency.setdefault(a,[]).append(b)
+    adjacency.setdefault(b,[]).append(a)
+
+parcours = [('start',{{'{'}}'start':1{{'}'}},False)]
+
+resultat = 0
+while(len(parcours) != 0):
+    currentNode,visited,smallCaveTwoTimes = parcours.pop()
+
+    if(currentNode == 'end'):
+        resultat += 1
+        continue
+    
+    for voisin in adjacency[currentNode]:
+        if(voisin.islower()):
+            if(voisin in visited):
+                if(visited[voisin] >= 1 and (smallCaveTwoTimes or voisin in ['start','end'])):
+                    continue
+                if(visited[voisin] >= 2):
+                    continue
+        visitedCopy = visited.copy()
+        visitedCopy[voisin] = visitedCopy.setdefault(voisin,0) + 1
+        smallCaveTwoTimesCopy = smallCaveTwoTimes or (voisin.islower() and visitedCopy[voisin] > 1)
+        parcours.append((voisin,visitedCopy,smallCaveTwoTimesCopy))
+print(resultat)</code></pre>
+                
+            </div>
+        </div>
+    </div>
+</section>
