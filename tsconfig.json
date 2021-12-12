@@ -7,13 +7,15 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2018",
     "typeRoots": [
       "node_modules/@types"
     ],
+    "types": ["offscreencanvas"],
     "lib": [
       "es2018",
       "dom"

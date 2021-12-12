@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -21,8 +24,10 @@
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
+            "aot": true,
+            "buildOptimizer": true,
+            "optimization":true,
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -47,15 +52,14 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "optimization":true,
               "budgets": [
                 {
                   "type": "initial",
@@ -74,7 +78,10 @@
           "configurations": {
             "production": {
               "browserTarget": "ACloudOfTea:build:production"
-            }
+            },
+              "development": {
+                "browserTarget": "ACloudOfTea:build:dev"
+             }
           }
         },
         "extract-i18n": {
