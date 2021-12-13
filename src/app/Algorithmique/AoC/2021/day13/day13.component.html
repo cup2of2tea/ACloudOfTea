@@ -1,0 +1,159 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 13)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day13_part1"><a href="https://adventofcode.com/2021/day/13">Jour 13, partie 1:</a></h2>
+                <h3 id="day13_part1_statement"> Enoncé </h3>
+
+                On a une feuille de papier que l'on peut représenter sous la forme d'une grille à 2 dimensions,
+                avec certaines coordonnées marquées par un point de couleur.<br/>
+                On réalise un ensemble de plis sur cette feuille, fusionnant certaines coordonnées ensemble
+                (et donc certains points colorés avec d'autres points colorés ou non).<br/>
+                
+
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:300px" src="assets/img/hojadepapel.png" />
+                </div>
+                
+                On veut compter le nombre de cases colorés après le premier pliage.<br/>
+
+                <h3 id="day13_part1_solution"> Solution </h3>
+                Tristement, il n'y a toujours pas de réelle difficulté algorithmique, on assiste même
+                à une régression par rapport aux jours précédents.<br/>
+                En effet, il suffit d'itérer sur les coordonnées du tableau, de calculer la position symétrique
+                par rapport à l'axe pour reporter l'aspect coloré lors des pliages.<br/>
+
+                La position symétrique se calcule simplement grâce à la distance de la position par rapport
+                à l'axe de pli.<br/><br/>
+
+                <pre class="line-numbers language-python"><code>lines = open('input13.txt').read().split('\n')
+
+nbLignes = 0
+nbColonnes = 0
+
+grid = [[0 for _ in range(2000)] for x in range(2000)]
+resultat = 0
+for line in lines:
+    if(line.startswith('fold')):
+        instruction = line.split(' ')[-1]
+        axis,value = instruction.split('=')
+        axis=axis.strip()
+        if(axis == 'x'):
+            axis = 'y'
+        else:
+            axis = 'x'
+        value = int(value)
+
+        for x in range(nbLignes):
+            for y in range(nbColonnes):
+                if(x &gt; value and axis == 'x' and grid[x][y] == 1):
+                    grid[x][y] = 0
+                    grid[value-(x-value)][y] = 1
+                elif(y &gt; value and axis == 'y' and grid[x][y] == 1):
+                    grid[x][y] = 0
+                    grid[x][value-(y-value)] = 1
+        if(axis == 'x'):
+            nbLignes = value+1
+        else:
+            nbColonnes = value+1
+        
+        for x in range(nbLignes):
+            for y in range(nbColonnes):
+                resultat += grid[x][y]
+        break
+   
+    elif(len(line) != 0):
+        (y,x) = map(int,line.split(','))
+        nbLignes = max(nbLignes, x+1)
+        nbColonnes = max(nbColonnes, y+1)
+
+        grid[x][y] = 1
+print(resultat)</code></pre>
+        
+                <h2 id="day13_part2"><a href="https://adventofcode.com/2021/day/13">Jour 13, partie 2:</a></h2>
+                <h3 id="day13_part2_statement"> Enoncé </h3>
+                Pour la partie 2, on réalise tous les pliages, et la feuille obtenue nous dessine un ensemble
+                de lettres qui correspondent à la solution.<br/>
+
+                <h3 id="day13_part1_solution"> Solution </h3>
+                
+                Il suffit donc de faire comme pour la partie 1, mais en ne s'arrêtant pas au premier pliage.<br/>
+                Puis, on peut définir une fonction qui permet d'afficher la grille sous une forme ASCII,
+                et lire manuellement la réponse.
+
+
+                <pre class="line-numbers language-python"><code>lines = open('input13.txt').read().split('\n')
+
+nbLignes = 0
+nbColonnes = 0
+
+def display(board):
+    for x in range(nbLignes):
+        s = ''
+        for y in range(nbColonnes):
+            if(board[x][y] == 1):
+                s+='###'
+            else:
+                s+='   '
+        print(s)
+        print(s)
+    print()
+
+grid = [[0 for _ in range(2000)] for x in range(2000)]
+for line in lines:
+    if(line.startswith('fold')):
+        instruction = line.split(' ')[-1]
+        axis,value = instruction.split('=')
+        axis=axis.strip()
+        if(axis == 'x'):
+            axis = 'y'
+        else:
+            axis = 'x'
+        value = int(value)
+
+        for x in range(nbLignes):
+            for y in range(nbColonnes):
+                if(x &gt; value and axis == 'x' and grid[x][y] == 1):
+                    grid[x][y] = 0
+                    grid[value-(x-value)][y] = 1
+                elif(y &gt; value and axis == 'y' and grid[x][y] == 1):
+                    grid[x][y] = 0
+                    grid[x][value-(y-value)] = 1
+        if(axis == 'x'):
+            nbLignes = value+1
+        else:
+            nbColonnes = value+1
+    
+    elif(len(line) != 0):
+        (y,x) = map(int,line.split(','))
+        nbLignes = max(nbLignes, x+1)
+        nbColonnes = max(nbColonnes, y+1)
+
+        grid[x][y] = 1
+
+display(grid)</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
