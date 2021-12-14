@@ -1,0 +1,228 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 14)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day14_part1"><a href="https://adventofcode.com/2021/day/14">Jour 14, partie 1:</a></h2>
+                <h3 id="day14_part1_statement"> Enoncé </h3>
+                
+                On a en entrée une chaîne de caractères et un ensemble de règles définissant des opérations d'insertions de caractères.<br/>
+                Par exemple
+
+                <pre class="line-numbers language-python"><code>AB -> C</code></pre>
+
+                signifie que si l'on a une paire de caractères adjacents <b>AB</b>, alors en appliquant cette opération d'insertion, on ajoute
+                le caractère <b>C</b> entre <b>A</b> et <b>B</b>.<br/><br/>
+
+                A chaque étape, on applique pour chaque paire de caractères la règle d'insertion associée.<br/>
+
+                Par exemple, si on a l'entrée suivante:
+
+                <pre class="line-numbers language-python"><code>ABC
+AB->C
+BA->B
+AC->A
+CA->B
+BC->C
+CB->C
+AA->C
+BB->B
+CC->C</code></pre>
+
+                et que l'on a 2 étapes, on obtient les étapes suivantes:
+<pre class="line-numbers language-python"><code>ACBCC
+AACCBCCCC
+ACAACCCCBCCCCCCCC
+AACBACAACCCCCCCCBCCCCCCCCCCCCCCCC</code></pre>
+
+                On cherche à calculer le nombre d'occurences de chaques caractères (présents au moins une fois)
+                 après un certain nombre d'étapes, et le nombre d'occurences
+                du caractère le plus présent soustrait au nombre d'occurences du caractère le moins présent nous donne la réponse.<br/><br/>
+
+                Pour l'étape 1, on a 10 étapes à simuler.
+                
+                <h3 id="day14_part1_statement"> Solution </h3>
+
+                Pour la première étape, on sait que la chaîne de caractère produite restera relativement petite:
+                En effet, sa taille est multipliée par approximativement <b>2</b> à chaque étape, et on aura donc une taille finale
+                de l'ordre de <b>tailleInitiale * pow(2,etapes) = 20 * 2^10 = 20480</b>.<br/><br/>
+
+                On peut donc simuler de manière très naïve les différentes étapes, puis compter les occurences sur la chaîne finale
+                pour trouver les caractères apparaissant le moins de fois et le plus de fois.<br/><br/>
+
+
+                <pre class="line-numbers language-python"><code>from collections import Counter
+
+lines = open('input14.txt').read().split('\n')
+
+current = ''
+NB_ETAPES = 10
+
+transitions = dict()
+
+for line in lines:
+    if('->' in line):
+        (dep,end) = map(str.strip,line.split('->'))
+        transitions[dep] = end
+    elif (len(line) > 0):
+        current = line
+
+for etape in range(NB_ETAPES):
+    new = current[0]
+    for i in range(0,len(current)-1):
+        new = new + transitions[current[i:i+2]] + current[i+1]
+    current = new
+
+compte = Counter(current)
+allFrequencies = compte.most_common()
+maxi = allFrequencies[0][1]
+mini = allFrequencies[-1][1]
+print(maxi-mini)</code></pre>
+
+                <h2 id="day14_part2"><a href="https://adventofcode.com/2021/day/14">Jour 14, partie 2:</a></h2>
+                <h3 id="day14_part2_statement"> Enoncé </h3>
+
+                Pour la deuxième partie, on veut faire la même chose, mais à la place d'avoir 10 étapes à simuler, on en a 40.<br/>
+
+                <h3 id="day14_part2_solution"> Solution </h3>
+                Avec 40 étapes, on a maintenant une chaîne finale de taille d'ordre de 
+                <b>tailleInitiale * pow(2,etapes) = 20 * 2^40 = 21990232555520 > 1e12</b>.<br/><br>
+
+                C'est bien trop gros à calculer, aussi bien en termes d'opérations que de mémoire allouée.<br/>
+                Il faut donc ruser.<br/><br/>
+
+                On peut utiliser la technique de la mémoïsation pour calculer efficacement les occurences de notre chaîne finale.<br/>
+
+                On peut isoler les paires de caractères pour appliquer des transitions dessus et sur leurs résultats.<br/>
+                En effet, ces transitions n'ont pas d'effet de bord sur les caractères adjacents à notre pair.<br/>
+                Avec les transitions en exemple de la partie 1, et en réalisant 2 étapes, on peut découper <b>ACB</b> en:
+                <pre class="line-numbers language-python"><code>AC
+AAC
+ACAAC</code></pre>
+                et en 
+                <pre class="line-numbers language-python"><code>CB
+CCB
+CCCCB</code></pre>
+                puis fusionner <b>ACAAC</b> avec <b>CCCCB</b> en <b>ACAACCCCB</b>.<br/><br/>
+
+                On peut découper en paires de caractères récursivement également, on aurait pu exploiter les paires de caractères <b>AA</b>
+                et <b>AC</b> issues de la première étape appliquées à la paire <b>AC</b>.<br/><br/>
+
+                Si l'on stocke le dictionnaires d'occurences résultant d'un certain nombre d'étapes appliquées à une paire particulière,
+                on peut réutiliser ce résultat si l'on recroise une nouvelle fois cette paire avec le même nombre d'étapes à appliquer.<br/><br/>
+
+                Etant donné que l'on peut avoir au maximum <b>26*26</b> (si l'on considère l'alphabet entier) paires de caractères, et que
+                l'on a <b>40</b> étapes au maximum, on aura donc <b>40*26*26</b> états possibles à explorer, ce qui reste très petit.<br/><br/>
+
+
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:600px" src="assets/img/memoisation_chaine.png" />
+                </div>
+
+                Sur le schéma, on peut voir par exemple que l'état <b>(AB,38)</b> est visité 2 fois, il ne sera donc pas nécessaire de le 
+                calculer la seconde fois qu'il sera visité.<br/><br/>
+                
+
+                Pour le calcul des occurences, étant donné que sur les appels récursifs des paires produites, on a des caractères en commun,
+                il faut faire attention de ne pas calculer nos occurences par rapport à la chaîne courante de notre état, mais
+                par rapport aux caractères produits lors de la transition appliquée à notre état.<br/><br/>
+                Le résultat des appels récursifs issus du découpage de notre nouvelle chaîne obtenue est fusionné avec notre 
+                dictionnaire d'occurence pour retourner le résultat correspondant à notre état courant.<br/><br/>
+                
+                Il faudra simplement faire attention à compter les fréquences de la chaîne de caractères initiale.<br/><br/>
+
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:600px" src="assets/img/trucbordeljenaimarre.png"  alt="trucbordeljenaimarre"/>
+                </div>
+
+                Voici un code qui s'appuie sur cette méthode (en construction, la flemme et pas eu le temps + ratio):
+
+                <pre class="line-numbers language-python"><code>lines = open('input14.txt').read().split('\n')
+
+depart = ''
+
+transitions = dict()
+
+for line in lines:
+    if('->' in line):
+        (dep,end) = map(str.strip,line.split('->'))
+        transitions[dep] = end
+    elif (len(line) > 0):
+        depart = line
+
+memo = dict()
+
+def bourrin(steps, s):
+
+    if(steps == 0):
+        res = dict()
+        return res
+    if((steps,s) in memo):
+        return memo[(steps,s)]
+    newString = s[0] + transitions[s] + s[1]
+
+    res = dict()
+    res[transitions[s]] = 1
+
+    r2d2 = bourrin(steps-1,newString[0:2])
+    r3d3 = bourrin(steps-1,newString[1:])
+
+    for k in r2d2.keys():
+        if(k not in res):
+            res[k] = 0
+        res[k]+=r2d2[k]
+    
+    for k in r3d3.keys():
+        if(k not in res):
+            res[k] = 0
+        res[k]+=r3d3[k]
+    
+    memo[(steps,s)] = res
+
+    return res
+            
+
+res = dict()
+for car in range(ord('A'),ord('Z')+1):
+    res[chr(car)] = 0
+
+for k in depart:
+    res[k] += 1
+
+for i in range(1,len(depart)):
+    r2d2 = bourrin(40,depart[i-1:i+1])
+    for k in r2d2.keys():
+        res[k] += r2d2[k]
+    
+maxi = 0
+mini = 626721627831750000000000
+for i in range(ord('A'),ord('Z')+1):
+    if(res[chr(i)] != 0):
+        maxi = max(maxi, res[chr(i)])
+        mini = min(mini, res[chr(i)])
+print(maxi-mini)</code></pre>
+                
+            </div>
+        </div>
+    </div>
+</section>
