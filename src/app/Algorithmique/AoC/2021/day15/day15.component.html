@@ -1,0 +1,177 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 15)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day15_part1"><a href="https://adventofcode.com/2021/day/15">Jour 15, partie 1:</a></h2>
+                <h3 id="day15_part1_statement"> Enoncé </h3>
+                On a une grille 2D représentant le scan d'une caverne, avec des niveaux de risques pour chaque coordonnée.<br/>
+
+                On part de la coordonnée en haut à gauche de notre scan pour arriver en bas à droite, et l'on souhaite minimiser
+                la somme des niveaux de risques pris durant notre chemin.<br/><br/>
+
+                Cette somme de niveaux de risques correspond au résultat à envoyer.<br/>
+
+                Par exemple, si l'on a la grille suivante:
+                <pre class="line-numbers language-python"><code>01111
+99991
+11111
+19999
+11111</code></pre>
+
+                On doit suivre le chemin des coordonnées avec un risque à <b>1</b>, ce qui nous donnera un niveau de risque total égal
+                à <b>16</b>.<br/>
+
+                <h3 id="day15_part2_statement"> Enoncé </h3>
+
+                La solution se base sur un algorithme proche de celui du <b>BFS</b>.<br/>
+                Contrairement à un BFS classique, on a une distance entre les coordonnées adjacentes qui n'est pas constante.<br/><br/>
+                
+                L'algorithme qu'on va donc utiliser est l'algorithme de <b>Dijkstra</b>, qui résout des problèmes de plus courts chemins sur des
+                graphes à arcs pondérés.<br/>
+
+                Comme pour le BFS, on veut traiter les coordonnées dans l'ordre croissant de distance, pour s'assurer qu'au moment où on traite
+                une coordonnée particulière, celle-ci ne pourra pas être revisitée ultérieurement via un chemin qui donne une distance inférieure.<br/>
+
+                En effet, si c'était le cas, on aurait donc visité une coordonnée voisine avec une distance inférieure, brisant ainsi la précondition
+                précédente.<br/><br/>
+                Ce principe se repose sur une notion courante en algorithmique, appellée <b>invariant</b>, qui définit une condition
+                vérifiée à chaque itération d'une sous-partie d'algorithme, et qui ressemble un peu à un raisonnement par <b>induction</b>.<br/><br/>
+
+                Pour le <b>BFS</b>, on utilisait une file / queue classique, pour traiter les coordonnées dans l'ordre de distance croissant.<br/>
+                Pour le <b>Dijkstra</b>, c'est un peu le même principe, sauf qu'on va utiliser une <b>file à priorité</b>, une structure qui permet de récupérer
+                en complexité constante l'élément le plus petit / plus gros (en fonction de comment a été définie la file de priorité), et d'insérer
+                des éléments à l'intérieur en complexité logarithmique.<br/><br/>
+
+                On traitera simplement les éléments dans l'ordre croissant de niveau de risque total.<br/><br/>
+
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:500px" src="assets/img/dijkstra.png" />
+                </div>
+
+                En code, ça donne:
+                <pre class="line-numbers language-python"><code>from queue import PriorityQueue
+
+lines = open('input15.txt').read().split('\n')
+
+grid = list(map(lambda x:list(map(int,list(x))),lines))
+dijkstra = PriorityQueue()
+
+visited = [[False for y in range(len(grid[0]))] for x in range(len(grid))]
+
+dijkstra.put((0,0,0))
+its = 0
+while not dijkstra.empty():
+    (distance,x,y) = dijkstra.get()
+    if(visited[x][y]):
+        continue
+    visited[x][y] = True
+    if(x == len(grid)-1 and y == len(grid[x])-1):
+        print(distance)
+        break
+
+    for dx,dy in zip([0,0,1,-1],[1,-1,0,0]):
+        x2 = x + dx
+        y2 = y + dy
+        if(x2 >= 0 and y2 >= 0 and x2 &lt; len(grid) and y2 &lt; len(grid[x2]) and not visited[x2][y2]):
+            dijkstra.put((distance+grid[x2][y2],x2,y2))</code></pre>
+                
+                <h2 id="day15_part2"><a href="https://adventofcode.com/2021/day/15">Jour 15, partie 2:</a></h2>
+                <h3 id="day15_part2_statement"> Enoncé </h3>
+                
+                Pour la partie 2, on doit répliquer notre grille horizontalement et verticalement <b>4</b> autres fois pour obtenir une nouvelle grille.<br/>
+                Les nouvelles grilles ajoutées voient leurs niveaux de risques incrémentés par 1 par rapport à la grille voisine précédente.<br/>
+
+                Par exemple, si on avait cette grille:
+                <pre class="line-numbers language-python"><code>12
+34</code></pre> 
+
+                après réplication, on aurait:
+                <pre class="line-numbers language-python"><code>12|23|34|45|56
+34|45|56|67|78
+--------------
+23|34|45|56|67
+45|56|67|78|89
+--------------
+34|45|56|67|78
+56|67|78|89|91
+--------------
+45|56|67|78|89
+67|78|89|91|11
+--------------
+56|67|78|89|91
+78|89|91|11|12</code></pre>
+
+                On doit ensuite, comme pour la partie 1, calculer la somme totale minimale des niveaux de risques pour atteindre
+                la coordonée en bas à droite en partant de la coordonnée en haut à gauche.
+
+
+                <h3 id="day15_part2_solution"> Solution </h3>
+                
+                La solution consiste simplement à dupliquer notre tableau de 2D sur l'axe horizontal et vertical, puis à utiliser l'algorithme
+                de <b>Dijkstra</b> de la partie 1.
+
+<pre class="line-numbers language-python"><code>from queue import PriorityQueue
+
+lines = open('input15.txt').read().split('\n')
+
+originalGrid = list(map(lambda x:list(map(int,list(x))),lines))
+grid = [ligne[:] for ligne in originalGrid]
+
+nbLignes = len(grid)
+nbColonnes = len(grid[0])
+
+# Replication horizontale
+for replication in range(1,5):
+    for lineIdx in range(nbLignes):
+        grid[lineIdx] += [max(1,(element+replication)%10) for element in originalGrid[lineIdx]]
+
+# Replication verticale
+for replication in range(1,5):
+    grid += [[max(1,(element+replication)%10) for element in colonne] for colonne in grid[0:nbLignes]]
+
+dijkstra = PriorityQueue()
+
+visited = [[False for y in range(len(grid[0]))] for x in range(len(grid))]
+
+dijkstra.put((0,0,0))
+its = 0
+while not dijkstra.empty():
+    (distance,x,y) = dijkstra.get()
+    if(visited[x][y]):
+        continue
+    visited[x][y] = True
+    if(x == len(grid)-1 and y == len(grid[x])-1):
+        print(distance)
+        break
+
+    for dx,dy in zip([0,0,1,-1],[1,-1,0,0]):
+        x2 = x + dx
+        y2 = y + dy
+        if(x2 &gt;= 0 and y2 &gt;= 0 and x2 &lt; len(grid) and y2 &lt; len(grid[x2]) and not visited[x2][y2]):
+            dijkstra.put((distance+grid[x2][y2],x2,y2))</code></pre>
+
+            </div>
+        </div>
+    </div>
+</section>
