@@ -1,0 +1,167 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 20)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day20_part1"><a href="https://adventofcode.com/2021/day/20">Jour 20, partie 1:</a></h2>
+                <h3 id="day20_part1_statement"> Enoncé </h3>
+                On souhaite réaliser un ensemble d'opérations sur une image binaire (que des pixels allumés ou éteints).<br/>
+                Ces opérations consistent à transformer chaque pixel de l'image à partir des valeurs des pixels voisins.<br/>
+                Pour être plus précis, le pixel <b>(x,y)</b> est influencé par les valeurs des pixels 
+
+                <pre class="line-numbers language-python"><code>(x-1,y-1)
+(x-1,y)
+(x-1,y+1)
+(x,y-1)
+(x,y)
+(x,y+1)
+(x+1,y-1)
+(x+1,y)
+(x+1,y+1)</code></pre>
+
+                En prenant la valeur de ces pixels dans cet ordre, et en considérant qu'un pixel allumé correspond à une valeur de <b>1</b>
+                et un pixel éteint à une valeur de <b>0</b>, on construit un <b>masque binaire</b> <b>b1b2b3b4b5b6b7b8b9</b>.
+
+                <pre class="line-numbers language-python"><code>.#.
+###  => (010111000)2
+...</code></pre>
+
+                On a également en entrée une chaîne de <b>512</b> caractères. <br/>
+                En prenant la valeur décimale de notre <b>masque binaire</b>, on obtient un indice pour la chaîne de <b>512</b> caractères, qui nous
+                donne la valeur que prendra le pixel après une passe de traitement.<br/><br/>
+
+                Autre point important, l'image a beau avoir des dimensions finies en entrée, elle est en réalité infinie suivant
+                chaque direction.<br/><br/>
+
+                On veut connaître le nombre de pixels allumés après 2 passes du traitement défini plus haut.
+
+                <h3 id="day20_part1_statement"> Solution </h3>
+
+                Si l'on suppose que les masques binaires <b>(000000000)2</b> engendrent des pixels éteints, on pourrait ignorer les zones
+                très éloignées de notre image de départ.<br/>
+                C'était le cas pour l'exemple donné en énoncé.<br/><br/>
+
+                Malheureusement, dans notre cas, on a ce masque engendrant des pixels allumés.<br/>
+                On a donc une infinité de pixels allumés après le premier traitement, ce qui semble anormal.<br/>
+                Le second plot-twist est qu'en fait, les zones complètement allumées <b>(111111111)2</b> engendrent des pixels éteints.<br/>
+                Du coup, les zones très éloignées de notre image de départ, et donc uniformes, vont simplement alterner entre ces deux états.<br/>
+                On a donc pas besoin de les prendre en compte dans notre calcul, vu que l'on a un nombre d'étapes pair, et donc
+                que des pixels éteints dans les zones très éloignées.<br/><br/>
+
+                Néanmoins, on ne peut pas se contenter de simuler uniquement sur l'image croppée qui nous est donnée en entrée, étant donné que
+                certains pixels allumés / éteints vont se propager sur les régions uniformes en dehors de l'image croppée d'origine,
+                conduisant à une perte de leur uniformité, et donc de leur aspect prédictif.<br/><br/>
+
+                Il faut donc définir une zone assez grande sur laquelle simuler.<br/>
+
+                Le problème avec ça, c'est que si l'on simule sur une certaine zone, si l'on resimule exactement sur cette zone l'itération
+                d'après, certaines cases voisines des bords n'auront pas été simulées l'itération précédente, et donneront donc des résultats
+                invalides.<br/><br/>
+
+                Sur le schéma suivant, les zones violettes sont en dehors de la simulation.<br/>
+                En théorie, si toute la grille est composée de <b>#</b> à la première étape, on devrait avoir que des <b>#</b> à la troisième
+                étape.<br/>
+                Mais comme la zone rouge dépend de la zone violette qui n'est pas calculée durant la seconde étape, on se retrouve avec des erreurs.
+
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:400px" src="assets/img/WrongSimulation.png" />
+                </div>
+
+                Il faut donc avoir une zone encore plus large pour la simulation, et réduire au fur et à mesure des itérations cette zone, pour
+                que chaque pixel simulé lors d'une itération n'ait que des voisins qui ont été simulés l'itération précédente.<br/>
+                La zone verte sera donc parfaitement simulée pour le schéma suivant.
+
+                <div style="text-align:center;margin-top:40px;margin-bottom:60px">
+                    <img style="width:400px" src="assets/img/BonneSimulation.png" />
+                </div>
+                
+                Si l'on a <b>N</b> itérations, la perte d'uniformité peut être propagée au maximum à une distance <b>N</b> des bords.<br/>
+                Et comme notre simulation verra sa zone se réduire de 1 à chaque étape, on devra donc partir d'une zone de simulation initiale
+                augmentée de <b>2*N</b>.<br/><br/>
+
+
+                En terme d'implémentation, on pouvait soit agrandir artificiellement notre image avec un tableau <b>2D</b> et des offsets 
+                pour les pixels déjà présents.<br/>
+                J'ai choisi une version que je trouvais plus simple: j'ai utilisé une map pour pouvoir stocker facilement des pixels
+                à des coordonnées négatives.<br/>
+
+                <pre class="line-numbers language-python"><code>lines = open('input20.txt').read().split('\n')
+
+# Changer ça à 50 pour la partie 2
+ITERATIONS = 2
+
+decode = lines[0]
+
+grid = lines[2:]
+
+deltax = [-1,-1,-1,0,0,0,1,1,1]
+deltay = [-1,0,1,-1,0,1,-1,0,1]
+
+dictioGrid = dict()
+
+xMin = -ITERATIONS*2
+xMax = (len(grid)-1)+ITERATIONS*2
+yMin = -ITERATIONS*2
+yMax = (len(grid[0])-1)+ITERATIONS*2
+
+for x in range(len(grid)):
+    for y in range(len(grid[x])):
+        dictioGrid[(x,y)] = grid[x][y]
+
+for i in range(ITERATIONS):
+    dictioGridCopy = dict()
+    for x in range(xMin, xMax+1):
+        for y in range(yMin, yMax+1):
+            masque = ''
+            
+            for d in range(0,9):
+                x2 = x + deltax[d]
+                y2 = y + deltay[d]
+
+                if(dictioGrid.setdefault((x2,y2)) == '#'):
+                    masque+='1'
+                else:
+                    masque+='0'
+
+            indice = int(masque,2)
+            dictioGridCopy[(x,y)] = decode[indice]
+    if(i + 1 &lt; ITERATIONS):
+        xMin += 1
+        yMin += 1
+        xMax -= 1
+        yMax -= 1
+    dictioGrid = dictioGridCopy.copy()
+
+resultat=0
+for k in dictioGrid.keys():
+    if(dictioGrid[k] == '#' and k[0] &gt;= xMin and k[0] &lt;= xMax and k[1] &gt;= yMin and k[1] &lt;= yMax):
+        resultat+=1
+
+print(resultat)</code></pre>
+
+                <h2 id="day20_part1"><a href="https://adventofcode.com/2021/day/20">Jour 20, partie 2:</a></h2>
+                La partie 2 est identique à la partie 1, il suffit de remplacer le nombre de traitements par <b>50</b>.
+            </div>
+        </div>
+    </div>
+</section>
