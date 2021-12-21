@@ -1,0 +1,145 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 21)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day21_part1"><a href="https://adventofcode.com/2021/day/20">Jour 21, partie 1:</a></h2>
+                <h3 id="day21_part1_statement"> Enoncé </h3>
+
+                On veut simuler un jeu entre 2 joueurs dont les règles sont les suivantes:
+                <ul>
+                    <li>On a un plateau circulaire avec <b>10</b> cases numérotées de <b>1</b> à <b>10</b></li>
+                    <li>A chaque tour, un joueur lance <b>3</b> fois un dé</li>
+                    <li>Il fait la <b>somme</b> des valeurs de ces jets, et avance son pion de cette somme (en prenant en compte l'aspect circulaire
+                        du plateau)
+                    </li>
+                    <li>La case sur laquelle il atterit en fin de tour lui donne un score à ajouter à son score total</li>
+                    <li>Si un joueur atteint ou dépasse un certain score, la partie est terminée, et ce joueur gagne</li>
+                </ul>
+
+                <br/><br/>
+
+                Pour la première partie, on a un dé "déterministe" à <b>100 faces</b>, qui à chaque lancer verra sa valeur obtenue incrémentée.<br/>
+                Après un lancer avec une valeur de <b>100</b>, la valeur du prochain jet obtenue est égale à <b>1</b>.<br/>
+
+                Par exemple, si le dé a une valeur de <b>99</b> au début du tour, alors le joueur réalisant ses <b>3</b> jets va faire 
+                <b>99,100,1</b> et donc avancer son pion de <b>200</b> cases. <br/><br/>
+
+                A partir de positions initiales des joueurs, d'un score initialisé à <b>0</b> et en considérant que le premier joueur commence,
+                on veut connaître le score du perdant à la fin de la simulation, et le nombre de fois que le dé a été lancé.<br/>
+                Le produit de ces deux valeurs nous donne le résultat à renvoyer.
+
+                <h3 id="day21_part1_solution"> Solution </h3>
+
+                La première partie consiste simplement à simuler le jeu de manière naïve. <br/>
+                Il faut juste bien prendre en compte la circularité du plateau et le passage de la valeur <b>100</b> à la valeur <b>1</b> 
+                du dé, ce qui peut être fait très facilement avec l'opérateur modulo.<br/><br/>
+
+                <pre class="line-numbers language-python"><code>positions=[6,9]
+scores = [0,0]
+
+currentPlayer = 0
+nombreJets = 0
+valeurDe = 1
+
+while(max(scores) &lt; 1000):
+    for i in range(3):
+        positions[currentPlayer] += valeurDe 
+        positions[currentPlayer] = (positions[currentPlayer]-1)%10 +1
+        
+        valeurDe += 1
+        valeurDe %= 100
+    scores[currentPlayer] += positions[currentPlayer]
+    currentPlayer = not currentPlayer
+    nombreJets += 3
+
+print(min(scores)*nombreJets)</code></pre>
+                    
+                <h2 id="day21_part2"><a href="https://adventofcode.com/2021/day/21">Jour 21, partie 2:</a></h2>
+                <h3 id="day21_part2_statement"> Enoncé </h3>
+
+                Le jeu reste le même que pour la partie 1, mais à la place de notre dé déterministe à <b>100 faces</b>, on a un dé 
+                quantique, qui à chaque lancer crée plusieurs univers parralèles, chacun correspondant à un univers pour lequel la valeur
+                du dé est différente, et prend une valeur entre <b>1,2 et 3</b>.<br/><br/>
+
+                Egalement, le score à atteindre ou à dépasser est réduit à <b>21</b>.<br/><br/>
+
+                On veut donc simuler tous les univers possibles, et trouver le nombre d'univers dans lesquels le joueur 1 gagne et le 
+                nombre d'univers dans lesquels le joueur 2 gagne.<br/>
+                Pour le joueur ayant eu le plus grand nombre d'univers gagnants, on veut connaître ce nombre.<br/><br/>
+
+                <h3 id="day21_part2_solution"> Solution </h3>
+                
+                La solution se base sur la méthode de la mémoïsation, que l'on avait déjà rencontrée durant le <a href="#/articles/Aoc_2021_14">jour 14 de l'advent of code
+                2021</a>.<br/>
+                Pour avoir une idée plus claire de la technique de mémoïsation, vous pouvez vous baser sur cet article.
+                <br/><br/>
+
+                En effet, si notre état se base sur les positions des joueurs actuelles, leurs scores et l'identifiant du joueur pour lequel
+                c'est le tour de jouer, on a un domaine très réduit et déterministe pour les résultats à calculer.<br/><br/>
+
+                Les positions des joueurs sont comprises entre <b>1</b> et <b>10</b> (10 possibilités), les scores entre <b>0</b> et <b>30</b>
+                (dans le pire des cas, un joueur a un score de <b>20</b> et tombe sur une case <b>10</b>) et on a uniquement <b>2</b> joueurs.<br/>
+                On a donc une limite haute du nombre d'états égale à <b>10*10*31*31*2 = 192200</b> qui est un nombre assez faible.<br/><br/>
+
+                Il suffit donc de stocker pour ces différents états le nombre d'univers pour lesquels les deux joueurs gagnent.
+
+                <pre class="line-numbers language-python"><code>positions=[6,9]
+
+memo = dict()
+def memoisation(positions,scores,currentPlayer):
+
+    state = (tuple(positions),tuple(scores),currentPlayer)
+
+    if(state in memo):
+        return memo[state]
+
+    if(scores[0] &gt;= 21):
+        return (1,0)
+    elif(scores[1] &gt;= 21):
+        return (0,1)
+
+    universWins = [0,0]
+
+    for de1 in range(1,4):
+        for de2 in range(1,4):
+            for de3 in range(1,4):
+                positionsCopy = positions[:]
+                scoresCopy = scores[:]
+                positionsCopy[currentPlayer] = (positionsCopy[currentPlayer] + de1 + de2 + de3 - 1) % 10 + 1
+                scoresCopy[currentPlayer] += positionsCopy[currentPlayer]
+
+                subUniversWins = memoisation(positionsCopy,scoresCopy,(currentPlayer+1)%2)
+                universWins[0]+= subUniversWins[0]
+                universWins[1]+= subUniversWins[1]
+
+    memo[state] = universWins
+    return universWins
+
+scores = [0,0]
+print(max(memoisation(positions,scores,0)))</code></pre>
+                
+            </div>
+        </div>
+    </div>
+</section>
