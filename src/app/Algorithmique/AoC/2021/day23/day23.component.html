@@ -1,0 +1,240 @@
+<section>
+    <div class="wrapperArticle">
+        <div class="article">
+            <h1 class="post-title ">
+                Advent of code 2021 (jour 23)
+            </h1>
+            <div class="blockArticle">
+
+                <h3 id="introduction">Hello tout le monde!</h3>
+                Cet article fait partie d'une longue série, qui est destinée à couvrir les solutions et
+                explications des différents jours de l'<a href="https://adventofcode.com/2021/">advent of code</a>.
+                <br /><br />
+                J'irai droit à l'essentiel concernant la description des problèmes, et ne donnerai donc pas
+                l'intégralité de l'histoire.
+                Si celle-ci vous intéresse, chaque jour sera accompagné d'un lien pour accéder à l'énoncé sur le site
+                officiel.
+                <br /><br />
+                L'<a href="https://adventofcode.com/2021/">advent of code</a> est un challenge qui propose
+                quotidiennement un problème d'algorithmique, que l'on peut
+                résoudre de la façon qu'on veut (n'importe quel langage / outil ...), la vérification se faisant en
+                effet uniquement via la soumission d'une valeur / d'une chaîne de caractère répondant au problème.
+                <br /><br />
+
+            </div>
+            <div>
+                <h2 id="day23part1"><a href="https://adventofcode.com/2021/day/23">Jour 23, partie 1:</a></h2>
+                <h3 id="day23part1_statement"> Enoncé </h3>
+                L'objectif du problème d'aujourd'hui est, à partir de la description d'un terrier
+                contenant plusieurs types de bestioles (symbolisés par les caractères <b>'A'</b>,
+                <b>'B'</b>, <b>'C'</b> et <b>'D'</b>), on souhaite réorganiser le terrier de telle sorte
+                que chaque salle contienne uniquement un certain type de bestioles (la première
+                avec les bestioles <b>'A'</b>, la seconde avec les <b>'B'</b> ...).<br/><br/>
+
+                Le terrier est composé de 4 salles avec 2 places, et d'un couloir au dessus reliant chacune
+                des salles.<br/>
+                Par exemple:
+                <pre class="line-numbers language-python"><code>#############
+#...........#
+###B#C#B#D###
+  #A#D#C#A#
+  #########</code></pre>
+
+                Les déplacements des bestioles sont régis par un ensemble de règles:
+                <ul>
+                    <li>Quand une bestiole est dans une salle</li>
+                    <ul>
+                        <li>Elle peut se déplacer uniquement vers une position du couloir,
+                            qui ne doit boucher aucune autre salle
+                        </li>
+                    </ul>
+                    <li>
+                        Quand une bestiole est dans le couloir
+                        <ul>
+                            <li>
+                                Elle peut se déplacer uniquement vers sa salle cible (première salle si <b>A</b>,
+                                seconde si <b>B</b> etc...)
+                            </li>
+                            <li>
+                                Il faut que cette salle cible ne contienne pas une autre bestiole d'un autre type
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        Aucune bestiole ne doit traverser une autre bestiole
+                    </li>
+                </ul>
+
+                Chaque déplacement est doté d'un coût, dépendant du type de bestiole:
+                <ul>
+                    <li>1 pour les <b>A</b></li>
+                    <li>10 pour les <b>B</b></li>
+                    <li>100 pour les <b>C</b></li>
+                    <li>1000 pour les <b>D</b></li>
+                </ul>
+
+                On veut arranger le terrier pour un coût total de déplacement minimal.
+
+                <h3 id="day23part1_solution"> Solution </h3>
+                
+                Etant donné que l'on a un parcours de graphe implicite avec des distances pondérées
+                (on a des distances différentes entre les différentes positions en fonction du type
+                de bestiole déplacé), on peut utiliser un algorithme de plus court chemin très classique,
+                <b>Dijkstra</b>, qui avait déjà été utilisé pour le jour 15 de cette année.<br/><br/>
+
+                Le nombre d'états théoriques peut sembler très grand, on pourrait avoir beaucoup de
+                permutations / placements des bestioles sur notre graphe, mais ce nombre
+                d'état est naturellement élagué grâce aux règles données par l'énoncé, 
+                qui restreignent très fortement les déplacements possibles.<br/><br/>
+
+                Les principales difficultés pour aujourd'hui étaient essentiellement de connaître
+                l'algorithme de <b>Dijkstra</b>, et d'implémenter facilement et efficacement les règles
+                de transitions entre les états.<br/>
+
+                Plutôt que de se déplacer case par case entre chaque transition d'état, puis de recoller
+                les morceaux pour vérifier que le déplacement "total" est valide, on peut avoir
+                entre chaque transition d'état le déplacement total, et simplement des vérifications
+                concernant les cases traversées (pour vérifier que l'on ne traverse pas d'autres
+                bestioles / que l'on arrive dans une salle invalide).<br/><br/>
+
+                Pour éviter de parcourir plusieurs fois le même état à des distances croissantes, 
+                on peut stocker ces états dans un set.<br/>
+                Etant donné que python ne permet pas de hash les tableaux, on peut "tricher" en
+                exploitant les features du langage, en convertissant à la volée les tableaux en tuple.<br/><br/>
+
+                Une autre optimisation facultative, qui ne découlait pas naturellement des restrictions de l'énoncé,
+                était de considérer que si depuis un état, on pouvait faire rentrer une bestiole dans sa salle, 
+                autant ignorer toutes les autres transitions.<br/><br/>
+
+                En effet, faire rentrer la bestiole dans sa salle ne présente aucun désavantage par
+                rapport à une rentrée plus tardive, et au contraire, cela peut nous aider
+                en libérant des places au niveau du couloir.<br/>
+
+                <pre class="line-numbers language-python"><code>from heapq import *
+lines = open('input23.txt').read().split('\n')
+
+lines = list(map(list,lines))
+dijkstra = []
+
+heappush(dijkstra,(0,lines))
+
+visited = set()
+
+dx = [0,0,1,-1]
+dy = [1,-1,0,0]
+
+def tryAddNewState(x1, y1, x2, y2, current, dijkstra):
+    global visited
+    if(currentState[x2][y2] == '.'):
+        currentState[x1][y1],currentState[x2][y2] = currentState[x2][y2],currentState[x1][y1]
+        
+        hash = tuple(map(tuple,currentState))
+        currentState[x1][y1],currentState[x2][y2] = currentState[x2][y2],currentState[x1][y1]
+        
+        if(hash in visited):
+            return
+        newState = list(map(list,hash))
+        
+        manhatan = abs(x2-x1)+abs(y2-y1)
+
+        heappush(dijkstra,(d+manhatan*10**(ord(currentState[x1][y1])-ord('A')),newState))
+
+while(len(dijkstra) != 0):
+    
+    (d,currentState) = heappop(dijkstra)
+
+    hash = tuple(map(tuple,currentState))
+    if(hash in visited):
+        continue
+    visited.add(hash)
+
+    found = True
+    for i in range(4):
+        if(not found):
+            break
+        for j in range(2,len(currentState)-1):
+            if(not found):
+                break
+            if(currentState[j][i*2+3] != chr(i+ord('A'))):
+                found = False
+
+    if(found):
+        print(d)
+        break
+
+    earlyBreak = False
+
+    for x1 in range(len(currentState)):
+        if(earlyBreak):
+            break
+        for y1 in range(len(currentState[x1])):
+            if(earlyBreak):
+                break
+            if(str.isalpha(currentState[x1][y1])):
+                # Cas couloir
+                if(x1 == 1):
+                    targetCol =(ord(currentState[x1][y1])-ord('A'))*2+3 
+                    
+                    y2 = targetCol
+                    valid = True
+                    if(targetCol &gt; y1):
+                        for y3 in range(y1+1,targetCol+1):
+                            if(currentState[x1][y3] != '.' or not valid):
+                                valid = False
+                                break
+                    else:
+                        for y3 in range(targetCol, y1):
+                            if(currentState[x1][y3] != '.' or not valid):
+                                valid = False
+                                break
+
+                    for x2 in range(2,len(currentState)-1):
+                        if(not valid):
+                            break
+                        if(currentState[x2][targetCol] != '.' and currentState[x2][targetCol] != currentState[x1][y1]):
+                            valid = False
+                            break
+
+                    if(not valid):
+                        continue
+
+                    for x2 in range(2,len(currentState)-1):
+                        if(currentState[x2+1][targetCol] == '.'):
+                            continue
+                        tryAddNewState(x1,y1,x2,y2,currentState,dijkstra)
+                        # Optimisation custom
+                        earlyBreak = True
+                        break
+                elif(x1 &gt;= 2 ):
+                    valid = True
+                    for x2 in range(2,x1):
+                        if(not valid):
+                            break
+                        if(currentState[x2][y1] != '.'):
+                            valid = False
+                            break
+                    if(not valid):
+                        continue
+
+                    x2 = 1                    
+                    y2 = y1 - 1
+                    while(y2 &gt;= 0 and currentState[x2][y2] == '.'):
+                        if(currentState[x2+1][y2] == '#'):
+                            tryAddNewState(x1,y1,x2,y2,currentState,dijkstra)
+                        y2 -= 1
+                    
+                    y2 = y1 + 1
+                    while(y2 &lt; len(currentState[x2]) and currentState[x2][y2] == '.'):
+                        if(currentState[x2+1][y2] == '#'):
+                            tryAddNewState(x1,y1,x2,y2,currentState,dijkstra)
+                        y2 += 1</code></pre>
+
+                <h2 id="day23part1"><a href="https://adventofcode.com/2021/day/23">Jour 23, partie 2:</a></h2>
+                La partie 2 est identique, on change juste légèrement le terrier.<br/>
+
+                Notre code de la partie 1 scale sans problème.
+
+            </div>
+        </div>
+    </div>
+</section>
